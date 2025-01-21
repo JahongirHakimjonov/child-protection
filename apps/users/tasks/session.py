@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-import requests
 from celery import shared_task
 from django.utils import timezone
 
@@ -18,7 +17,4 @@ def in_activate_sessions():
     )
     sessions_to_deactivate.update(is_active=False)
 
-    url = "https://api.telegram.org/bot1165698137:AAE3cRK3DlSXkwgKRUzaXbDrDJpvhV-X7jo/sendMessage"
-    params = {"chat_id": "483578239", "text": "Inactivated sessions"}
-    requests.get(url, params=params)
     return "Inactivated sessions"

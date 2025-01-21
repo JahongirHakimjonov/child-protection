@@ -92,5 +92,5 @@ UNFOLD = {
         "show_all_applications": True,
         "navigation": navigation.PAGES,
     },
-    "TABS": navigation.TABS,
+    # "TABS": navigation.TABS,
 }
