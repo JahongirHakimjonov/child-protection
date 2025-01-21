@@ -6,7 +6,7 @@ from django.utils import timezone
 from apps.users.models import ActiveSessions
 
 
-@shared_task(name="apps.users.tasks.session.in_activate_sessions", queue="cron")
+@shared_task()
 def in_activate_sessions():
     now = timezone.now()
     one_day_before_expiry = now + timedelta(days=1)

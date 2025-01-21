@@ -42,7 +42,6 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
                     "is_active",
                     "is_staff",
                     "is_superuser",
-                    "is_premium",
                     "groups",
                     "user_permissions",
                 )

@@ -5,7 +5,7 @@ from apps.users.services import SendService
 from apps.shared.utils import console
 
 
-@shared_task(name="apps.users.tasks.sms.send_confirm", queue="sms")
+@shared_task()
 def send_confirm(phone, code):
     try:
         service: SendService = SendService()

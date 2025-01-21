@@ -6,11 +6,11 @@ from apps.shared.exceptions import SmsException
 from apps.users.models import SmsConfirm
 
 
-
 class SmsService:
     @staticmethod
     def send_confirm(phone):
         from apps.users.tasks.sms import send_confirm
+
         if phone == "946593659":
             code = 1111
         else:
@@ -45,7 +45,7 @@ class SmsService:
         )  # noqa
         sms_confirm.save()
 
-        send_confirm.apply_async(args=(phone, code), queue="sms")
+        send_confirm.delay(phone, code)
         return True
 
     @staticmethod

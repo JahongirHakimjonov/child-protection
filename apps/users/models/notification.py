@@ -8,8 +8,6 @@ class NotificationType(models.TextChoices):
     SINGLE = "SINGLE", _("Single")
     ALL = "ALL", _("All")
     NONE = "NONE", _("None")
-    SUBSCRIBERS = "SUBSCRIBERS", _("Subscribers")
-    NO_SUBSCRIBERS = "NO_SUBSCRIBERS", _("No Subscribers")
 
 
 class Notification(AbstractBaseModel):

@@ -47,9 +47,6 @@ class User(AbstractUser, AbstractBaseModel):
         default=RoleChoices.USER,
         verbose_name=_("Role"),
     )
-    is_premium = models.BooleanField(
-        default=False, verbose_name=_("Premium foydalanuvchi")
-    )
     register_type = models.CharField(
         choices=RegisterTypeChoices,
         max_length=20,

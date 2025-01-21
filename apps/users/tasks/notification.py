@@ -30,9 +30,7 @@ def send_fcm_notification(notification, fcm_tokens):
             messaging.send(message)
 
 
-@shared_task(
-    name="apps.panda.tasks.notification.send_notification_task", queue="notifications"
-)
+@shared_task()
 def send_notification_task(notification_id):
     try:
         notification = Notification.objects.get(id=notification_id)
@@ -49,20 +47,13 @@ def send_notification_task(notification_id):
         logger.error(f"Error sending notification: {e}")
 
 
-@shared_task(
-    name="apps.panda.tasks.notification.send_notification_to_all_task",
-    queue="notifications",
-)
+@shared_task()
 def send_notification_to_all_task(notification_id):
     try:
         notification = Notification.objects.get(id=notification_id)
         users = []
         if notification.type == NotificationType.ALL:
             users = User.objects.all()
-        elif notification.type == NotificationType.SUBSCRIBERS:
-            users = User.objects.filter(is_premium=True)
-        elif notification.type == NotificationType.NO_SUBSCRIBERS:
-            users = User.objects.filter(is_premium=False)
         for user in users:
             Notification.objects.create(
                 user=user,

@@ -4,8 +4,8 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
     ],
     "DEFAULT_THROTTLE_CLASSES": (
         "rest_framework.throttling.ScopedRateThrottle",
@@ -17,7 +17,7 @@ REST_FRAMEWORK = {
         "user": "1000/day",
         "story": "1000/day",
     },
-"EXCEPTION_HANDLER": "apps.shared.exceptions.custom_exception_handler",
+    "EXCEPTION_HANDLER": "apps.shared.exceptions.custom_exception_handler",
 }
 
 SPECTACULAR_SETTINGS = {
