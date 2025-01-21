@@ -77,7 +77,7 @@ PAGES = [
             {
                 "title": _("Bildirishnomalar"),
                 "icon": "mark_email_unread",
-                "link": reverse_lazy("admin:panda_notification_changelist"),
+                "link": reverse_lazy("admin:users_notification_changelist"),
                 "permissions": lambda request: user_has_group_or_permission(
                     request.user, "view_notification"
                 ),
