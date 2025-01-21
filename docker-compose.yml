@@ -33,17 +33,6 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
-    command:
-      - -c
-      - max_connections=5000
-      - -c
-      - shared_buffers=32GB
-      - -c
-      - work_mem=10MB
-      - -c
-      - maintenance_work_mem=2GB
-      - -c
-      - effective_cache_size=96GB
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 10s
