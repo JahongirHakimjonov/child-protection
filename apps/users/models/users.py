@@ -60,8 +60,9 @@ class User(AbstractUser, AbstractBaseModel):
     objects = UserManager()
 
     def __str__(self):
+        user_data = self.phone if self.phone else self.email
         return (
-            f"{self.first_name} {self.last_name} - {self.phone}"
+            f"{self.first_name} {self.last_name} - {user_data}"
             if self.phone
             else str(_("Foydalanuvchi"))
         )

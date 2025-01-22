@@ -6,7 +6,7 @@ from apps.chat.models.chat import ChatRoom, Message
 
 @admin.register(ChatRoom)
 class ChatRoomAdmin(ModelAdmin):
-    list_display = ("user", "created_at", "updated_at")
+    list_display = ("id", "user", "created_at", "updated_at")
     search_fields = ("user__username",)
     list_filter = ("user",)
     autocomplete_fields = ("user",)
@@ -14,7 +14,7 @@ class ChatRoomAdmin(ModelAdmin):
 
 @admin.register(Message)
 class MessageAdmin(ModelAdmin):
-    list_display = ("chat_room", "sender", "created_at", "updated_at")
+    list_display = ("id", "chat_room", "sender", "created_at", "updated_at")
     search_fields = ("chat_room__user__username", "sender__username")
     list_filter = ("chat_room", "sender")
     autocomplete_fields = ("chat_room", "sender")

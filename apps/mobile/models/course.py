@@ -1,3 +1,5 @@
+import mimetypes
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -29,8 +31,8 @@ class Course(AbstractBaseModel):
     image = models.ImageField(
         upload_to="courses/", null=True, blank=True, db_index=True
     )
-    lesson_count = models.PositiveIntegerField(db_index=True)
-    students_count = models.PositiveIntegerField(db_index=True)
+    lesson_count = models.PositiveIntegerField(db_index=True, default=0)
+    students_count = models.PositiveIntegerField(db_index=True, default=0)
     saved_count = models.PositiveIntegerField(default=0, db_index=True)
     is_active = models.BooleanField(default=True, db_index=True)
     is_paid = models.BooleanField(default=True, db_index=True)
@@ -69,10 +71,10 @@ class CourseLessonResource(AbstractBaseModel):
         CourseLesson, on_delete=models.CASCADE, related_name="resources", db_index=True
     )
     title = models.CharField(max_length=255, db_index=True)
-    name = models.CharField(max_length=255, db_index=True)
+    name = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     file = models.FileField(upload_to="course_lessons/", db_index=True)
     size = models.PositiveIntegerField(default=0, db_index=True)
-    type = models.CharField(max_length=255, db_index=True)
+    type = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     is_active = models.BooleanField(default=True, db_index=True)
 
     class Meta:
@@ -111,6 +113,6 @@ class CourseLessonResource(AbstractBaseModel):
 
     def save(self, *args, **kwargs):
         self.size = self.file.size
-        self.type = self.file.content_type
+        self.type, _ = mimetypes.guess_type(self.file.name)
         self.name = self.file.name
         super().save(*args, **kwargs)

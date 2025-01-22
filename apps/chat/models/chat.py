@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from apps.shared.models import AbstractBaseModel
 
@@ -17,6 +18,12 @@ class ChatRoom(AbstractBaseModel):
 
     def __str__(self):
         return f"Chat Room for {self.user.username}"
+
+    class Meta:
+        verbose_name = _("Chat Room")
+        verbose_name_plural = _("Chat Rooms")
+        ordering = ["-created_at"]
+        db_table = "chat_rooms"
 
 
 class Message(AbstractBaseModel):
@@ -49,3 +56,9 @@ class Message(AbstractBaseModel):
     def __str__(self):
         sender_type = "Admin" if self.is_admin else "User"
         return f"{sender_type} ({self.sender.username}): {self.text[:30] if self.text else 'File Message'}"
+
+    class Meta:
+        verbose_name = _("Message")
+        verbose_name_plural = _("Messages")
+        ordering = ["-created_at"]
+        db_table = "messages"
