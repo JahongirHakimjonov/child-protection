@@ -114,7 +114,7 @@ PAGES = [
                 ),
             },
             {
-                "title": _("Ketgoriyalar"),
+                "title": _("Ketegoriyalar"),
                 "icon": "list",
                 "link": reverse_lazy("admin:mobile_coursecategory_changelist"),
                 "permissions": lambda request: user_has_group_or_permission(
