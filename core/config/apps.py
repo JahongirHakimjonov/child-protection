@@ -26,4 +26,7 @@ DEFAULT_APPS = [
 PROJECT_APPS = [
     "apps.shared.apps.SharedConfig",
     "apps.users.apps.UsersConfig",
+    "apps.mobile.apps.MobileConfig",
+    "apps.moderator.apps.ModeratorConfig",
+    "apps.chat.apps.ChatConfig",
 ]

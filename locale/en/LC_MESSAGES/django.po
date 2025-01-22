@@ -1,0 +1,489 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-22 09:19+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: apps/mobile/models/course.py:12
+msgid "Course Category"
+msgstr ""
+
+#: apps/mobile/models/course.py:13
+msgid "Course Categories"
+msgstr ""
+
+#: apps/mobile/models/course.py:38
+msgid "Course"
+msgstr ""
+
+#: apps/mobile/models/course.py:39
+msgid "Courses"
+msgstr ""
+
+#: apps/mobile/models/course.py:56
+msgid "Course Lesson"
+msgstr ""
+
+#: apps/mobile/models/course.py:57
+msgid "Course Lessons"
+msgstr ""
+
+#: apps/mobile/models/course.py:76
+msgid "Course Lesson Resource"
+msgstr ""
+
+#: apps/mobile/models/course.py:77
+msgid "Course Lesson Resources"
+msgstr ""
+
+#: apps/mobile/models/course.py:95
+msgid "File Size"
+msgstr ""
+
+#: apps/mobile/models/course.py:102
+msgid "File Type"
+msgstr ""
+
+#: apps/mobile/models/course.py:107
+msgid "File Name"
+msgstr ""
+
+#: apps/mobile/models/question.py:11
+msgid "Question Category"
+msgstr ""
+
+#: apps/mobile/models/question.py:12
+msgid "Question Categories"
+msgstr ""
+
+#: apps/mobile/models/question.py:34
+msgid "Question"
+msgstr ""
+
+#: apps/mobile/models/question.py:35
+msgid "Questions"
+msgstr ""
+
+#: apps/mobile/models/saved.py:16 apps/mobile/models/saved.py:17
+msgid "Saved"
+msgstr ""
+
+#: apps/shared/enums/status.py:6
+msgid "Active"
+msgstr ""
+
+#: apps/shared/enums/status.py:7
+msgid "Pending"
+msgstr ""
+
+#: apps/shared/enums/status.py:8
+msgid "Rejected"
+msgstr ""
+
+#: apps/users/admin/users.py:63 apps/users/models/users.py:48
+msgid "Role"
+msgstr ""
+
+#: apps/users/models/notification.py:8
+msgid "Single"
+msgstr ""
+
+#: apps/users/models/notification.py:9
+msgid "All"
+msgstr ""
+
+#: apps/users/models/notification.py:10
+msgid "None"
+msgstr ""
+
+#: apps/users/models/notification.py:18 apps/users/models/users.py:101
+#: apps/users/models/users.py:143 apps/users/models/users.py:167
+msgid "User"
+msgstr ""
+
+#: apps/users/models/notification.py:26
+msgid "Banner"
+msgstr ""
+
+#: apps/users/models/notification.py:28
+msgid "Title"
+msgstr ""
+
+#: apps/users/models/notification.py:29
+msgid "Message"
+msgstr ""
+
+#: apps/users/models/notification.py:30
+msgid "Is Send"
+msgstr ""
+
+#: apps/users/models/notification.py:31
+msgid "Is Read"
+msgstr ""
+
+#: apps/users/models/notification.py:36
+msgid "Type"
+msgstr ""
+
+#: apps/users/models/notification.py:41
+msgid "Notification"
+msgstr ""
+
+#: apps/users/models/notification.py:42
+msgid "Notifications"
+msgstr ""
+
+#: apps/users/models/sms.py:17
+msgid "Kod"
+msgstr ""
+
+#: apps/users/models/sms.py:18
+msgid "Urinishlar soni"
+msgstr ""
+
+#: apps/users/models/sms.py:20
+msgid "Qayta yuborishlar soni"
+msgstr ""
+
+#: apps/users/models/sms.py:22 apps/users/models/users.py:31
+msgid "Telefon raqami"
+msgstr ""
+
+#: apps/users/models/sms.py:23
+msgid "Muddati"
+msgstr ""
+
+#: apps/users/models/sms.py:25
+msgid "Bloklanish vaqti"
+msgstr ""
+
+#: apps/users/models/sms.py:30
+msgid "Qayta yuborish bloklanish vaqti"
+msgstr ""
+
+#: apps/users/models/sms.py:86
+msgid "SMS tasdiqlash"
+msgstr ""
+
+#: apps/users/models/sms.py:87
+msgid "SMS tasdiqlashlar"
+msgstr ""
+
+#: apps/users/models/sms.py:93
+msgid "Token"
+msgstr ""
+
+#: apps/users/models/sms.py:95 apps/users/models/users.py:17
+#: apps/users/models/users.py:66 apps/users/models/users.py:85
+msgid "Foydalanuvchi"
+msgstr ""
+
+#: apps/users/models/sms.py:102 apps/users/models/sms.py:103
+msgid "Tokenni tiklash"
+msgstr ""
+
+#: apps/users/models/users.py:16
+msgid "Admin"
+msgstr ""
+
+#: apps/users/models/users.py:18
+msgid "Moderator"
+msgstr ""
+
+#: apps/users/models/users.py:22
+msgid "Telefon"
+msgstr ""
+
+#: apps/users/models/users.py:23
+msgid "Google"
+msgstr ""
+
+#: apps/users/models/users.py:24
+msgid "WhatsApp"
+msgstr ""
+
+#: apps/users/models/users.py:38
+msgid "Foydalanuvchi nomi"
+msgstr ""
+
+#: apps/users/models/users.py:42
+msgid "Avatar"
+msgstr ""
+
+#: apps/users/models/users.py:53
+msgid "Ro'yxatdan o'tish turi"
+msgstr ""
+
+#: apps/users/models/users.py:86 core/config/unfold_navigation.py:29
+#: core/config/unfold_navigation.py:40
+msgid "Foydalanuvchilar"
+msgstr ""
+
+#: apps/users/models/users.py:103
+msgid "IP address"
+msgstr ""
+
+#: apps/users/models/users.py:104
+msgid "User agent"
+msgstr ""
+
+#: apps/users/models/users.py:106
+msgid "Location"
+msgstr ""
+
+#: apps/users/models/users.py:109
+msgid "Last activity"
+msgstr ""
+
+#: apps/users/models/users.py:113
+msgid "FCM token"
+msgstr ""
+
+#: apps/users/models/users.py:118
+msgid "Refresh token"
+msgstr ""
+
+#: apps/users/models/users.py:119
+msgid "Access token"
+msgstr ""
+
+#: apps/users/models/users.py:121
+msgid "Expired at"
+msgstr ""
+
+#: apps/users/models/users.py:123
+msgid "Is active"
+msgstr ""
+
+#: apps/users/models/users.py:125
+msgid "Data"
+msgstr ""
+
+#: apps/users/models/users.py:129
+msgid "Active session"
+msgstr ""
+
+#: apps/users/models/users.py:130
+msgid "Active sessions"
+msgstr ""
+
+#: apps/users/models/users.py:135
+msgid "Session"
+msgstr ""
+
+#: apps/users/models/users.py:149
+msgid "Provider"
+msgstr ""
+
+#: apps/users/models/users.py:152
+msgid "Provider ID"
+msgstr ""
+
+#: apps/users/models/users.py:154
+msgid "Extra data"
+msgstr ""
+
+#: apps/users/models/users.py:158 apps/users/models/users.py:159
+msgid "User data"
+msgstr ""
+
+#: apps/users/serializers/passwords.py:41
+#: apps/users/serializers/passwords.py:52
+msgid "User does not exist"
+msgstr ""
+
+#: apps/users/serializers/register.py:27 apps/users/serializers/register.py:44
+msgid "Telefon raqami noto‘g‘ri"
+msgstr ""
+
+#: apps/users/serializers/register.py:30
+msgid "Telefon raqami allaqachon mavjud"
+msgstr ""
+
+#: apps/users/serializers/users.py:58
+msgid "Foydalanuvchi topilmadi. Iltimos, qayta  urinib ko'ring."
+msgstr ""
+
+#: apps/users/services/sms.py:29
+#, python-brace-format
+msgid "Qayta yuborish bloklandi, qayta urunib ko'ring {expired}"
+msgstr ""
+
+#: apps/users/services/sms.py:56 apps/users/services/sms.py:74
+msgid "Invalid confirmation code"
+msgstr ""
+
+#: apps/users/services/sms.py:61
+msgid "Time for confirmation has expired"
+msgstr ""
+
+#: apps/users/services/sms.py:65
+#, python-brace-format
+msgid "Try again in {expired}"
+msgstr ""
+
+#: apps/users/tasks/sms.py:14
+#, python-format
+msgid "Ro'yxatdan o'tishingiz uchun tasdiqlash kodi: %(code)s"
+msgstr ""
+
+#: apps/users/views/passwords.py:68
+msgid "Tasdiqlandi"
+msgstr ""
+
+#: apps/users/views/passwords.py:78
+msgid "Tasdiqlash ko'di xato"
+msgstr ""
+
+#: apps/users/views/passwords.py:105
+msgid "Token xato"
+msgstr ""
+
+#: apps/users/views/passwords.py:117
+msgid "Parol yangilandi"
+msgstr ""
+
+#: apps/users/views/register.py:42
+#, python-brace-format
+msgid ""
+"Registration data saved. Please confirm your code. SMS sent to {phone} phone "
+"number."
+msgstr ""
+
+#: apps/users/views/register.py:50 apps/users/views/register.py:145
+msgid "Invalid data."
+msgstr ""
+
+#: apps/users/views/register.py:86
+msgid "Phone number already exists."
+msgstr ""
+
+#: apps/users/views/register.py:120
+msgid "User created."
+msgstr ""
+
+#: apps/users/views/register.py:139
+msgid "Invalid phone number or code."
+msgstr ""
+
+#: apps/users/views/register.py:165
+#, python-brace-format
+msgid "Confirmation code sent to {phone} phone number."
+msgstr ""
+
+#: apps/users/views/users.py:32
+msgid "Avatar successfully updated."
+msgstr ""
+
+#: apps/users/views/users.py:49
+msgid "User information successfully updated."
+msgstr ""
+
+#: apps/users/views/users.py:62
+msgid "Delete user account."
+msgstr ""
+
+#: apps/users/views/users.py:63
+msgid "Delete authenticated user account."
+msgstr ""
+
+#: apps/users/views/users.py:76
+msgid "Account successfully deleted."
+msgstr ""
+
+#: apps/users/views/users.py:84
+msgid "Incorrect password provided."
+msgstr ""
+
+#: apps/users/views/users.py:95
+msgid "Logout user."
+msgstr ""
+
+#: apps/users/views/users.py:96
+msgid "Logout authenticated user."
+msgstr ""
+
+#: apps/users/views/users.py:114
+msgid "Incorrect session id provided."
+msgstr ""
+
+#: apps/users/views/users.py:118
+msgid "User successfully logged out."
+msgstr ""
+
+#: core/config/unfold_navigation.py:21
+msgid "Bosh sahifa"
+msgstr ""
+
+#: core/config/unfold_navigation.py:32
+msgid "Guruhlar"
+msgstr ""
+
+#: core/config/unfold_navigation.py:48
+msgid "SMS Kodlar"
+msgstr ""
+
+#: core/config/unfold_navigation.py:60
+msgid "Foydalanuvchi ma'lumotlari"
+msgstr ""
+
+#: core/config/unfold_navigation.py:63
+msgid "Aktiv sessiyalar"
+msgstr ""
+
+#: core/config/unfold_navigation.py:71
+msgid "User Social data"
+msgstr ""
+
+#: core/config/unfold_navigation.py:79
+msgid "Bildirishnomalar"
+msgstr ""
+
+#: core/config/unfold_navigation.py:90 core/config/unfold_navigation.py:93
+msgid "Kurslar"
+msgstr ""
+
+#: core/config/unfold_navigation.py:101
+msgid "Darslar"
+msgstr ""
+
+#: core/config/unfold_navigation.py:109
+msgid "Resurslar"
+msgstr ""
+
+#: core/config/unfold_navigation.py:117
+msgid "Ketgoriyalar"
+msgstr ""
+
+#: core/config/unfold_navigation.py:129 core/config/unfold_navigation.py:132
+msgid "Savollar"
+msgstr ""
+
+#: core/config/unfold_navigation.py:140
+msgid "Kategoriyalar"
+msgstr ""
+
+#: core/settings.py:101
+msgid "Uzbek"
+msgstr ""
+
+#: core/settings.py:102
+msgid "Russia"
+msgstr ""
+
+#: core/settings.py:103
+msgid "English"
+msgstr ""

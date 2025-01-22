@@ -12,6 +12,16 @@ CACHES = {
     }
 }
 
+# Redis Channel Layer Configuration
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.getenv("REDIS_CACHE_URL", "redis://redis:6379/1")],
+        },
+    },
+}
+
 # Cache Middleware Timeout (ensure it's an integer)
 CACHE_MIDDLEWARE_SECONDS = int(os.getenv("CACHE_TIMEOUT", 300))
 

@@ -100,11 +100,12 @@ USE_TZ = True
 LANGUAGES = (
     ("uz", _("Uzbek")),
     ("ru", _("Russia")),
+    ("en", _("English")),
 )
 
 LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
 
-MODELTRANSLATION_LANGUAGES = ("uz", "ru")
+MODELTRANSLATION_LANGUAGES = ("uz", "ru", "en")
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = "uz"
 
@@ -122,3 +123,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 AUTH_USER_MODEL = "users.User"
 
 LOCALE_MIDDLEWARE_EXCLUDED_PATHS = ["/media/", "/static/"]
+
+IGNORE_PATHS = ["/static/", "/media/"]
+
+MIDDLEWARE.insert(
+    MIDDLEWARE.index("django.middleware.locale.LocaleMiddleware") + 1,
+    "apps.shared.middlewares.ignore_locale.IgnoreStaticLocaleMiddleware",
+)

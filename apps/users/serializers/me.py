@@ -16,7 +16,6 @@ class MeSerializer(serializers.ModelSerializer):
             "last_name",
             "avatar",
             "session_id",
-            "is_premium",
             "register_type",
             "created_at",
             "updated_at",
