@@ -20,8 +20,8 @@ UNFOLD = {
     "SITE_HEADER": "BOLA HIMOYASI",
     "SITE_URL": "/",
     "SITE_ICON": {
-        "light": lambda request: static("images/panda-icon.png"),
-        "dark": lambda request: static("images/panda-icon.png"),
+        "light": lambda request: static("images/logo.png"),
+        "dark": lambda request: static("images/logo.png"),
     },
     "SITE_FAVICONS": [
         {
