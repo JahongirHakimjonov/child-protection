@@ -31,6 +31,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
+        # Send unsent messages
+        await self.send_unsent_messages()
+
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
@@ -52,15 +55,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 "type": "chat_message",
                 "message": {
-                    "sender": {
-                        "id": str(message.sender.id),
-                        "first_name": message.sender.first_name,
-                        "last_name": message.sender.last_name,
-                        "phone": message.sender.phone,
-                        "avatar": (
-                            message.sender.avatar.url if message.sender.avatar else None
-                        ),
-                    },
+                    "sender": await self.get_message_sender(message),
                     "chat_room": str(message.chat.id),
                     "message": message.message,
                     "file": message.file.url if message.file else None,
@@ -75,7 +70,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """
         Send a message to WebSocket.
         """
-        # Skip sending the message to the sender
+        # Skip sending the message to the sender if sender_channel_name matches
         if self.channel_name == event["sender_channel_name"]:
             return
 
@@ -122,7 +117,53 @@ class ChatConsumer(AsyncWebsocketConsumer):
             message=content,
             file=get_url_path,
             is_admin=is_admin,
+            is_sent=False,  # Set is_sent to False for new messages
         )
+
+    @database_sync_to_async
+    def get_unsent_messages(self):
+        """
+        Get unsent messages from the database.
+        """
+        return list(Message.objects.filter(chat_id=self.chat_room_id, is_sent=False))
+
+    @database_sync_to_async
+    def get_message_sender(self, message):
+        """
+        Get the sender of the message.
+        """
+        return {
+            "id": str(message.sender.id),
+            "first_name": message.sender.first_name,
+            "last_name": message.sender.last_name,
+            "phone": message.sender.phone,
+            "avatar": message.sender.avatar.url if message.sender.avatar else None,
+        }
+
+    async def send_unsent_messages(self):
+        """
+        Send unsent messages to the WebSocket.
+        """
+        unsent_messages = await self.get_unsent_messages()
+        for message in unsent_messages:
+            chat_room_id = await database_sync_to_async(lambda: message.chat.id)()
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "chat_message",
+                    "message": {
+                        "sender": await self.get_message_sender(message),
+                        "chat_room": str(chat_room_id),
+                        "message": message.message,
+                        "file": message.file.url if message.file else None,
+                        "created_at": message.created_at.isoformat(),
+                        "is_admin": message.is_admin,
+                    },
+                    "sender_channel_name": self.channel_name,  # Include sender_channel_name
+                },
+            )
+            message.is_sent = True
+            await database_sync_to_async(message.save)()
 
     async def get_url_path(self, url):
         """

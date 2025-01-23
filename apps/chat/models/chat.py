@@ -48,10 +48,11 @@ class Message(AbstractBaseModel):
     is_admin = models.BooleanField(
         default=False, help_text="Xabar admin tomonidan yuborilganligini bildiradi."
     )
+    is_sent = models.BooleanField(default=False, help_text="Xabar yuborilganligini bildiradi.")
 
     def __str__(self):
         sender_type = "Admin" if self.is_admin else "User"
-        return f"{sender_type} ({self.sender.username}): {self.text[:30] if self.text else 'File Message'}"
+        return f"{sender_type} ({self.sender.username}): {self.message[:30] if self.message else 'File Message'}"
 
     class Meta:
         verbose_name = _("Message")
