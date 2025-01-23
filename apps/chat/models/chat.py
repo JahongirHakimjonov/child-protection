@@ -9,15 +9,10 @@ class ChatRoom(AbstractBaseModel):
     Chat xonasi modeli. Har bir user va adminlar o'rtasida alohida chat xonasi bo'ladi.
     """
 
-    user = models.ForeignKey(
-        "users.User",
-        on_delete=models.CASCADE,
-        related_name="chat_rooms",
-        help_text="Chat xonasi user bilan bog'langan.",
-    )
+    participants = models.ManyToManyField("users.User", related_name="chats")
 
     def __str__(self):
-        return f"Chat Room for {self.user.username}"
+        return f"Chat {self.id} - {', '.join([user.username for user in self.participants.all()])}"
 
     class Meta:
         verbose_name = _("Chat Room")
@@ -31,7 +26,7 @@ class Message(AbstractBaseModel):
     Xabarlar modeli. Chatda yozilgan xabarlarni saqlash uchun ishlatiladi.
     """
 
-    chat_room = models.ForeignKey(
+    chat = models.ForeignKey(
         ChatRoom,
         on_delete=models.CASCADE,
         related_name="messages",
@@ -41,8 +36,9 @@ class Message(AbstractBaseModel):
         "users.User",
         on_delete=models.CASCADE,
         help_text="Xabarni yuborgan foydalanuvchi.",
+        related_name="sent_messages",
     )
-    text = models.TextField(blank=True, null=True, help_text="Xabar matni.")
+    message = models.TextField(blank=True, null=True, help_text="Xabar matni.")
     file = models.FileField(
         upload_to="chat_files/",
         blank=True,

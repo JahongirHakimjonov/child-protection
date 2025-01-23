@@ -13,12 +13,11 @@ from channels.routing import ProtocolTypeRouter
 from channels.routing import URLRouter
 from django.core.asgi import get_asgi_application
 
-from apps.chat.urls import websocket_urlpatterns
-
 asgi_application = get_asgi_application()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 
+from apps.chat.urls import websocket_urlpatterns  # noqa
 from apps.shared.middlewares import JWTAuthMiddleware  # noqa
 
 application = ProtocolTypeRouter(
