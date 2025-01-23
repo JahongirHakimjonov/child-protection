@@ -1,5 +1,6 @@
 import json
 
+import aioredis
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
@@ -8,6 +9,8 @@ from rest_framework_simplejwt.tokens import UntypedToken
 
 from apps.chat.models.chat import ChatRoom, Message
 from apps.users.models import User
+
+REDIS_URL = "redis://redis:6379"  # Redis server URL
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -22,8 +25,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
 
         # Check if chat room exists and user is a participant
-        is_valid_chat = await self.is_valid_chat()
-        if not is_valid_chat:
+        if not await self.is_valid_chat():
             await self.close()
             return
 
@@ -31,51 +33,43 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
+        # Save user connection status
+        await self.set_user_connection_status(self.user.id, True)
+
         # Send unsent messages
         await self.send_unsent_messages()
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
+        # Remove user connection status
+        await self.set_user_connection_status(self.user.id, False)
+
     async def receive(self, text_data):
         """
         Receive a message from the WebSocket and process it.
         """
         text_data_json = json.loads(text_data)
-        message_content = text_data_json.get("message", None)
-        file_url = text_data_json.get("file", None)
+        message_content = text_data_json.get("message")
+        file_url = text_data_json.get("file")
         is_admin = text_data_json.get("is_admin", False)
 
         # Save message to database
         message = await self.save_message(message_content, file_url, is_admin)
 
         # Send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                "type": "chat_message",
-                "message": {
-                    "sender": await self.get_message_sender(message),
-                    "chat_room": str(message.chat.id),
-                    "message": message.message,
-                    "file": message.file.url if message.file else None,
-                    "created_at": message.created_at.isoformat(),
-                    "is_admin": message.is_admin,
-                },
-                "sender_channel_name": self.channel_name,
-            },
-        )
+        await self.send_message_to_group(message, self.channel_name)
+
+        # Mark message as sent if both users are connected
+        await self.update_message_status(message)
 
     async def chat_message(self, event):
         """
         Send a message to WebSocket.
         """
         # Skip sending the message to the sender if sender_channel_name matches
-        if self.channel_name == event["sender_channel_name"]:
-            return
-
-        # Send the structured message to WebSocket
-        await self.send(text_data=json.dumps(event["message"]))
+        if self.channel_name != event["sender_channel_name"]:
+            await self.send(text_data=json.dumps(event["message"]))
 
     @database_sync_to_async
     def authenticate_user(self):
@@ -107,15 +101,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Save the message to the database.
         """
         chat_room = ChatRoom.objects.get(id=self.chat_room_id)
-        if file_url:
-            get_url_path = self.get_url_path(file_url)
-        else:
-            get_url_path = None
+        file_path = self.get_url_path(file_url) if file_url else None
         return Message.objects.create(
             chat=chat_room,
             sender=self.user,
             message=content,
-            file=get_url_path,
+            file=file_path,
             is_admin=is_admin,
             is_sent=False,  # Set is_sent to False for new messages
         )
@@ -146,26 +137,66 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """
         unsent_messages = await self.get_unsent_messages()
         for message in unsent_messages:
-            chat_room_id = await database_sync_to_async(lambda: message.chat.id)()
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    "type": "chat_message",
-                    "message": {
-                        "sender": await self.get_message_sender(message),
-                        "chat_room": str(chat_room_id),
-                        "message": message.message,
-                        "file": message.file.url if message.file else None,
-                        "created_at": message.created_at.isoformat(),
-                        "is_admin": message.is_admin,
-                    },
-                    "sender_channel_name": self.channel_name,  # Include sender_channel_name
+            await self.send_message_to_group(message, None)
+            # Mark message as sent if both users are connected
+            await self.update_message_status(message)
+
+    async def send_message_to_group(self, message, sender_channel_name):
+        """
+        Send a message to the room group.
+        """
+        chat_room_id = await database_sync_to_async(lambda: message.chat.id)()
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "chat_message",
+                "message": {
+                    "sender": await self.get_message_sender(message),
+                    "chat_room": str(chat_room_id),
+                    "message": message.message,
+                    "file": message.file.url if message.file else None,
+                    "created_at": message.created_at.isoformat(),
+                    "is_admin": message.is_admin,
                 },
-            )
+                "sender_channel_name": sender_channel_name,
+            },
+        )
+
+    async def update_message_status(self, message):
+        """
+        Update the message status if both users are connected.
+        """
+        chat_room = await database_sync_to_async(lambda: ChatRoom.objects.get(id=self.chat_room_id))()
+        participants = await database_sync_to_async(lambda: list(chat_room.participants.all()))()
+        connected_users = []
+
+        for participant in participants:
+            is_connected = await self.is_user_connected(participant.id)
+            if is_connected:
+                connected_users.append(participant.id)
+
+        if len(connected_users) == len(participants):
             message.is_sent = True
             await database_sync_to_async(message.save)()
 
-    async def get_url_path(self, url):
+    async def is_user_connected(self, user_id):
+        """
+        Check if a user is connected to the WebSocket.
+        """
+        redis = aioredis.from_url(REDIS_URL)
+        is_connected = await redis.get(f"user_{user_id}_connected")
+        await redis.close()
+        return is_connected == b"True"
+
+    async def set_user_connection_status(self, user_id, status):
+        """
+        Set the user's connection status in Redis.
+        """
+        redis = aioredis.from_url(REDIS_URL)
+        await redis.set(f"user_{user_id}_connected", "True" if status else "False")
+        await redis.close()
+
+    def get_url_path(self, url):
         """
         Get the relative URL path from the full URL.
         """
