@@ -1,4 +1,5 @@
 import json
+import os
 
 import aioredis
 from channels.db import database_sync_to_async
@@ -10,7 +11,7 @@ from rest_framework_simplejwt.tokens import UntypedToken
 from apps.chat.models.chat import ChatRoom, Message
 from apps.users.models import User
 
-REDIS_URL = "redis://redis:6379"  # Redis server URL
+REDIS_URL = os.getenv("REDIS_CACHE_URL")
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
