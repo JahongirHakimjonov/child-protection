@@ -11,7 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.users.models import ActiveSessions
 from apps.users.serializers import SocialAuthSerializer
-from apps.users.services import RegisterService, WhatsApp
+from apps.users.services import RegisterService, Apple
 from apps.users.services.google import Google
 
 
@@ -24,9 +24,10 @@ class SocialAuthView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         code = serializer.validated_data.get("code")
+        id_token = serializer.validated_data.get("id_token")
 
         try:
-            jwt_token = self.authenticate_with_provider(provider_name, code)
+            jwt_token = self.authenticate_with_provider(provider_name, code, id_token)
             self.create_active_session(request, jwt_token)
             return Response(
                 {
@@ -55,11 +56,11 @@ class SocialAuthView(GenericAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-    def authenticate_with_provider(self, provider_name, code):
+    def authenticate_with_provider(self, provider_name, code, id_token=None):
         if provider_name == "google":
             return Google.authenticate(code)
-        elif provider_name == "whatsapp":
-            return WhatsApp.authenticate(code)
+        elif provider_name == "apple":
+            return Apple.authenticate(code, id_token)
         else:
             raise ValueError("Unsupported provider")
 
@@ -104,7 +105,7 @@ class SocialAuthView(GenericAPIView):
     def get_auth_url(provider_name):
         if provider_name == "google":
             return Google.get_auth_url()
-        elif provider_name == "whatsapp":
-            return WhatsApp.get_auth_url()
+        elif provider_name == "apple":
+            return Apple.get_auth_url()
         else:
             raise ValueError("Unsupported provider")

@@ -21,7 +21,7 @@ class RoleChoices(models.TextChoices):
 class RegisterTypeChoices(models.TextChoices):
     PHONE = "PHONE", _("Telefon")
     GOOGLE = "GOOGLE", _("Google")
-    WHATSAPP = "WHATSAPP", _("WhatsApp")
+    APPLE = "APPLE", _("Apple")
 
 
 class User(AbstractUser, AbstractBaseModel):

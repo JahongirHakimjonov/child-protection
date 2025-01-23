@@ -51,6 +51,7 @@ class ResendSerializer(serializers.Serializer):
 
 class SocialAuthSerializer(serializers.Serializer):
     code = serializers.CharField(required=True)
+    id_token = serializers.CharField(required=False)
 
     def validate(self, attrs):
         code = attrs.get("code")
