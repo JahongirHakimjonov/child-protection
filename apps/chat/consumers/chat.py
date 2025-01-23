@@ -67,6 +67,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "created_at": message.created_at.isoformat(),
                     "is_admin": message.is_admin,
                 },
+                "sender_channel_name": self.channel_name,
             },
         )
 
@@ -74,6 +75,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """
         Send a message to WebSocket.
         """
+        # Skip sending the message to the sender
+        if self.channel_name == event["sender_channel_name"]:
+            return
+
         # Send the structured message to WebSocket
         await self.send(text_data=json.dumps(event["message"]))
 
@@ -107,10 +112,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Save the message to the database.
         """
         chat_room = ChatRoom.objects.get(id=self.chat_room_id)
+        if file_url:
+            get_url_path = self.get_url_path(file_url)
+        else:
+            get_url_path = None
         return Message.objects.create(
             chat=chat_room,
             sender=self.user,
             message=content,
-            file=file_url,
+            file=get_url_path,
             is_admin=is_admin,
         )
+
+    async def get_url_path(self, url):
+        """
+        Get the relative URL path from the full URL.
+        """
+        return url.replace("http://testserver", "")
