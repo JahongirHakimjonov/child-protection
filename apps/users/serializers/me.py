@@ -1,5 +1,6 @@
-from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
+
 from apps.users.models import User, ActiveSessions
 
 
@@ -15,6 +16,7 @@ class MeSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "avatar",
+            "role",
             "session_id",
             "register_type",
             "created_at",
@@ -33,3 +35,19 @@ class MeSerializer(serializers.ModelSerializer):
             user=obj, is_active=True, access_token=access_token
         ).first()
         return session.id if session else None
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "phone",
+            "email",
+            "first_name",
+            "last_name",
+            "avatar",
+            "role",
+            "created_at",
+            "updated_at",
+        ]

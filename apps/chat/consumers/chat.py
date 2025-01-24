@@ -9,7 +9,7 @@ from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import UntypedToken
 
 from apps.chat.models.chat import ChatRoom, Message
-from apps.users.models import User
+from apps.users.models import User, RoleChoices
 
 REDIS_URL = os.getenv("REDIS_CACHE_URL")
 
@@ -52,11 +52,27 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """
         text_data_json = json.loads(text_data)
         message_content = text_data_json.get("message")
-        file_url = text_data_json.get("file")
-        is_admin = text_data_json.get("is_admin", False)
+        file = text_data_json.get("file")
+
+        if self.user.role == RoleChoices.ADMIN:
+            is_admin = True
+        else:
+            is_admin = False
+
+        # Validate file value
+        if file is not None:
+            try:
+                file = int(file)
+            except ValueError:
+                await self.send(
+                    text_data=json.dumps(
+                        {"success": False, "message": "Invalid file ID"}
+                    )
+                )
+                return
 
         # Save message to database
-        message = await self.save_message(message_content, file_url, is_admin)
+        message = await self.save_message(message_content, file, is_admin)
 
         # Send message to room group
         await self.send_message_to_group(message, self.channel_name)
@@ -97,17 +113,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return False
 
     @database_sync_to_async
-    def save_message(self, content, file_url, is_admin):
+    def save_message(self, content, file, is_admin):
         """
         Save the message to the database.
         """
         chat_room = ChatRoom.objects.get(id=self.chat_room_id)
-        file_path = self.get_url_path(file_url) if file_url else None
+        file = file if file else None
         return Message.objects.create(
             chat=chat_room,
             sender=self.user,
             message=content,
-            file=file_path,
+            file_id=file,
             is_admin=is_admin,
             is_sent=False,  # Set is_sent to False for new messages
         )
@@ -147,6 +163,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Send a message to the room group.
         """
         chat_room_id = await database_sync_to_async(lambda: message.chat.id)()
+        file = await database_sync_to_async(
+            lambda: message.file.id if message.file else None
+        )()
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -155,7 +174,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "sender": await self.get_message_sender(message),
                     "chat_room": str(chat_room_id),
                     "message": message.message,
-                    "file": message.file.url if message.file else None,
+                    "file": file,
                     "created_at": message.created_at.isoformat(),
                     "is_admin": message.is_admin,
                 },
@@ -167,8 +186,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """
         Update the message status if both users are connected.
         """
-        chat_room = await database_sync_to_async(lambda: ChatRoom.objects.get(id=self.chat_room_id))()
-        participants = await database_sync_to_async(lambda: list(chat_room.participants.all()))()
+        chat_room = await database_sync_to_async(
+            lambda: ChatRoom.objects.get(id=self.chat_room_id)
+        )()
+        participants = await database_sync_to_async(
+            lambda: list(chat_room.participants.all())
+        )()
         connected_users = []
 
         for participant in participants:
@@ -196,9 +219,3 @@ class ChatConsumer(AsyncWebsocketConsumer):
         redis = aioredis.from_url(REDIS_URL)
         await redis.set(f"user_{user_id}_connected", "True" if status else "False")
         await redis.close()
-
-    def get_url_path(self, url):
-        """
-        Get the relative URL path from the full URL.
-        """
-        return url.replace("http://testserver", "")

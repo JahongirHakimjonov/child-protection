@@ -15,7 +15,6 @@ from apps.users.managers import UserManager
 class RoleChoices(models.TextChoices):
     ADMIN = "ADMIN", _("Admin")
     USER = "USER", _("Foydalanuvchi")
-    MODERATOR = "MODERATOR", _("Moderator")
 
 
 class RegisterTypeChoices(models.TextChoices):

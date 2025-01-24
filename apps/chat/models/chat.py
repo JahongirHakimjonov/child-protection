@@ -1,7 +1,41 @@
+import mimetypes
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.shared.models import AbstractBaseModel
+
+
+class ChatResource(AbstractBaseModel):
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="chat_resources",
+        help_text="Foydalanuvchi.",
+    )
+    name = models.CharField(
+        max_length=255,
+        help_text="Fayl nomi.",
+    )
+    file = models.FileField(
+        upload_to="chat_resources/",
+        help_text="Foydalanuvchi yuborgan fayl.",
+    )
+    size = models.PositiveBigIntegerField(
+        help_text="Fayl hajmi (byte).", null=True, blank=True
+    )
+    type = models.CharField(
+        max_length=255, help_text="Fayl turi.", null=True, blank=True
+    )
+
+    def __str__(self):
+        return str(self.file.name)
+
+    def save(self, *args, **kwargs):
+        self.size = self.file.size
+        self.type, _ = mimetypes.guess_type(self.file.name)
+        self.name = self.file.name
+        super().save(*args, **kwargs)
 
 
 class ChatRoom(AbstractBaseModel):
@@ -9,6 +43,9 @@ class ChatRoom(AbstractBaseModel):
     Chat xonasi modeli. Har bir user va adminlar o'rtasida alohida chat xonasi bo'ladi.
     """
 
+    name = models.CharField(
+        max_length=255, blank=True, null=True, help_text="Chat nomi."
+    )
     participants = models.ManyToManyField("users.User", related_name="chats")
 
     def __str__(self):
@@ -39,16 +76,15 @@ class Message(AbstractBaseModel):
         related_name="sent_messages",
     )
     message = models.TextField(blank=True, null=True, help_text="Xabar matni.")
-    file = models.FileField(
-        upload_to="chat_files/",
-        blank=True,
-        null=True,
-        help_text="Foydalanuvchi yuborgan fayl.",
+    file = models.ForeignKey(
+        "ChatResource", null=True, blank=True, on_delete=models.CASCADE
     )
     is_admin = models.BooleanField(
         default=False, help_text="Xabar admin tomonidan yuborilganligini bildiradi."
     )
-    is_sent = models.BooleanField(default=False, help_text="Xabar yuborilganligini bildiradi.")
+    is_sent = models.BooleanField(
+        default=False, help_text="Xabar yuborilganligini bildiradi."
+    )
 
     def __str__(self):
         sender_type = "Admin" if self.is_admin else "User"

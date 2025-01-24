@@ -64,8 +64,7 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
         ordering="role",
         label={
             RoleChoices.ADMIN: "success",  # green
-            RoleChoices.MODERATOR: "info",  # orange
-            RoleChoices.USER: "info",  # red
+            RoleChoices.USER: "info",  # blue
         },
     )
     def show_role_customized_color(self, obj):
@@ -78,7 +77,7 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
             f"ID:{obj.id} - {obj.phone}",
             "AB",
             {
-                "path": obj.avatar.url if obj.avatar else static("images/avatar.webp"),
+                "path": obj.avatar.url if obj.avatar else static("images/avatar.png"),
                 "squared": False,
                 "borderless": True,
                 "width": 45,
