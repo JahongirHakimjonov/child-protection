@@ -25,4 +25,5 @@ class MessageAdmin(ModelAdmin):
 class ChatResourceAdmin(ModelAdmin):
     list_display = ("id", "user", "file", "created_at")
     autocomplete_fields = ("user",)
+    search_fields = ("file", "user__first_name")
     readonly_fields = ("name", "size", "type", "created_at")
