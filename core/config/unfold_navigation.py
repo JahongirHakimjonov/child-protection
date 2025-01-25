@@ -134,6 +134,37 @@ PAGES = [
     {
         "seperator": True,
         "collapsible": True,
+        "title": _("Testlar"),
+        "items": [
+            {
+                "title": _("Testlar"),
+                "icon": "quiz",
+                "link": reverse_lazy("admin:mobile_test_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_test"
+                ),
+            },
+            {
+                "title": _("Savollar"),
+                "icon": "unknown_document",
+                "link": reverse_lazy("admin:mobile_testquestion_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_testquestion"
+                ),
+            },
+            {
+                "title": _("Javoblar"),
+                "icon": "person_raised_hand",
+                "link": reverse_lazy("admin:mobile_answer_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_answer"
+                ),
+            },
+        ],
+    },
+    {
+        "seperator": True,
+        "collapsible": True,
         "title": _("Savollar"),
         "items": [
             {
