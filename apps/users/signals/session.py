@@ -21,13 +21,16 @@ def increment_active_sessions(sender, instance, created, **kwargs):  # noqa
         messages = {
             "uz": f"Akkauntizga soat {created_at} da {address} dan kirildi, Kordinatalar: {coordinates}, IP: {ip}, Qurilma: {device}, ISP: {isp}, Timezone: {timezone}",
             "ru": f"Ваш аккаунт был вошел в {created_at} из {address}, Координаты: {coordinates}, IP: {ip}, Устройство: {device}, ISP: {isp}, Timezone: {timezone}",
+            "en": f"Your account was logged in at {created_at} from {address}, Coordinates: {coordinates}, IP: {ip}, Device: {device}, ISP: {isp}, Timezone: {timezone}",
         }
 
         Notification.objects.create(
             user_id=instance.user_id,
             title_uz="Yangi kirish",
             title_ru="Новый вход",
+            title_en="New login",
             message_uz=messages["uz"],
             message_ru=messages["ru"],
+            message_en=messages["en"],
             type=NotificationType.SINGLE,
         )
