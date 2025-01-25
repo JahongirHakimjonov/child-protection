@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from apps.mobile.models.course import (
     CourseCategory,
-    Course,
     CourseLesson,
     CourseLessonResource,
 )
@@ -11,22 +10,32 @@ from apps.mobile.models.course import (
 class CourseCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseCategory
-        fields = ["id", "name", "image"]
-
-
-class CourseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Course
         fields = [
             "id",
             "title",
-            "category",
-            "image",
+            "sub_title",
             "description",
+            "image",
             "lesson_count",
+        ]
+
+
+class CourseLessonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseLesson
+        fields = [
+            "id",
+            "category",
+            "title",
+            "description",
+            "text",
+            "image",
+            "likes_count",
             "students_count",
-            "saved_count",
-            "is_active",
+            "audio_count",
+            "video_count",
+            "document_count",
+            "test_count",
             "created_at",
         ]
 
@@ -36,23 +45,10 @@ class CourseSerializer(serializers.ModelSerializer):
         return response
 
 
-class CourseLessonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CourseLesson
-        fields = ["id", "course", "sort_number", "title", "description", "created_at"]
-
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response["resources"] = CourseLessonResourceSerializer(
-            instance.resources, many=True
-        ).data
-        return response
-
-
-class CourseLessonResourceSerializer(serializers.ModelSerializer):
+class LessonResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseLessonResource
-        fields = ["id", "lesson", "title", "file", "size", "type", "created_at"]
+        fields = ["id", "lesson", "title", "name", "file", "size", "type", "created_at"]
 
     def to_representation(self, instance):
         response = super().to_representation(instance)

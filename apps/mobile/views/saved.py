@@ -30,7 +30,7 @@ class SavedApiView(APIView):
             except IntegrityError:
                 try:
                     existing_entry = Saved.objects.get(
-                        user=request.user, course=request.data["course"]
+                        user=request.user, lesson=request.data["lesson"]
                     )
                     existing_entry.delete()
                     return Response(
@@ -54,7 +54,7 @@ class SavedApiView(APIView):
         )
 
     def get(self, request):
-        saved = Saved.objects.filter(user=request.user).select_related("course", "user")
+        saved = Saved.objects.filter(user=request.user).select_related("lesson", "user")
         paginator = self.pagination_class()
         paginated_saved = paginator.paginate_queryset(saved, request)
         serializer = self.serializer_class(

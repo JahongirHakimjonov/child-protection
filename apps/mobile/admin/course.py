@@ -1,20 +1,14 @@
 from django.contrib import admin
-from unfold.admin import ModelAdmin, StackedInline, TabularInline
+from django.db import models
+from unfold.admin import ModelAdmin
+from unfold.admin import TabularInline
+from unfold.contrib.forms.widgets import WysiwygWidget
 
 from apps.mobile.models.course import (
     CourseCategory,
-    Course,
     CourseLesson,
     CourseLessonResource,
 )
-
-
-class LessonInline(StackedInline):
-    model = CourseLesson
-    extra = 0
-    tab = True
-    fields = ["sort_number", "title", "description"]
-    show_change_link = True
 
 
 class ResourceInline(TabularInline):
@@ -27,40 +21,72 @@ class ResourceInline(TabularInline):
 
 @admin.register(CourseCategory)
 class CourseCategoryAdmin(ModelAdmin):
-    list_display = ["id", "name", "image"]
+    list_display = ["id", "title", "image"]
     search_fields = ["name"]
-    readonly_fields = ["created_at", "updated_at"]
+    readonly_fields = ["created_at", "updated_at", "lesson_count"]
 
 
-@admin.register(Course)
-class CourseAdmin(ModelAdmin):
+@admin.register(CourseLesson)
+class LessonAdmin(ModelAdmin):
     list_display = [
         "id",
         "category",
         "title",
-        "lesson_count",
-        "students_count",
         "is_active",
-        "is_paid",
     ]
     search_fields = ["title"]
-    readonly_fields = ["created_at", "updated_at"]
+    readonly_fields = [
+        "likes_count",
+        "students_count",
+        "audio_count",
+        "video_count",
+        "document_count",
+        "test_count",
+        "created_at",
+        "updated_at",
+    ]
     autocomplete_fields = ["category"]
-    inlines = [LessonInline]
-
-
-@admin.register(CourseLesson)
-class CourseLessonAdmin(ModelAdmin):
-    list_display = ["id", "course", "title"]
-    search_fields = ["title"]
-    readonly_fields = ["created_at", "updated_at"]
-    autocomplete_fields = ["course"]
     inlines = [ResourceInline]
+    # formfield_overrides = {
+    #     models.TextField: {
+    #         "widget": WysiwygWidget,
+    #     }
+    # }
+    fieldsets = [
+        (
+            None,
+            {
+                "fields": [
+                    "category",
+                    "sort_number",
+                    "title",
+                    "description",
+                    "text",
+                    "image",
+                    "is_active",
+                ]
+            },
+        ),
+        (
+            "Counts",
+            {
+                "classes": ["tab"],
+                "fields": [
+                    "likes_count",
+                    "students_count",
+                    "audio_count",
+                    "video_count",
+                    "document_count",
+                    "test_count",
+                ],
+            },
+        ),
+    ]
 
 
 @admin.register(CourseLessonResource)
-class CourseLessonResourceAdmin(ModelAdmin):
+class LessonResourceAdmin(ModelAdmin):
     list_display = ["id", "lesson", "title"]
     search_fields = ["title"]
-    readonly_fields = ["created_at", "updated_at"]
+    readonly_fields = ["created_at", "updated_at", "size", "type", "name"]
     autocomplete_fields = ["lesson"]

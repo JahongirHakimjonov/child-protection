@@ -9,7 +9,7 @@ from apps.mobile.models.question import (
 class QuestionCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionCategory
-        fields = ["id", "name"]
+        fields = ["id", "name", "image", "created_at"]
 
 
 class QuestionSerializer(serializers.ModelSerializer):

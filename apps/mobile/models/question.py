@@ -6,6 +6,7 @@ from apps.shared.models import AbstractBaseModel
 
 class QuestionCategory(AbstractBaseModel):
     name = models.CharField(max_length=255, unique=True, db_index=True)
+    image = models.ImageField(upload_to="question_categories/", null=True, blank=True)
     is_active = models.BooleanField(default=True, db_index=True)
 
     class Meta:

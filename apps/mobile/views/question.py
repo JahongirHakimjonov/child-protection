@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -40,8 +41,20 @@ class QuestionListAPIView(APIView):
     def get_queryset(self):
         return Question.objects.filter(is_active=True)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="category_id", description="Filter", required=False, type=int
+            ),
+        ],
+        responses={200: QuestionSerializer(many=True)},
+    )
     def get(self, request):
-        queryset = self.get_queryset()
+        category_id = request.query_params.get("category_id")
+        if category_id:
+            queryset = self.get_queryset().filter(category_id=category_id)
+        else:
+            queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
         return Response(
             {

@@ -5,16 +5,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.mobile.models.course import (
-    Course,
     CourseLesson,
     CourseLessonResource,
     CourseCategory,
 )
+from apps.mobile.models.saved import Viewed
 from apps.mobile.serializers.course import (
-    CourseSerializer,
     CourseLessonSerializer,
-    CourseLessonResourceSerializer,
     CourseCategorySerializer,
+    LessonResourceSerializer,
 )
 
 
@@ -38,12 +37,12 @@ class CourseCategoryListAPIView(APIView):
         )
 
 
-class CourseListAPIView(APIView):
-    serializer_class = CourseSerializer
+class LessonListAPIView(APIView):
+    serializer_class = CourseLessonSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Course.objects.filter(is_active=True)
+        return CourseLesson.objects.filter(is_active=True)
 
     @extend_schema(
         parameters=[
@@ -51,7 +50,7 @@ class CourseListAPIView(APIView):
                 name="category_id", description="Filter", required=True, type=int
             ),
         ],
-        responses={200: CourseSerializer(many=True)},
+        responses={200: CourseLessonSerializer(many=True)},
     )
     def get(self, request):
         category_id = request.query_params.get("category_id")
@@ -76,12 +75,12 @@ class CourseListAPIView(APIView):
         )
 
 
-class CourseDetailAPIView(APIView):
-    serializer_class = CourseSerializer
+class LessonDetailAPIView(APIView):
+    serializer_class = CourseLessonSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Course.objects.filter(is_active=True)
+        return CourseLesson.objects.filter(is_active=True)
 
     @extend_schema(
         parameters=[
@@ -89,7 +88,7 @@ class CourseDetailAPIView(APIView):
                 name="category_id", description="Filter", required=True, type=int
             ),
         ],
-        responses={200: CourseSerializer(many=True)},
+        responses={200: CourseLessonSerializer(many=True)},
     )
     def get(self, request, pk):
         category_id = request.query_params.get("category_id")
@@ -106,6 +105,7 @@ class CourseDetailAPIView(APIView):
         course = queryset.filter(id=pk, category_id=category_id).first()
         if course:
             serializer = self.serializer_class(course)
+            Viewed.objects.get_or_create(user=request.user, lesson=course)
             return Response(
                 {
                     "success": True,
@@ -120,90 +120,8 @@ class CourseDetailAPIView(APIView):
         )
 
 
-class CourseLessonListAPIView(APIView):
-    serializer_class = CourseLessonSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return CourseLesson.objects.filter(is_active=True)
-
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="course_id", description="Filter", required=True, type=int
-            ),
-        ],
-        responses={200: CourseLessonSerializer(many=True)},
-    )
-    def get(self, request):
-        course_id = request.query_params.get("course_id")
-        if not course_id:
-            return Response(
-                {
-                    "success": False,
-                    "message": "course_id is required",
-                    "data": {},
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        queryset = self.get_queryset().filter(course_id=course_id)
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(
-            {
-                "success": True,
-                "message": "Course lessons fetched successfully",
-                "data": serializer.data,
-            },
-            status=status.HTTP_200_OK,
-        )
-
-
-class CourseLessonDetailAPIView(APIView):
-    serializer_class = CourseLessonSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return CourseLesson.objects.filter(is_active=True)
-
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="course_id", description="Filter", required=True, type=int
-            ),
-        ],
-        responses={200: CourseLessonSerializer(many=True)},
-    )
-    def get(self, request, pk):
-        course_id = request.query_params.get("course_id")
-        if not course_id:
-            return Response(
-                {
-                    "success": False,
-                    "message": "course_id is required",
-                    "data": {},
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        queryset = self.get_queryset()
-        course_lesson = queryset.filter(id=pk, course_id=course_id).first()
-        if course_lesson:
-            serializer = self.serializer_class(course_lesson)
-            return Response(
-                {
-                    "success": True,
-                    "message": "Course lesson fetched successfully",
-                    "data": serializer.data,
-                },
-                status=status.HTTP_200_OK,
-            )
-        return Response(
-            {"success": False, "message": "Course lesson not found", "data": {}},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-
-
-class CourseLessonResourceListAPIView(APIView):
-    serializer_class = CourseLessonResourceSerializer
+class LessonResourceListAPIView(APIView):
+    serializer_class = LessonResourceSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -215,7 +133,7 @@ class CourseLessonResourceListAPIView(APIView):
                 name="lesson_id", description="Filter", required=True, type=int
             ),
         ],
-        responses={200: CourseLessonResourceSerializer(many=True)},
+        responses={200: LessonResourceSerializer(many=True)},
     )
     def get(self, request):
         lesson_id = request.query_params.get("lesson_id")
@@ -240,8 +158,8 @@ class CourseLessonResourceListAPIView(APIView):
         )
 
 
-class CourseLessonResourceDetailAPIView(APIView):
-    serializer_class = CourseLessonResourceSerializer
+class LessonResourceDetailAPIView(APIView):
+    serializer_class = LessonResourceSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -253,7 +171,7 @@ class CourseLessonResourceDetailAPIView(APIView):
                 name="lesson_id", description="Filter", required=True, type=int
             ),
         ],
-        responses={200: CourseLessonResourceSerializer(many=True)},
+        responses={200: LessonResourceSerializer(many=True)},
     )
     def get(self, request, pk):
         lesson_id = request.query_params.get("lesson_id")

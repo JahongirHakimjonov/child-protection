@@ -1,17 +1,19 @@
 from rest_framework import serializers
 
 from apps.mobile.models.saved import Saved
-from apps.mobile.serializers.course import CourseSerializer
+from apps.mobile.serializers.course import CourseLessonSerializer
 
 
 class SavedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Saved
-        fields = ["id", "course", "user"]
+        fields = ["id", "lesson", "user"]
         extra_kwargs = {"user": {"read_only": True}}
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
         context = self.context
-        response["course"] = CourseSerializer(instance.course, context=context).data
+        response["course"] = CourseLessonSerializer(
+            instance.lesson, context=context
+        ).data
         return response

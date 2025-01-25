@@ -90,14 +90,6 @@ PAGES = [
         "title": _("Kurslar"),
         "items": [
             {
-                "title": _("Kurslar"),
-                "icon": "school",
-                "link": reverse_lazy("admin:mobile_course_changelist"),
-                "permissions": lambda request: user_has_group_or_permission(
-                    request.user, "view_course"
-                ),
-            },
-            {
                 "title": _("Darslar"),
                 "icon": "play_lesson",
                 "link": reverse_lazy("admin:mobile_courselesson_changelist"),
@@ -119,6 +111,22 @@ PAGES = [
                 "link": reverse_lazy("admin:mobile_coursecategory_changelist"),
                 "permissions": lambda request: user_has_group_or_permission(
                     request.user, "view_coursecategory"
+                ),
+            },
+            {
+                "title": _("Saqlanganlar"),
+                "icon": "bookmark",
+                "link": reverse_lazy("admin:mobile_saved_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_saved"
+                ),
+            },
+            {
+                "title": _("Ko'rganlar"),
+                "icon": "visibility",
+                "link": reverse_lazy("admin:mobile_viewed_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_viewed"
                 ),
             },
         ],
