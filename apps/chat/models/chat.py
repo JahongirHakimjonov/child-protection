@@ -93,5 +93,5 @@ class Message(AbstractBaseModel):
     class Meta:
         verbose_name = _("Message")
         verbose_name_plural = _("Messages")
-        ordering = ["-created_at"]
+        ordering = ["created_at"]
         db_table = "messages"
