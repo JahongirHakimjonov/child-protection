@@ -18,7 +18,6 @@ class Help(AbstractBaseModel):
     )
     longitude = models.FloatField(_("longitude"), null=True, blank=True)
     latitude = models.FloatField(_("latitude"), null=True, blank=True)
-    message = models.TextField(_("message"), null=True, blank=True)
     status = models.CharField(
         _("status"), max_length=6, choices=HelpStatus, default=HelpStatus.SAFE
     )

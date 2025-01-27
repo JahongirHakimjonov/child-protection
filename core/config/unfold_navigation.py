@@ -56,7 +56,6 @@ PAGES = [
     },
     {
         "seperator": True,
-        "collapsible": True,
         "title": _("Foydalanuvchi ma'lumotlari"),
         "items": [
             {
@@ -133,7 +132,6 @@ PAGES = [
     },
     {
         "seperator": True,
-        "collapsible": True,
         "title": _("Testlar"),
         "items": [
             {
@@ -164,7 +162,6 @@ PAGES = [
     },
     {
         "seperator": True,
-        "collapsible": True,
         "title": _("Savollar"),
         "items": [
             {
@@ -187,7 +184,6 @@ PAGES = [
     },
     {
         "seperator": True,
-        "collapsible": True,
         "title": _("Chat"),
         "items": [
             {
@@ -204,6 +200,28 @@ PAGES = [
                 "link": reverse_lazy("admin:chat_message_changelist"),
                 "permissions": lambda request: user_has_group_or_permission(
                     request.user, "view_message"
+                ),
+            },
+        ],
+    },
+    {
+        "seperator": True,
+        "title": _("Qo'shimcha"),
+        "items": [
+            {
+                "title": _("Banner"),
+                "icon": "perm_media",
+                "link": reverse_lazy("admin:mobile_banner_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_banner"
+                ),
+            },
+            {
+                "title": _("Yordam xizmati"),
+                "icon": "privacy_tip",
+                "link": reverse_lazy("admin:mobile_help_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_help"
                 ),
             },
         ],

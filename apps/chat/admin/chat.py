@@ -6,9 +6,9 @@ from apps.chat.models.chat import ChatRoom, Message, ChatResource
 
 @admin.register(ChatRoom)
 class ChatRoomAdmin(ModelAdmin):
-    list_display = ("id", "created_at", "updated_at")
+    list_display = ("id", "name", "created_at", "updated_at")
     autocomplete_fields = ("participants",)
-    search_fields = ("participants__phone",)  # Add this line
+    search_fields = ("participants__phone",)
 
 
 @admin.register(Message)
