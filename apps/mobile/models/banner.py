@@ -6,7 +6,7 @@ from apps.shared.models import AbstractBaseModel
 
 class Banner(AbstractBaseModel):
     image = models.ImageField(upload_to="banners/", null=True, blank=True)
-    link = models.URLField(max_length=255, db_index=True, null=True, blank=True)
+    link = models.CharField(_("link"), max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=True, db_index=True)
 
     class Meta:

@@ -4,6 +4,11 @@ from django.utils.translation import gettext_lazy as _
 from apps.shared.models import AbstractBaseModel
 
 
+class HelpStatus(models.TextChoices):
+    SAFE = "SAFE", _("Safe")
+    DANGER = "DANGER", _("Danger")
+
+
 class Help(AbstractBaseModel):
     user = models.ForeignKey(
         "users.User",
@@ -14,3 +19,6 @@ class Help(AbstractBaseModel):
     longitude = models.FloatField(_("longitude"), null=True, blank=True)
     latitude = models.FloatField(_("latitude"), null=True, blank=True)
     message = models.TextField(_("message"), null=True, blank=True)
+    status = models.CharField(
+        _("status"), max_length=6, choices=HelpStatus, default=HelpStatus.SAFE
+    )
