@@ -42,7 +42,9 @@ class CourseCategoryListAPIView(APIView):
             queryset = queryset.filter(query)
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(paginated_queryset, many=True, context={"rq": request})
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
+        )
         return paginator.get_paginated_response(serializer.data)
 
 

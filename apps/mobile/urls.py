@@ -9,6 +9,7 @@ from apps.mobile.views.course import (
     LessonResourceDetailAPIView,
     CourseCategoryDetailAPIView,
 )
+from apps.mobile.views.help import HelpView
 from apps.mobile.views.question import (
     QuestionDetailAPIView,
     QuestionListAPIView,
@@ -54,4 +55,5 @@ urlpatterns = [
     path("question/<int:test_id>/", QuestionList.as_view(), name="question"),
     path("result/", TestResult.as_view(), name="result"),
     path("banner/", BannerListAPIView.as_view(), name="banner"),
+    path("help/", HelpView.as_view(), name="help"),
 ]

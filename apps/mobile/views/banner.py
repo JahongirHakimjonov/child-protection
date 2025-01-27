@@ -22,4 +22,6 @@ class BannerListAPIView(APIView):
                 "success": True,
                 "message": "Banners fetched successfully",
                 "data": serializer.data,
-            }, status=status.HTTP_200_OK)
+            },
+            status=status.HTTP_200_OK,
+        )
