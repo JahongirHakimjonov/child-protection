@@ -1,8 +1,4 @@
-import io
-
-from PIL import Image
 from django.contrib.auth.models import AbstractUser
-from django.core.files.base import ContentFile
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -69,16 +65,6 @@ class User(AbstractUser, AbstractBaseModel):
     def save(self, *args, **kwargs):
         if not self.username:
             self.username = self.phone
-        if self.avatar:
-            img = Image.open(self.avatar)
-            if img.format != "WEBP":
-                img_io = io.BytesIO()
-                img.save(img_io, format="WEBP", quality=100)
-                self.avatar.save(
-                    f"{self.avatar.name.split('.')[0]}.webp",
-                    ContentFile(img_io.getvalue()),
-                    save=False,
-                )
         super(User, self).save(*args, **kwargs)
 
     class Meta:
