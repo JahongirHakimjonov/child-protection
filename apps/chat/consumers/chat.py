@@ -164,19 +164,52 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """
         chat_room_id = await database_sync_to_async(lambda: message.chat.id)()
         file = await database_sync_to_async(
-            lambda: message.file.id if message.file else None
+            lambda: {
+                "id": message.file.id,
+                "name": message.file.name,
+                "file": message.file.file.url,
+                "size": message.file.size,
+                "type": message.file.type,
+                "created_at": message.file.created_at.isoformat(),
+            } if message.file else None
         )()
+        chat_room = await database_sync_to_async(lambda: message.chat)()
+        participants = await database_sync_to_async(lambda: list(chat_room.participants.all()))()
+        participants_data = [
+            {
+                "id": participant.id,
+                "phone": participant.phone,
+                "email": participant.email,
+                "first_name": participant.first_name,
+                "last_name": participant.last_name,
+                "avatar": participant.avatar.url if participant.avatar else None,
+                "role": participant.role,
+                "created_at": participant.created_at.isoformat(),
+                "updated_at": participant.updated_at.isoformat(),
+            }
+            for participant in participants
+        ]
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 "type": "chat_message",
                 "message": {
+                    "id": message.id,
+                    "chat": {
+                        "id": chat_room.id,
+                        "name": chat_room.name,
+                        "participants": participants_data,
+                        "created_at": chat_room.created_at.isoformat(),
+                        "updated_at": chat_room.updated_at.isoformat(),
+                    },
                     "sender": await self.get_message_sender(message),
-                    "chat_room": str(chat_room_id),
                     "message": message.message,
                     "file": file,
-                    "created_at": message.created_at.isoformat(),
                     "is_admin": message.is_admin,
+                    "is_sent": message.is_sent,
+                    "is_my": message.sender.id == self.user.id,
+                    "created_at": message.created_at.isoformat(),
+                    "updated_at": message.updated_at.isoformat(),
                 },
                 "sender_channel_name": sender_channel_name,
             },

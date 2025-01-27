@@ -17,6 +17,8 @@ class CourseCategorySerializer(serializers.ModelSerializer):
             "description",
             "image",
             "lesson_count",
+            "first_color",
+            "second_color",
         ]
 
 

@@ -18,6 +18,8 @@ class CourseCategory(AbstractBaseModel):
     description = models.TextField(db_index=True, null=True, blank=True)
     image = models.ImageField(upload_to="course_categories/", null=True, blank=True)
     lesson_count = models.PositiveIntegerField(db_index=True, default=0)
+    first_color = models.CharField(max_length=255, db_index=True, null=True, blank=True)
+    second_color = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     is_active = models.BooleanField(default=True, db_index=True)
 
     class Meta:

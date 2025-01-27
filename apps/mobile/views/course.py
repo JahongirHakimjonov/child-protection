@@ -1,3 +1,4 @@
+from django.db.models import Q
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -15,26 +16,34 @@ from apps.mobile.serializers.course import (
     CourseCategorySerializer,
     LessonResourceSerializer,
 )
+from apps.shared.pagination import CustomPagination
 
 
 class CourseCategoryListAPIView(APIView):
     serializer_class = CourseCategorySerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return CourseCategory.objects.filter(is_active=True)
 
     def get(self, request):
+        search = request.query_params.get("search")
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(
-            {
-                "success": True,
-                "message": "Course categories fetched successfully",
-                "data": serializer.data,
-            },
-            status=status.HTTP_200_OK,
-        )
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for term in search_terms:
+                query &= (
+                        Q(title__icontains=term)
+                        | Q(sub_title__icontains=term)
+                        | Q(description__icontains=term)
+                )
+            queryset = queryset.filter(query)
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class LessonListAPIView(APIView):
