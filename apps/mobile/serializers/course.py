@@ -8,6 +8,8 @@ from apps.mobile.models.course import (
 
 
 class CourseCategorySerializer(serializers.ModelSerializer):
+    progress_percent = serializers.SerializerMethodField()
+
     class Meta:
         model = CourseCategory
         fields = [
@@ -19,7 +21,18 @@ class CourseCategorySerializer(serializers.ModelSerializer):
             "lesson_count",
             "first_color",
             "second_color",
+            "progress_percent",
         ]
+
+    def get_progress_percent(self, instance):
+        if self.context.get("rq"):
+            user = self.context["rq"].user
+            if user.is_authenticated:
+                viewed = instance.courses.filter(viewed__user=user).count()
+                total = instance.courses.count()
+                if total:
+                    return round(viewed / total * 100, 2)
+        return 0
 
 
 class CourseLessonSerializer(serializers.ModelSerializer):

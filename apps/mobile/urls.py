@@ -28,7 +28,7 @@ urlpatterns = [
     ),
     path("course/lesson/", LessonListAPIView.as_view(), name="course-lesson"),
     path(
-        "course/lesson/<int:pk>",
+        "course/lesson/<int:pk>/",
         LessonDetailAPIView.as_view(),
         name="course-lesson-detail",
     ),
