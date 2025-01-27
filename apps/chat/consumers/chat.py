@@ -164,17 +164,23 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """
         chat_room_id = await database_sync_to_async(lambda: message.chat.id)()
         file = await database_sync_to_async(
-            lambda: {
-                "id": message.file.id,
-                "name": message.file.name,
-                "file": message.file.file.url,
-                "size": message.file.size,
-                "type": message.file.type,
-                "created_at": message.file.created_at.isoformat(),
-            } if message.file else None
+            lambda: (
+                {
+                    "id": message.file.id,
+                    "name": message.file.name,
+                    "file": message.file.file.url,
+                    "size": message.file.size,
+                    "type": message.file.type,
+                    "created_at": message.file.created_at.isoformat(),
+                }
+                if message.file
+                else None
+            )
         )()
         chat_room = await database_sync_to_async(lambda: message.chat)()
-        participants = await database_sync_to_async(lambda: list(chat_room.participants.all()))()
+        participants = await database_sync_to_async(
+            lambda: list(chat_room.participants.all())
+        )()
         participants_data = [
             {
                 "id": participant.id,

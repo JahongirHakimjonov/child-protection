@@ -1,7 +1,7 @@
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -21,7 +21,7 @@ from apps.shared.pagination import CustomPagination
 
 class CourseCategoryListAPIView(APIView):
     serializer_class = CourseCategorySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     pagination_class = CustomPagination
 
     def get_queryset(self):
@@ -35,15 +35,44 @@ class CourseCategoryListAPIView(APIView):
             query = Q()
             for term in search_terms:
                 query &= (
-                        Q(title__icontains=term)
-                        | Q(sub_title__icontains=term)
-                        | Q(description__icontains=term)
+                    Q(title__icontains=term)
+                    | Q(sub_title__icontains=term)
+                    | Q(description__icontains=term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
         serializer = self.serializer_class(paginated_queryset, many=True)
         return paginator.get_paginated_response(serializer.data)
+
+
+class CourseCategoryDetailAPIView(APIView):
+    serializer_class = CourseCategorySerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return CourseCategory.objects.filter(is_active=True)
+
+    def get(self, request, pk):
+        category = self.get_queryset().filter(id=pk).first()
+        if category:
+            serializer = self.serializer_class(category)
+            return Response(
+                {
+                    "success": True,
+                    "message": "Course category fetched successfully",
+                    "data": serializer.data,
+                },
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            {
+                "success": False,
+                "message": "Course category not found",
+                "data": {},
+            },
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
 
 class LessonListAPIView(APIView):

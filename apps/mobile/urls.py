@@ -6,6 +6,7 @@ from apps.mobile.views.course import (
     LessonDetailAPIView,
     LessonResourceListAPIView,
     LessonResourceDetailAPIView,
+    CourseCategoryDetailAPIView,
 )
 from apps.mobile.views.question import (
     QuestionDetailAPIView,
@@ -18,6 +19,11 @@ from apps.mobile.views.test import QuestionList, TestResult
 urlpatterns = [
     path(
         "course/category/", CourseCategoryListAPIView.as_view(), name="course-category"
+    ),
+    path(
+        "course/category/<int:pk>/",
+        CourseCategoryDetailAPIView.as_view(),
+        name="course-category-detail",
     ),
     path("course/lesson/", LessonListAPIView.as_view(), name="course-lesson"),
     path(

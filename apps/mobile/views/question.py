@@ -1,6 +1,6 @@
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,7 +16,7 @@ from apps.mobile.serializers.question import (
 
 class QuestionCategoryListAPIView(APIView):
     serializer_class = QuestionCategorySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return QuestionCategory.objects.filter(is_active=True)
@@ -36,7 +36,7 @@ class QuestionCategoryListAPIView(APIView):
 
 class QuestionListAPIView(APIView):
     serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return Question.objects.filter(is_active=True)
@@ -68,7 +68,7 @@ class QuestionListAPIView(APIView):
 
 class QuestionDetailAPIView(APIView):
     serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_object(self, pk):
         try:
