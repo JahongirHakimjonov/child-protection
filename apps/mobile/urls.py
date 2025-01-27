@@ -1,5 +1,6 @@
 from django.urls import path
 
+from apps.mobile.views.banner import BannerListAPIView
 from apps.mobile.views.course import (
     CourseCategoryListAPIView,
     LessonListAPIView,
@@ -52,4 +53,5 @@ urlpatterns = [
     path("test/<int:lesson_id>/", SavedApiView.as_view(), name="test"),
     path("question/<int:test_id>/", QuestionList.as_view(), name="question"),
     path("result/", TestResult.as_view(), name="result"),
+    path("banner/", BannerListAPIView.as_view(), name="banner"),
 ]
