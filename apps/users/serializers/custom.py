@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from apps.shared.utils.authentication import UniversalPasswordAuthentication
 from apps.users.models import User, ActiveSessions
 
 
@@ -14,22 +15,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             "password": attrs.get("password"),
         }
 
-        user = User.objects.filter(phone=credentials["phone"]).first()
+        user = UniversalPasswordAuthentication.authenticate(
+            credentials["phone"], credentials["password"]
+        )
         if user:
-            user = authenticate(phone=user.phone, password=credentials["password"])
+            tokens = UniversalPasswordAuthentication.generate_tokens(user)
 
         if user is None:
             raise serializers.ValidationError("Invalid credentials")
 
-        token = super().get_token(user)
-
-        token["phone"] = user.phone
-
-        return {
-            "refresh": str(token),
-            "access": str(token.access_token),
-            "user": user.id,
-        }
+        return tokens
 
 
 class CustomTokenRefreshSerializer(serializers.Serializer):
