@@ -213,7 +213,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "file": file,
                     "is_admin": message.is_admin,
                     "is_sent": message.is_sent,
-                    "is_my": message.sender.id == self.user.id,
+                    "is_my": message.sender.id == self.scope["user_id"],
                     "created_at": message.created_at.isoformat(),
                     "updated_at": message.updated_at.isoformat(),
                 },
