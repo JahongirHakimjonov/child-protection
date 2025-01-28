@@ -85,7 +85,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Send a message to WebSocket.
         """
         # Skip sending the message to the sender if sender_channel_name matches
-        if self.channel_name != event["sender_channel_name"]:
+        if event["message"]["sender"]["id"] != str(self.user.id):
             await self.send(text_data=json.dumps(event["message"]))
 
     @database_sync_to_async

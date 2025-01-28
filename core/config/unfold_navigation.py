@@ -202,6 +202,14 @@ PAGES = [
                     request.user, "view_message"
                 ),
             },
+            {
+                "title": _("Chat resurslar"),
+                "icon": "cloud_download",
+                "link": reverse_lazy("admin:chat_chatresource_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_chatresource"
+                ),
+            },
         ],
     },
     {
