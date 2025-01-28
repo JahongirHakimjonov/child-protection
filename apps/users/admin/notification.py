@@ -13,3 +13,4 @@ class NotificationAdmin(ModelAdmin, TabbedTranslationAdmin):
     ordering = ("-created_at",)
     autocomplete_fields = ("user",)
     readonly_fields = ("created_at", "updated_at")
+    radio_fields = {"type": admin.VERTICAL}

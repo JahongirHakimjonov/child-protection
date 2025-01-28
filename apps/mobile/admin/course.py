@@ -1,8 +1,7 @@
 from django.contrib import admin
-from django.db import models
 from unfold.admin import ModelAdmin
 from unfold.admin import TabularInline
-from unfold.contrib.forms.widgets import WysiwygWidget
+from unfold.widgets import UnfoldAdminColorInputWidget
 
 from apps.mobile.models.course import (
     CourseCategory,
@@ -24,6 +23,12 @@ class CourseCategoryAdmin(ModelAdmin):
     list_display = ["id", "title", "image"]
     search_fields = ["name"]
     readonly_fields = ["created_at", "updated_at", "lesson_count"]
+
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        form = super().get_form(request, obj, change, **kwargs)
+        form.base_fields["first_color"].widget = UnfoldAdminColorInputWidget()
+        form.base_fields["second_color"].widget = UnfoldAdminColorInputWidget()
+        return form
 
 
 @admin.register(CourseLesson)

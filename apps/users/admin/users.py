@@ -80,7 +80,7 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
                 "path": obj.avatar.url if obj.avatar else static("images/avatar.png"),
                 "squared": False,
                 "borderless": True,
-                "width": 45,
-                "height": 45,
+                "width": 35,
+                "height": 35,
             },
         ]
