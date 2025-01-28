@@ -97,7 +97,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             token = self.scope["query_string"].decode().split("=")[1]
             validated_token = UntypedToken(token)
             user_id = validated_token["user_id"]
-            return User.objects.get(id=user_id)
+            user = User.objects.get(id=user_id)
+            self.scope["user_id"] = user_id  # Set user_id in scope
+            return user
         except (InvalidToken, TokenError, User.DoesNotExist):
             return AnonymousUser()
 
@@ -213,7 +215,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "file": file,
                     "is_admin": message.is_admin,
                     "is_sent": message.is_sent,
-                    "is_my": message.sender.id == self.scope["user_id"],
+                    "is_my": False,
                     "created_at": message.created_at.isoformat(),
                     "updated_at": message.updated_at.isoformat(),
                 },
