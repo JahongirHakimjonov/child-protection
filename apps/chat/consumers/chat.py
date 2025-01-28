@@ -85,8 +85,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Send a message to WebSocket.
         """
         # Skip sending the message to the sender if sender_channel_name matches
-        if event["message"]["sender"]["id"] != str(self.user.id):
-            await self.send(text_data=json.dumps(event["message"]))
+        # if self.channel_name != event["sender_channel_name"]:
+        await self.send(text_data=json.dumps(event["message"]))
 
     @database_sync_to_async
     def authenticate_user(self):
@@ -97,9 +97,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             token = self.scope["query_string"].decode().split("=")[1]
             validated_token = UntypedToken(token)
             user_id = validated_token["user_id"]
-            user = User.objects.get(id=user_id)
-            self.scope["user_id"] = user_id  # Set user_id in scope
-            return user
+            return User.objects.get(id=user_id)
         except (InvalidToken, TokenError, User.DoesNotExist):
             return AnonymousUser()
 
