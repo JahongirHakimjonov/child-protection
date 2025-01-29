@@ -37,6 +37,7 @@ class CourseCategorySerializer(serializers.ModelSerializer):
 
 class CourseLessonSerializer(serializers.ModelSerializer):
     is_liked = serializers.SerializerMethodField()
+
     class Meta:
         model = CourseLesson
         fields = [

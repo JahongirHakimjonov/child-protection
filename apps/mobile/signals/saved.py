@@ -13,8 +13,9 @@ def update_course_saved_count(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=Saved)
 def update_course_saved_count(sender, instance, **kwargs):
-    instance.lesson.likes_count -= 1
-    instance.lesson.save()
+    if instance.lesson.likes_count > 0:
+        instance.lesson.likes_count -= 1
+        instance.lesson.save()
 
 
 @receiver(post_save, sender=Viewed)

@@ -17,6 +17,7 @@ class Saved(AbstractBaseModel):
         verbose_name_plural = _("Saved")
         ordering = ["-created_at"]
         db_table = "saved"
+        unique_together = ["user", "lesson"]
 
     def __str__(self) -> str:
         return f"{self.user} - {self.lesson}"

@@ -35,9 +35,9 @@ class CourseCategoryListAPIView(APIView):
             query = Q()
             for term in search_terms:
                 query &= (
-                        Q(title__icontains=term)
-                        | Q(sub_title__icontains=term)
-                        | Q(description__icontains=term)
+                    Q(title__icontains=term)
+                    | Q(sub_title__icontains=term)
+                    | Q(description__icontains=term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
