@@ -8,7 +8,8 @@ from rest_framework.views import APIView
 from apps.mobile.models.course import (
     CourseLesson,
     CourseLessonResource,
-    CourseCategory, ResourceTypes,
+    CourseCategory,
+    ResourceTypes,
 )
 from apps.mobile.models.saved import Viewed
 from apps.mobile.serializers.course import (
@@ -35,9 +36,9 @@ class CourseCategoryListAPIView(APIView):
             query = Q()
             for term in search_terms:
                 query &= (
-                        Q(title__icontains=term)
-                        | Q(sub_title__icontains=term)
-                        | Q(description__icontains=term)
+                    Q(title__icontains=term)
+                    | Q(sub_title__icontains=term)
+                    | Q(description__icontains=term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -94,16 +95,12 @@ class LessonListAPIView(APIView):
     )
     def get(self, request):
         category_id = request.query_params.get("category_id")
-        if not category_id:
-            return Response(
-                {
-                    "success": False,
-                    "message": "category_id is required",
-                    "data": {},
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        queryset = self.get_queryset().filter(category_id=category_id)
+        top = request.query_params.get("top")
+        queryset = self.get_queryset()
+        if category_id:
+            queryset = self.get_queryset().filter(category_id=category_id)
+        if top and top.lower() == "true":
+            queryset = queryset.order_by("-likes_count")
         serializer = self.serializer_class(queryset, many=True, context={"rq": request})
         return Response(
             {
@@ -173,8 +170,11 @@ class LessonResourceListAPIView(APIView):
                 name="lesson_id", description="Filter", required=True, type=int
             ),
             OpenApiParameter(
-                name="type", description="Filter", required=False, type=str,
-                enum=[choice.value for choice in ResourceTypes]
+                name="type",
+                description="Filter",
+                required=False,
+                type=str,
+                enum=[choice.value for choice in ResourceTypes],
             ),
         ],
         responses={200: LessonResourceSerializer(many=True)},
