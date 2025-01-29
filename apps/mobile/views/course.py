@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from apps.mobile.models.course import (
     CourseLesson,
     CourseLessonResource,
-    CourseCategory,
+    CourseCategory, ResourceTypes,
 )
 from apps.mobile.models.saved import Viewed
 from apps.mobile.serializers.course import (
@@ -35,9 +35,9 @@ class CourseCategoryListAPIView(APIView):
             query = Q()
             for term in search_terms:
                 query &= (
-                    Q(title__icontains=term)
-                    | Q(sub_title__icontains=term)
-                    | Q(description__icontains=term)
+                        Q(title__icontains=term)
+                        | Q(sub_title__icontains=term)
+                        | Q(description__icontains=term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -172,11 +172,16 @@ class LessonResourceListAPIView(APIView):
             OpenApiParameter(
                 name="lesson_id", description="Filter", required=True, type=int
             ),
+            OpenApiParameter(
+                name="type", description="Filter", required=False, type=str,
+                enum=[choice.value for choice in ResourceTypes]
+            ),
         ],
         responses={200: LessonResourceSerializer(many=True)},
     )
     def get(self, request):
         lesson_id = request.query_params.get("lesson_id")
+        type = request.query_params.get("type")
         if not lesson_id:
             return Response(
                 {
@@ -187,6 +192,8 @@ class LessonResourceListAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         queryset = self.get_queryset().filter(lesson_id=lesson_id)
+        if type:
+            queryset = queryset.filter(type=type)
         serializer = self.serializer_class(queryset, many=True)
         return Response(
             {
