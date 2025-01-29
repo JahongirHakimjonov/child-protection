@@ -36,6 +36,7 @@ class CourseCategorySerializer(serializers.ModelSerializer):
 
 
 class CourseLessonSerializer(serializers.ModelSerializer):
+    is_liked = serializers.SerializerMethodField()
     class Meta:
         model = CourseLesson
         fields = [
@@ -51,8 +52,16 @@ class CourseLessonSerializer(serializers.ModelSerializer):
             "video_count",
             "document_count",
             "test_count",
+            "is_liked",
             "created_at",
         ]
+
+    def get_is_liked(self, instance):
+        if self.context.get("rq"):
+            user = self.context["rq"].user
+            if user.is_authenticated:
+                return instance.saved.filter(user=user).exists()
+        return False
 
     def to_representation(self, instance):
         response = super().to_representation(instance)

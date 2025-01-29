@@ -35,9 +35,9 @@ class CourseCategoryListAPIView(APIView):
             query = Q()
             for term in search_terms:
                 query &= (
-                    Q(title__icontains=term)
-                    | Q(sub_title__icontains=term)
-                    | Q(description__icontains=term)
+                        Q(title__icontains=term)
+                        | Q(sub_title__icontains=term)
+                        | Q(description__icontains=term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -104,7 +104,7 @@ class LessonListAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         queryset = self.get_queryset().filter(category_id=category_id)
-        serializer = self.serializer_class(queryset, many=True)
+        serializer = self.serializer_class(queryset, many=True, context={"rq": request})
         return Response(
             {
                 "success": True,
@@ -144,7 +144,7 @@ class LessonDetailAPIView(APIView):
         queryset = self.get_queryset()
         course = queryset.filter(id=pk, category_id=category_id).first()
         if course:
-            serializer = self.serializer_class(course)
+            serializer = self.serializer_class(course, context={"rq": request})
             Viewed.objects.get_or_create(user=request.user, lesson=course)
             return Response(
                 {
