@@ -88,7 +88,13 @@ class LessonListAPIView(APIView):
     @extend_schema(
         parameters=[
             OpenApiParameter(
-                name="category_id", description="Filter", required=True, type=int
+                name="category_id", description="Filter", required=False, type=int
+            ),
+            OpenApiParameter(
+                name="top",
+                description="Filter",
+                required=False,
+                type=bool,
             ),
         ],
         responses={200: CourseLessonSerializer(many=True)},
