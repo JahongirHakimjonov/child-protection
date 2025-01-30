@@ -23,7 +23,6 @@ from apps.shared.pagination import CustomPagination
 class CourseCategoryListAPIView(APIView):
     serializer_class = CourseCategorySerializer
     permission_classes = [AllowAny]
-    pagination_class = CustomPagination
 
     def get_queryset(self):
         return CourseCategory.objects.filter(is_active=True)
@@ -107,15 +106,13 @@ class LessonListAPIView(APIView):
             queryset = self.get_queryset().filter(category_id=category_id)
         if top and top.lower() == "true":
             queryset = queryset.order_by("-likes_count")
-        serializer = self.serializer_class(queryset, many=True, context={"rq": request})
-        return Response(
-            {
-                "success": True,
-                "message": "Courses fetched successfully",
-                "data": serializer.data,
-            },
-            status=status.HTTP_200_OK,
+
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
 
 class LessonDetailAPIView(APIView):

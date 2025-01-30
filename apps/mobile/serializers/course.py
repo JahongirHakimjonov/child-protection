@@ -73,7 +73,18 @@ class CourseLessonSerializer(serializers.ModelSerializer):
 class LessonResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseLessonResource
-        fields = ["id", "lesson", "title", "name", "file", "size", "type", "created_at"]
+        fields = [
+            "id",
+            "lesson",
+            "title",
+            "description",
+            "banner",
+            "name",
+            "file",
+            "size",
+            "type",
+            "created_at",
+        ]
 
     def to_representation(self, instance):
         response = super().to_representation(instance)

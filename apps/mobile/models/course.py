@@ -68,6 +68,10 @@ class CourseLessonResource(AbstractBaseModel):
         CourseLesson, on_delete=models.CASCADE, related_name="resources", db_index=True
     )
     title = models.CharField(max_length=255, db_index=True)
+    description = models.TextField(db_index=True, null=True, blank=True)
+    banner = models.ImageField(
+        upload_to="lesson_resource/banner/", db_index=True, null=True, blank=True
+    )
     name = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     file = models.FileField(upload_to="lesson_resource/", db_index=True)
     size = models.CharField(db_index=True, max_length=255, null=True, blank=True)
