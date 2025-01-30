@@ -27,8 +27,16 @@ class CourseCategoryListAPIView(APIView):
     def get_queryset(self):
         return CourseCategory.objects.filter(is_active=True)
 
+    def get_progress_percent(self, category, user):
+        viewed = category.courses.filter(viewed__user=user).count()
+        total = category.courses.count()
+        if total:
+            return round(viewed / total * 100, 2)
+        return 0
+
     def get(self, request):
         search = request.query_params.get("search")
+        progress = request.query_params.get("progress")
         queryset = self.get_queryset()
         if search:
             search_terms = search[:100].split()
@@ -40,6 +48,10 @@ class CourseCategoryListAPIView(APIView):
                     | Q(description__icontains=term)
                 )
             queryset = queryset.filter(query)
+        if progress and progress.lower() == "true":
+            user = request.user
+            if user.is_authenticated:
+                queryset = [category for category in queryset if self.get_progress_percent(category, user) > 0]
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
         serializer = self.serializer_class(
