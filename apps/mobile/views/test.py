@@ -44,6 +44,10 @@ class TestResult(APIView):
     def post(self, request):
         test = request.data.get("test")
         results_data = request.data.get("results")
+        if not results_data:
+            return Response(
+                {"success": False, "message": "Results not found"}, status=400
+            )
 
         correct_count = 0
         incorrect_count = 0
@@ -61,9 +65,9 @@ class TestResult(APIView):
                 question = TestQuestion.objects.get(id=question_id)
             except TestQuestion.DoesNotExist:
                 return Response({"success": False, "message": "Question not found"})
-            try:
-                correct_answer = question.answers.get(is_correct=True)
-            except question.answers.model.DoesNotExist:
+
+            correct_answers = question.answers.filter(is_correct=True)
+            if not correct_answers.exists():
                 return Response(
                     {"success": False, "message": "Correct answer not found"}
                 )
@@ -71,9 +75,9 @@ class TestResult(APIView):
             answered_correctly = False
             for answer in answers:
                 answer_id = answer.get("answer_id")
-                if answer_id == correct_answer.id:
+                if correct_answers.filter(id=answer_id).exists():
                     answered_correctly = True
-                    total_score += correct_answer.ball
+                    total_score += correct_answers.first().ball
                     break
 
             if answered_correctly:
