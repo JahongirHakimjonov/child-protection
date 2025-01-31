@@ -91,7 +91,7 @@ class CourseCategoryDetailAPIView(APIView):
 
 class LessonListAPIView(APIView):
     serializer_class = CourseLessonSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return CourseLesson.objects.filter(is_active=True)
