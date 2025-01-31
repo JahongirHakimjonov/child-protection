@@ -11,7 +11,10 @@ class AnswerType(models.TextChoices):
 
 class Test(AbstractBaseModel):
     lesson = models.ForeignKey(
-        "CourseLesson", on_delete=models.CASCADE, related_name="questions", db_index=True
+        "CourseLesson",
+        on_delete=models.CASCADE,
+        related_name="questions",
+        db_index=True,
     )
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField(db_index=True)
@@ -30,9 +33,13 @@ class Test(AbstractBaseModel):
 
 
 class TestQuestion(AbstractBaseModel):
-    test = models.ForeignKey("Test", on_delete=models.CASCADE, related_name="questions", db_index=True)
+    test = models.ForeignKey(
+        "Test", on_delete=models.CASCADE, related_name="questions", db_index=True
+    )
     question = models.TextField(verbose_name=_("Question"), db_index=True)
-    is_active = models.BooleanField(verbose_name=_("Is active"), default=True, db_index=True)
+    is_active = models.BooleanField(
+        verbose_name=_("Is active"), default=True, db_index=True
+    )
 
     class Meta:
         verbose_name = _("Question")
@@ -57,7 +64,9 @@ class Answer(AbstractBaseModel):
         db_index=True,
     )
     ball = models.IntegerField(verbose_name=_("Ball"), default=0, db_index=True)
-    is_correct = models.BooleanField(verbose_name=_("Is correct"), default=False, db_index=True)
+    is_correct = models.BooleanField(
+        verbose_name=_("Is correct"), default=False, db_index=True
+    )
 
     class Meta:
         verbose_name = _("Answer")

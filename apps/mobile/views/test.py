@@ -42,7 +42,7 @@ class TestResult(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        lesson = request.data.get("lesson")
+        test = request.data.get("test")
         results_data = request.data.get("results")
 
         correct_count = 0
@@ -52,7 +52,11 @@ class TestResult(APIView):
 
         for result in results_data:
             question_id = result.get("question_id")
-            answer_id = result.get("answer_id")
+            answers = result.get("answers")
+            if not answers:
+                not_attempted_count += 1
+                continue
+
             try:
                 question = TestQuestion.objects.get(id=question_id)
             except TestQuestion.DoesNotExist:
@@ -63,11 +67,17 @@ class TestResult(APIView):
                 return Response(
                     {"success": False, "message": "Correct answer not found"}
                 )
-            if answer_id is None:
-                not_attempted_count += 1
-            elif answer_id == correct_answer.id:
+
+            answered_correctly = False
+            for answer in answers:
+                answer_id = answer.get("answer_id")
+                if answer_id == correct_answer.id:
+                    answered_correctly = True
+                    total_score += correct_answer.ball
+                    break
+
+            if answered_correctly:
                 correct_count += 1
-                total_score += correct_answer.ball
             else:
                 incorrect_count += 1
 
@@ -76,7 +86,7 @@ class TestResult(APIView):
                 "success": True,
                 "message": "Test result",
                 "data": {
-                    "lesson": lesson,
+                    "test": test,
                     "correct_count": correct_count,
                     "incorrect_count": incorrect_count,
                     "not_attempted_count": not_attempted_count,

@@ -20,11 +20,15 @@ def update_course_saved_count(sender, instance, **kwargs):
 @receiver(post_save, sender=TestQuestion)
 def update_question_count(sender, instance, created, **kwargs):
     if created:
-        instance.test.question_count = TestQuestion.objects.filter(test=instance.test).count()
+        instance.test.question_count = TestQuestion.objects.filter(
+            test=instance.test
+        ).count()
         instance.test.save()
 
 
 @receiver(post_delete, sender=TestQuestion)
 def update_question_count(sender, instance, **kwargs):
-    instance.test.question_count = TestQuestion.objects.filter(test=instance.test).count()
+    instance.test.question_count = TestQuestion.objects.filter(
+        test=instance.test
+    ).count()
     instance.test.save()
