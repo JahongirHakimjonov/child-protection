@@ -42,59 +42,62 @@ class TestResult(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        test = request.data.get("test")
-        results_data = request.data.get("results")
-        if not results_data:
-            return Response(
-                {"success": False, "message": "Results not found"}, status=400
-            )
-
-        correct_count = 0
-        incorrect_count = 0
-        not_attempted_count = 0
-        total_score = 0
-
-        for result in results_data:
-            question_id = result.get("question_id")
-            answers = result.get("answers")
-            if not answers:
-                not_attempted_count += 1
-                continue
-
-            try:
-                question = TestQuestion.objects.get(id=question_id)
-            except TestQuestion.DoesNotExist:
-                return Response({"success": False, "message": "Question not found"})
-
-            correct_answers = question.answers.filter(is_correct=True)
-            if not correct_answers.exists():
+        try:
+            test = request.data.get("test")
+            results_data = request.data.get("results")
+            if not results_data:
                 return Response(
-                    {"success": False, "message": "Correct answer not found"}
+                    {"success": False, "message": "Results not found"}, status=400
                 )
 
-            answered_correctly = False
-            for answer in answers:
-                answer_id = answer.get("answer_id")
-                if correct_answers.filter(id=answer_id).exists():
-                    answered_correctly = True
-                    total_score += correct_answers.first().ball
-                    break
+            correct_count = 0
+            incorrect_count = 0
+            not_attempted_count = 0
+            total_score = 0
 
-            if answered_correctly:
-                correct_count += 1
-            else:
-                incorrect_count += 1
+            for result in results_data:
+                question_id = result.get("question_id")
+                answers = result.get("answers")
+                if not answers:
+                    not_attempted_count += 1
+                    continue
 
-        return Response(
-            {
-                "success": True,
-                "message": "Test result",
-                "data": {
-                    "test": test,
-                    "correct_count": correct_count,
-                    "incorrect_count": incorrect_count,
-                    "not_attempted_count": not_attempted_count,
-                    "total_score": total_score,
-                },
-            }
-        )
+                try:
+                    question = TestQuestion.objects.get(id=question_id)
+                except TestQuestion.DoesNotExist:
+                    return Response({"success": False, "message": "Question not found"})
+
+                correct_answers = question.answers.filter(is_correct=True)
+                if not correct_answers.exists():
+                    return Response(
+                        {"success": False, "message": "Correct answer not found"}
+                    )
+
+                answered_correctly = False
+                for answer in answers:
+                    answer_id = answer.get("answer_id")
+                    if correct_answers.filter(id=answer_id).exists():
+                        answered_correctly = True
+                        total_score += correct_answers.first().ball
+                        break
+
+                if answered_correctly:
+                    correct_count += 1
+                else:
+                    incorrect_count += 1
+
+            return Response(
+                {
+                    "success": True,
+                    "message": "Test result",
+                    "data": {
+                        "test": test,
+                        "correct_count": correct_count,
+                        "incorrect_count": incorrect_count,
+                        "not_attempted_count": not_attempted_count,
+                        "total_score": total_score,
+                    },
+                }
+            )
+        except Exception as e:
+            return Response({"success": False, "message": str(e)}, status=500)
