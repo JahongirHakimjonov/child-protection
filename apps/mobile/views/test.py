@@ -54,6 +54,7 @@ class TestResult(APIView):
             incorrect_count = 0
             not_attempted_count = 0
             total_score = 0
+            question_count = len(results_data)
 
             for result in results_data:
                 question_id = result.get("question_id")
@@ -92,6 +93,7 @@ class TestResult(APIView):
                     "message": "Test result",
                     "data": {
                         "test": test,
+                        "question_count": question_count,
                         "correct_count": correct_count,
                         "incorrect_count": incorrect_count,
                         "not_attempted_count": not_attempted_count,
