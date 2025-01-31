@@ -11,10 +11,12 @@ class AnswerType(models.TextChoices):
 
 class Test(AbstractBaseModel):
     lesson = models.ForeignKey(
-        "CourseLesson", on_delete=models.CASCADE, related_name="questions"
+        "CourseLesson", on_delete=models.CASCADE, related_name="questions", db_index=True
     )
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField(db_index=True)
+    banner = models.ImageField(upload_to="test", null=True, blank=True, db_index=True)
+    question_count = models.PositiveBigIntegerField(default=0, db_index=True)
     is_active = models.BooleanField(default=True, db_index=True)
 
     class Meta:
@@ -28,9 +30,9 @@ class Test(AbstractBaseModel):
 
 
 class TestQuestion(AbstractBaseModel):
-    test = models.ForeignKey("Test", on_delete=models.CASCADE, related_name="questions")
-    question = models.TextField(verbose_name=_("Question"))
-    is_active = models.BooleanField(verbose_name=_("Is active"), default=True)
+    test = models.ForeignKey("Test", on_delete=models.CASCADE, related_name="questions", db_index=True)
+    question = models.TextField(verbose_name=_("Question"), db_index=True)
+    is_active = models.BooleanField(verbose_name=_("Is active"), default=True, db_index=True)
 
     class Meta:
         verbose_name = _("Question")
@@ -44,17 +46,18 @@ class TestQuestion(AbstractBaseModel):
 
 class Answer(AbstractBaseModel):
     question = models.ForeignKey(
-        TestQuestion, on_delete=models.CASCADE, related_name="answers"
+        TestQuestion, on_delete=models.CASCADE, related_name="answers", db_index=True
     )
-    answer = models.TextField()
+    answer = models.TextField(db_index=True)
     type = models.CharField(
         verbose_name=_("Type"),
         max_length=10,
         choices=AnswerType,
         default=AnswerType.RADIO,
+        db_index=True,
     )
-    ball = models.IntegerField(verbose_name=_("Ball"), default=0)
-    is_correct = models.BooleanField(verbose_name=_("Is correct"), default=False)
+    ball = models.IntegerField(verbose_name=_("Ball"), default=0, db_index=True)
+    is_correct = models.BooleanField(verbose_name=_("Is correct"), default=False, db_index=True)
 
     class Meta:
         verbose_name = _("Answer")

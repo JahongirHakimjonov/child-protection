@@ -10,6 +10,8 @@ class TestSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "description",
+            "banner",
+            "question_count",
         )
 
 
