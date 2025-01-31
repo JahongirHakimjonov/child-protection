@@ -28,7 +28,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = TestQuestion
         fields = (
             "id",
-            "lesson",
+            "test",
             "question",
         )
 
