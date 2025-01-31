@@ -22,7 +22,7 @@ class TestList(APIView):
         )
 
 
-class QuestionList(APIView):
+class TestQuestionList(APIView):
     serializer_class = QuestionSerializer
     permission_classes = [AllowAny]
 

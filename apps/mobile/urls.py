@@ -16,7 +16,7 @@ from apps.mobile.views.question import (
     QuestionCategoryListAPIView,
 )
 from apps.mobile.views.saved import SavedApiView
-from apps.mobile.views.test import QuestionList, TestResult, TestList
+from apps.mobile.views.test import TestResult, TestList, TestQuestionList
 
 urlpatterns = [
     path(
@@ -52,7 +52,7 @@ urlpatterns = [
     ),
     path("saved/", SavedApiView.as_view(), name="saved"),
     path("test/<int:lesson_id>/", TestList.as_view(), name="test"),
-    path("test/question/<int:test_id>/", QuestionList.as_view(), name="question"),
+    path("test/question/<int:test_id>/", TestQuestionList.as_view(), name="question"),
     path("result/", TestResult.as_view(), name="result"),
     path("banner/", BannerListAPIView.as_view(), name="banner"),
     path("help/", HelpView.as_view(), name="help"),

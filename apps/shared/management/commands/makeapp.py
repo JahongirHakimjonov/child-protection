@@ -53,7 +53,7 @@ class Command(BaseCommand):
         for package_name in ["models", "views", "admin", "serializers", "tests"]:
             create_package(os.path.join(app_directory, package_name))
             with open(
-                    os.path.join(app_directory, package_name, "__init__.py"), "w"
+                os.path.join(app_directory, package_name, "__init__.py"), "w"
             ) as file:
                 file.write(init_code.strip())
 

@@ -51,7 +51,11 @@ class CourseCategoryListAPIView(APIView):
         if progress and progress.lower() == "true":
             user = request.user
             if user.is_authenticated:
-                queryset = [category for category in queryset if self.get_progress_percent(category, user) > 0]
+                queryset = [
+                    category
+                    for category in queryset
+                    if self.get_progress_percent(category, user) > 0
+                ]
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
         serializer = self.serializer_class(
