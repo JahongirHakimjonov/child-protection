@@ -76,7 +76,7 @@ class TestResult(APIView):
                 "success": True,
                 "message": "Test result",
                 "data": {
-                    "book": lesson,
+                    "lesson": lesson,
                     "correct_count": correct_count,
                     "incorrect_count": incorrect_count,
                     "not_attempted_count": not_attempted_count,
