@@ -94,7 +94,9 @@ class VictimStat(APIView):
             )
 
         elif distance == "yearly":
-            labels = [month_name[i] for i in range(1, 13)]  # ["January", "February", ...]
+            labels = [
+                month_name[i] for i in range(1, 13)
+            ]  # ["January", "February", ...]
             stats = (
                 model.objects.filter(created_at__year=now().year)
                 .annotate(period=TruncMonth("created_at"))
@@ -109,9 +111,15 @@ class VictimStat(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        data_dict = defaultdict(int,
-                                {data["period"].strftime("%A" if distance == "weekly" else "%B"): data["count"] for data
-                                 in stats})
+        data_dict = defaultdict(
+            int,
+            {
+                data["period"].strftime("%A" if distance == "weekly" else "%B"): data[
+                    "count"
+                ]
+                for data in stats
+            },
+        )
 
         response_data = {
             "labels": labels,
@@ -119,6 +127,10 @@ class VictimStat(APIView):
         }
 
         return Response(
-            {"success": True, "message": f"{distance.capitalize()} stats", "data": response_data},
+            {
+                "success": True,
+                "message": f"{distance.capitalize()} stats",
+                "data": response_data,
+            },
             status=status.HTTP_200_OK,
         )
