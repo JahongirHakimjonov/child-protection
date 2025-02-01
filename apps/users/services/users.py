@@ -1,6 +1,6 @@
 from apps.shared import exceptions
 from apps.shared.exceptions import ResponseException
-from apps.users.models import User
+from apps.users.models.users import User
 from apps.users.services import SmsService
 
 

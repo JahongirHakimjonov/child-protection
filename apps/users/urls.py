@@ -3,24 +3,26 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from apps.users.views import (
-    RegisterView,
-    CheckPhoneView,
-    MeView,
-    UpdateAvatarView,
-    UpdateUserView,
-    ChangePasswordView,
-    ConfirmView,
-    SendPasswordResetView,
-    ResetConfirmationCodeView,
-    ResetSetPasswordView,
-    DeleteAccountView,
-    ResendView,
+from apps.users.views.check import CheckPhoneView
+from apps.users.views.custom import (
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
     BlockSessionView,
     ListSessionView,
-    SocialAuthView,
+)
+from apps.users.views.me import MeView
+from apps.users.views.passwords import (
+    ChangePasswordView,
+    SendPasswordResetView,
+    ResetConfirmationCodeView,
+    ResetSetPasswordView,
+)
+from apps.users.views.register import RegisterView, ConfirmView, ResendView
+from apps.users.views.social import SocialAuthView
+from apps.users.views.users import (
+    UpdateAvatarView,
+    UpdateUserView,
+    DeleteAccountView,
     LogoutView,
 )
 

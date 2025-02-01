@@ -3,7 +3,7 @@ import logging
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from apps.users.models import Notification, NotificationType
+from apps.users.models.notification import Notification, NotificationType
 from apps.users.tasks import send_notification_task, send_notification_to_all_task
 
 logger = logging.getLogger(__name__)

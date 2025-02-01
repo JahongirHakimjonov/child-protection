@@ -1,8 +1,8 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from apps.users.models import Notification, NotificationType
-from apps.users.models import ActiveSessions
+from apps.users.models.notification import Notification, NotificationType
+from apps.users.models.users import ActiveSessions
 
 
 @receiver(post_save, sender=ActiveSessions)

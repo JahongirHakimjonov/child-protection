@@ -8,7 +8,7 @@ from apps.chat.serializers.chat import (
     MessageSerializer,
     ChatResourceSerializer,
 )
-from apps.users.models import RoleChoices, User
+from apps.users.models.users import RoleChoices, User
 
 
 class ChatRoomList(APIView):

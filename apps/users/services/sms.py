@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.utils.translation import gettext_lazy as _
 
 from apps.shared.exceptions import SmsException
-from apps.users.models import SmsConfirm
+from apps.users.models.sms import SmsConfirm
 
 
 class SmsService:

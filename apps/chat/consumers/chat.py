@@ -9,7 +9,7 @@ from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import UntypedToken
 
 from apps.chat.models.chat import ChatRoom, Message
-from apps.users.models import User, RoleChoices
+from apps.users.models.users import User, RoleChoices
 
 REDIS_URL = os.getenv("REDIS_CACHE_URL")
 

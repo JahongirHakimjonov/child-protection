@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from apps.users.models import ActiveSessions
+from apps.users.models.users import ActiveSessions
 
 
 class CheckActiveSessionMiddleware(MiddlewareMixin):

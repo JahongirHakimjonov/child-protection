@@ -12,8 +12,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.shared.exceptions import SmsException
-from apps.users.models import User, ActiveSessions
-from apps.users.serializers import (
+from apps.users.models.users import User, ActiveSessions
+from apps.users.serializers.register import (
     RegisterSerializer,
     ConfirmSerializer,
     ResendSerializer,

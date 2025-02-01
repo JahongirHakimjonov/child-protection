@@ -9,8 +9,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.shared.exceptions import SmsException
-from apps.users.models import ResetToken, User, ActiveSessions
-from apps.users.serializers import (
+from apps.users.models.sms import ResetToken
+from apps.users.models.users import User, ActiveSessions
+from apps.users.serializers.passwords import (
     ChangePasswordSerializer,
     SendPasswordResetSerializer,
     ResetConfirmationSerializer,

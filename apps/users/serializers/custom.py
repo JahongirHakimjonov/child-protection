@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from apps.shared.utils.authentication import UniversalPasswordAuthentication
-from apps.users.models import User, ActiveSessions
+from apps.users.models.users import User, ActiveSessions
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

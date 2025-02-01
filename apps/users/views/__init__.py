@@ -1,8 +1,9 @@
-from .check import *  # noqa
-from .custom import *  # noqa
-from .me import *  # noqa
-from .notification import *  # noqa
-from .passwords import *  # noqa
-from .register import *  # noqa
-from .social import *  # noqa
-from .users import *  # noqa
+import importlib
+import os
+
+current_dir = os.path.dirname(__file__)
+
+for filename in os.listdir(current_dir):
+    if filename.endswith(".py") and filename != "__init__.py":
+        module_name = f"{__name__}.{filename[:-3]}"
+        importlib.import_module(module_name)

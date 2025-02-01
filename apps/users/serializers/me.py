@@ -1,7 +1,7 @@
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from apps.users.models import User, ActiveSessions
+from apps.users.models.users import User, ActiveSessions
 
 
 class MeSerializer(serializers.ModelSerializer):

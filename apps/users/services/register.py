@@ -5,7 +5,7 @@ from uuid import uuid4
 import requests
 from django.utils import timezone
 
-from apps.users.models import User
+from apps.users.models.users import User
 
 
 class RegisterService:

@@ -7,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.models import ActiveSessions
-from apps.users.serializers import (
+from apps.users.models.users import ActiveSessions
+from apps.users.serializers.users import (
     UpdateAvatarSerializer,
     UpdateUserSerializer,
     DeleteAccountSerializer,

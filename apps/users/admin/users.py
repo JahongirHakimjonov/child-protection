@@ -6,7 +6,7 @@ from unfold.admin import ModelAdmin
 from unfold.decorators import display
 from unfold.forms import AdminPasswordChangeForm, UserCreationForm, UserChangeForm
 
-from apps.users.models import User, RoleChoices
+from apps.users.models.users import User, RoleChoices
 
 
 @admin.register(User)
@@ -80,7 +80,7 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
                 "path": obj.avatar.url if obj.avatar else static("images/avatar.png"),
                 "squared": False,
                 "borderless": True,
-                "width": 35,
-                "height": 35,
+                "width": 45,
+                "height": 45,
             },
         ]

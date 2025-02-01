@@ -6,7 +6,7 @@ from apps.mobile.models.help import Help
 class HelpSerializer(serializers.ModelSerializer):
     class Meta:
         model = Help
-        fields = ("id", "user", "longitude", "latitude")
+        fields = ("id", "user", "longitude", "latitude", "status")
         extra_kwargs = {
             "id": {"read_only": True},
             "user": {"required": False},

@@ -8,7 +8,7 @@ from django.core.files.base import ContentFile
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 
-from apps.users.models import RegisterTypeChoices, UserData, User
+from apps.users.models.users import RegisterTypeChoices, UserData, User
 from apps.users.services.register import RegisterService
 
 

@@ -1,6 +1,6 @@
 from modeltranslation.translator import TranslationOptions, register
 
-from apps.users.models import Notification
+from apps.users.models.notification import Notification
 
 
 @register(Notification)

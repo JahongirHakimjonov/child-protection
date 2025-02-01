@@ -1,7 +1,7 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
 
-from apps.users.models import UserData, ActiveSessions
+from apps.users.models.users import UserData, ActiveSessions
 
 
 @admin.register(UserData)

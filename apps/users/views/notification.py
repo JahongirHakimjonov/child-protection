@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.shared.pagination import CustomPagination
-from apps.users.models import Notification
-from apps.users.serializers import NotificationSerializer
+from apps.users.models.notification import Notification
+from apps.users.serializers.notification import NotificationSerializer
 
 
 class NotificationView(APIView):

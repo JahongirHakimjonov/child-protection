@@ -1,7 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from apps.users.models import User
+from apps.users.models.users import User
 
 
 class UpdateAvatarSerializer(serializers.ModelSerializer):

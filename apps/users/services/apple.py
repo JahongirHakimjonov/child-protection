@@ -9,7 +9,7 @@ import requests
 from PIL import Image
 from django.core.files.base import ContentFile
 
-from apps.users.models import RegisterTypeChoices, UserData, User
+from apps.users.models.users import RegisterTypeChoices, UserData, User
 from apps.users.services.register import RegisterService
 
 

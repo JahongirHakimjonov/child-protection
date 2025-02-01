@@ -3,8 +3,8 @@ import logging
 from celery import shared_task
 from firebase_admin import messaging
 
-from apps.users.models import Notification, NotificationType
-from apps.users.models import ActiveSessions, User
+from apps.users.models.notification import Notification, NotificationType
+from apps.users.models.users import ActiveSessions, User
 
 logger = logging.getLogger(__name__)
 

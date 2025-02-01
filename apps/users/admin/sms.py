@@ -1,7 +1,7 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
 
-from apps.users.models import SmsConfirm
+from apps.users.models.sms import SmsConfirm
 
 
 @admin.register(SmsConfirm)

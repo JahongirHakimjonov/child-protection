@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -7,17 +8,14 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from apps.users.models import ActiveSessions
-from apps.users.serializers import (
+from apps.users.models.users import ActiveSessions
+from apps.users.serializers.custom import (
     CustomTokenObtainPairSerializer,
     BlockSessionSerializer,
     ActiveSessionsSerializer,
+    CustomTokenRefreshSerializer,
 )
-from apps.users.serializers import CustomTokenRefreshSerializer
 from apps.users.services import RegisterService
-
-
-from django.utils import timezone
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

@@ -9,8 +9,8 @@ from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.users.models import ActiveSessions
-from apps.users.serializers import SocialAuthSerializer
+from apps.users.models.users import ActiveSessions
+from apps.users.serializers.register import SocialAuthSerializer
 from apps.users.services import RegisterService, Apple
 from apps.users.services.google import Google
 

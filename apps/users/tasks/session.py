@@ -3,7 +3,7 @@ from datetime import timedelta
 from celery import shared_task
 from django.utils import timezone
 
-from apps.users.models import ActiveSessions
+from apps.users.models.users import ActiveSessions
 
 
 @shared_task()
