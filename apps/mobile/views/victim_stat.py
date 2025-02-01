@@ -18,6 +18,29 @@ from apps.users.models.users import User
 class VictimStat(APIView):
     permission_classes = [AllowAny]
 
+    @staticmethod
+    def get_model(type_):
+        """User yoki Victim modelini tanlash."""
+        return {"user": User, "victim": Victim}.get(type_)
+
+    def get_statistics(self, model, truncate_function, labels):
+        """Statistikani olish uchun umumiy funksiya."""
+        stats = (
+            model.objects.filter(created_at__gte=now().replace(month=1, day=1))
+            .annotate(period=truncate_function("created_at"))
+            .values("period")
+            .annotate(count=Count("id"))
+            .order_by("period")
+        )
+
+        # Ma'lumotlarni to'ldirish
+        data_dict = defaultdict(int, {data["period"]: data["count"] for data in stats})
+
+        return {
+            "labels": labels,
+            "info": [data_dict.get(label, 0) for label in labels],
+        }
+
     @extend_schema(
         summary="Get victim statistics",
         description="Retrieve weekly or yearly statistics for users or victims.",
@@ -41,153 +64,61 @@ class VictimStat(APIView):
             200: OpenApiResponse(
                 response=dict,
                 description="Returns labels and statistical data",
-                examples=[
-                    {
-                        "name": "Weekly Response",
-                        "value": {
-                            "success": True,
-                            "message": "Weekly stats",
-                            "data": {
-                                "labels": [
-                                    "Monday",
-                                    "Tuesday",
-                                    "Wednesday",
-                                    "Thursday",
-                                    "Friday",
-                                    "Saturday",
-                                    "Sunday",
-                                ],
-                                "info": [20, 45, 28, 80, 99, 43, 55],
-                            },
-                        },
-                    },
-                    {
-                        "name": "Yearly Response",
-                        "value": {
-                            "success": True,
-                            "message": "Yearly stats",
-                            "data": {
-                                "labels": [
-                                    "January",
-                                    "February",
-                                    "March",
-                                    "April",
-                                    "May",
-                                    "June",
-                                    "July",
-                                    "August",
-                                    "September",
-                                    "October",
-                                    "November",
-                                    "December",
-                                ],
-                                "info": [
-                                    20,
-                                    45,
-                                    28,
-                                    80,
-                                    99,
-                                    43,
-                                    55,
-                                    67,
-                                    34,
-                                    76,
-                                    89,
-                                    50,
-                                ],
-                            },
-                        },
-                    },
-                ],
             ),
             400: OpenApiResponse(
                 response=dict,
                 description="Invalid query parameters",
-                examples=[
-                    {"success": False, "message": "Invalid type parameter"},
-                    {"success": False, "message": "Invalid distance parameter"},
-                ],
             ),
         },
     )
     def get(self, request):
         distance = request.query_params.get("distance")
-        type_ = request.query_params.get(
-            "type"
-        )  # "type" o'zgaruvchisi Python'da maxsus so'z
+        type_ = request.query_params.get("type")
+
+        model = self.get_model(type_)
+        if not model:
+            return Response(
+                {"success": False, "message": "Invalid type parameter"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if distance == "weekly":
             start_date = now() - timedelta(days=7)
-            query_model = (
-                User if type_ == "user" else Victim if type_ == "victim" else None
-            )
-
-            if query_model:
-                stats = (
-                    query_model.objects.filter(created_at__gte=start_date)
-                    .annotate(day=TruncDay("created_at"))
-                    .values("day")
-                    .annotate(count=Count("id"))
-                    .order_by("day")
-                )
-
-                # Default qiymat bilan bo'sh joylarni to'ldirish
-                weekly_data = defaultdict(
-                    int, {data["day"].strftime("%A"): data["count"] for data in stats}
-                )
-
-                response_data = {
-                    "labels": [
-                        day_name[i] for i in range(7)
-                    ],  # ["Monday", "Tuesday", ...]
-                    "info": [weekly_data[day] for day in day_name],
-                }
-                return Response(
-                    {"success": True, "message": "Weekly stats", "data": response_data},
-                    status=status.HTTP_200_OK,
-                )
-
-            return Response(
-                {"success": False, "message": "Invalid type parameter"},
-                status=status.HTTP_400_BAD_REQUEST,
+            labels = list(day_name)  # ["Monday", "Tuesday", ...]
+            stats = (
+                model.objects.filter(created_at__gte=start_date)
+                .annotate(period=TruncDay("created_at"))
+                .values("period")
+                .annotate(count=Count("id"))
+                .order_by("period")
             )
 
         elif distance == "yearly":
-            query_model = (
-                User if type_ == "user" else Victim if type_ == "victim" else None
+            labels = [month_name[i] for i in range(1, 13)]  # ["January", "February", ...]
+            stats = (
+                model.objects.filter(created_at__year=now().year)
+                .annotate(period=TruncMonth("created_at"))
+                .values("period")
+                .annotate(count=Count("id"))
+                .order_by("period")
             )
 
-            if query_model:
-                stats = (
-                    query_model.objects.filter(created_at__year=now().year)
-                    .annotate(month=TruncMonth("created_at"))
-                    .values("month")
-                    .annotate(count=Count("id"))
-                    .order_by("month")
-                )
-
-                # Default qiymat bilan bo'sh joylarni to'ldirish
-                yearly_data = defaultdict(
-                    int, {data["month"].month: data["count"] for data in stats}
-                )
-
-                response_data = {
-                    "labels": [
-                        month_name[i] for i in range(1, 13)
-                    ],  # ["January", "February", ...]
-                    "info": [yearly_data[i] for i in range(1, 13)],  # [0, 45, 28, ...]
-                }
-                return Response(
-                    {"success": True, "message": "Yearly stats", "data": response_data},
-                    status=status.HTTP_200_OK,
-                )
-
+        else:
             return Response(
-                {"success": False, "message": "Invalid type parameter"},
+                {"success": False, "message": "Invalid distance parameter"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        data_dict = defaultdict(int,
+                                {data["period"].strftime("%A" if distance == "weekly" else "%B"): data["count"] for data
+                                 in stats})
+
+        response_data = {
+            "labels": labels,
+            "info": [data_dict.get(label, 0) for label in labels],
+        }
+
         return Response(
-            {"success": False, "message": "Invalid distance parameter"},
-            status=status.HTTP_400_BAD_REQUEST,
+            {"success": True, "message": f"{distance.capitalize()} stats", "data": response_data},
+            status=status.HTTP_200_OK,
         )
