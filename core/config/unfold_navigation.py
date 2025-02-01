@@ -232,25 +232,33 @@ PAGES = [
                     request.user, "view_help"
                 ),
             },
+            {
+                "title": _("Victimlik"),
+                "icon": "warning",
+                "link": reverse_lazy("admin:mobile_victim_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_victim"
+                ),
+            },
         ],
     },
 ]
 
-# TABS = [
-#     {
-#         "models": [
-#             "auth.user",
-#             "auth.group",
-#         ],
-#         "items": [
-#             {
-#                 "title": _("Foydalanuvchilar"),
-#                 "link": reverse_lazy("admin:users_user_changelist"),
-#             },
-#             {
-#                 "title": _("Guruhlar"),
-#                 "link": reverse_lazy("admin:auth_group_changelist"),
-#             },
-#         ],
-#     },
-# ]
+TABS = [
+    {
+        "models": [
+            "mobile.victim",
+            "mobile.victimtype",
+        ],
+        "items": [
+            {
+                "title": _("Victimlar"),
+                "link": reverse_lazy("admin:mobile_victim_changelist"),
+            },
+            {
+                "title": _("Victim turlari"),
+                "link": reverse_lazy("admin:mobile_victimtype_changelist"),
+            },
+        ],
+    },
+]

@@ -17,6 +17,7 @@ from apps.mobile.views.question import (
 )
 from apps.mobile.views.saved import SavedApiView
 from apps.mobile.views.test import TestResult, TestList, TestQuestionList
+from apps.mobile.views.victim import VictimTypeList, VictimList
 
 urlpatterns = [
     path(
@@ -56,4 +57,6 @@ urlpatterns = [
     path("result/", TestResult.as_view(), name="result"),
     path("banner/", BannerListAPIView.as_view(), name="banner"),
     path("help/", HelpView.as_view(), name="help"),
+    path("victim/type/", VictimTypeList.as_view(), name="victim-type"),
+    path("victim/", VictimList.as_view(), name="victim"),
 ]
