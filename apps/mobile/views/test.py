@@ -1,4 +1,4 @@
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,7 +8,7 @@ from apps.mobile.serializers.test import QuestionSerializer, TestSerializer
 
 class TestList(APIView):
     serializer_class = TestSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, lesson_id=None):
         tests = Test.objects.filter(is_active=True, lesson_id=lesson_id)
@@ -24,7 +24,7 @@ class TestList(APIView):
 
 class TestQuestionList(APIView):
     serializer_class = QuestionSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, test_id=None):
         questions = TestQuestion.objects.filter(is_active=True, test_id=test_id)
@@ -39,7 +39,7 @@ class TestQuestionList(APIView):
 
 
 class TestResult(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
