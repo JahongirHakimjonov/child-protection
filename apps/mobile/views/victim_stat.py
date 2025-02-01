@@ -5,6 +5,7 @@ from datetime import timedelta
 from django.db.models import Count
 from django.db.models.functions import TruncDay, TruncMonth
 from django.utils.timezone import now
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -17,6 +18,98 @@ from apps.users.models.users import User
 class VictimStat(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="Get victim statistics",
+        description="Retrieve weekly or yearly statistics for users or victims.",
+        parameters=[
+            OpenApiParameter(
+                name="distance",
+                type=str,
+                required=True,
+                enum=["weekly", "yearly"],
+                description="Specify whether to retrieve weekly or yearly statistics.",
+            ),
+            OpenApiParameter(
+                name="type",
+                type=str,
+                required=True,
+                enum=["user", "victim"],
+                description="Specify whether to retrieve statistics for users or victims.",
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(
+                response=dict,
+                description="Returns labels and statistical data",
+                examples=[
+                    {
+                        "name": "Weekly Response",
+                        "value": {
+                            "success": True,
+                            "message": "Weekly stats",
+                            "data": {
+                                "labels": [
+                                    "Monday",
+                                    "Tuesday",
+                                    "Wednesday",
+                                    "Thursday",
+                                    "Friday",
+                                    "Saturday",
+                                    "Sunday",
+                                ],
+                                "info": [20, 45, 28, 80, 99, 43, 55],
+                            },
+                        },
+                    },
+                    {
+                        "name": "Yearly Response",
+                        "value": {
+                            "success": True,
+                            "message": "Yearly stats",
+                            "data": {
+                                "labels": [
+                                    "January",
+                                    "February",
+                                    "March",
+                                    "April",
+                                    "May",
+                                    "June",
+                                    "July",
+                                    "August",
+                                    "September",
+                                    "October",
+                                    "November",
+                                    "December",
+                                ],
+                                "info": [
+                                    20,
+                                    45,
+                                    28,
+                                    80,
+                                    99,
+                                    43,
+                                    55,
+                                    67,
+                                    34,
+                                    76,
+                                    89,
+                                    50,
+                                ],
+                            },
+                        },
+                    },
+                ],
+            ),
+            400: OpenApiResponse(
+                response=dict,
+                description="Invalid query parameters",
+                examples=[
+                    {"success": False, "message": "Invalid type parameter"},
+                    {"success": False, "message": "Invalid distance parameter"},
+                ],
+            ),
+        },
+    )
     def get(self, request):
         distance = request.query_params.get("distance")
         type_ = request.query_params.get(
