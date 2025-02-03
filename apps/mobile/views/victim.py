@@ -10,10 +10,12 @@ from apps.mobile.serializers.victim import VictimSerializer, VictimTypeSerialize
 class VictimTypeList(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = VictimTypeSerializer
-    queryset = VictimType.objects.filter(is_active=True)
+
+    def get_queryset(self):
+        return VictimType.objects.filter(is_active=True)
 
     def get(self, request):
-        serializer = self.serializer_class(self.queryset, many=True)
+        serializer = self.serializer_class(self.get_queryset(), many=True)
         return Response(
             {
                 "success": True,
@@ -27,10 +29,12 @@ class VictimTypeList(APIView):
 class VictimList(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = VictimSerializer
-    queryset = Victim.objects.all()
+
+    def get_queryset(self):
+        return Victim.objects.filter(user=self.request.user)
 
     def get(self, request):
-        queryset = self.queryset.filter(user=request.user)
+        queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
         return Response(
             {
