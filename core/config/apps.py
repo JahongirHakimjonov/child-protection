@@ -6,7 +6,6 @@ THIRD_PARTY_APPS = [
     "unfold.contrib.guardian",
     "unfold.contrib.simple_history",
     "modeltranslation",
-    "django_ckeditor_5",
     "corsheaders",
     "rosetta",
     "rest_framework",

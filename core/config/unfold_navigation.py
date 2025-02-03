@@ -217,6 +217,14 @@ PAGES = [
         "title": _("Qo'shimcha"),
         "items": [
             {
+                "title": _("FAQ"),
+                "icon": "quiz",
+                "link": reverse_lazy("admin:mobile_faq_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_faq"
+                ),
+            },
+            {
                 "title": _("Banner"),
                 "icon": "perm_media",
                 "link": reverse_lazy("admin:mobile_banner_changelist"),
