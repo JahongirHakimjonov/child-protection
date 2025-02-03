@@ -14,10 +14,10 @@ from apps.users.services.register import RegisterService
 
 class Google:
     @staticmethod
-    def authenticate(code):
+    def authenticate(id_token):
         try:
-            token_data = Google._fetch_token(code)
-            idinfo = Google._verify_token(token_data["id_token"])
+            # token_data = Google._fetch_token(code)
+            idinfo = Google._verify_token(id_token)
             user = Google._get_or_create_user(idinfo)
             if idinfo.get("picture"):
                 Google._save_user_avatar(user, idinfo["picture"])
@@ -26,20 +26,20 @@ class Google:
         except (ValueError, requests.RequestException) as e:
             raise ValueError(f"Authentication failed: {str(e)}")
 
-    @staticmethod
-    def _fetch_token(code):
-        response = requests.post(
-            "https://oauth2.googleapis.com/token",
-            data={
-                "code": code,
-                "client_id": os.getenv("GOOGLE_CLIENT_ID"),
-                "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-                "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"),
-                "grant_type": "authorization_code",
-            },
-        )
-        response.raise_for_status()
-        return response.json()
+    # @staticmethod
+    # def _fetch_token(code):
+    #     response = requests.post(
+    #         "https://oauth2.googleapis.com/token",
+    #         data={
+    #             "code": code,
+    #             "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+    #             "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
+    #             "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"),
+    #             "grant_type": "authorization_code",
+    #         },
+    #     )
+    #     response.raise_for_status()
+    #     return response.json()
 
     @staticmethod
     def _verify_token(token):
