@@ -19,7 +19,6 @@ urlpatterns = (
         path("api/v1/", include("apps.mobile.urls")),
         path("api/v1/moderator/", include("apps.moderator.urls")),
         path("api/v1/", include("apps.chat.urls")),
-        path("ckeditor5/", include("django_ckeditor_5.urls")),
         path("rosetta/", include("rosetta.urls")),
         # Media and static files
         re_path(r"static/(?P<path>.*)", serve, {"document_root": settings.STATIC_ROOT}),
