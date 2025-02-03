@@ -1,0 +1,1 @@
+in api views we are creating methods like get_object, are we assigning them elsewhere to some action, is it being used defaultny
