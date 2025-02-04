@@ -1,10 +1,13 @@
 import asyncio
 import json
+import logging
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from apps.users.models.notification import Notification
+
+logger = logging.getLogger(__name__)
 
 
 class NotificationConsumer(AsyncWebsocketConsumer):
@@ -16,7 +19,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_add(
                 f"user_{self.user.id}", self.channel_name
             )
-            print(f"User {self.user.id} connected to notification channel.")
+            logger.info(f"User {self.user.id} connected to notification channel.")
             await self.accept()
 
             self.periodic_task = asyncio.create_task(
@@ -33,7 +36,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def check_notifications_periodically(self):
         try:
             while True:
-                print("Checking notifications...")
                 await self.check_and_send_notifications()
                 await asyncio.sleep(5)
         except asyncio.CancelledError:
@@ -46,10 +48,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         notifications = await sync_to_async(list)(
             Notification.objects.filter(user=self.user, is_send=False)
         )
-        print(f"Found {len(notifications)} new notifications for user {self.user.id}.")
 
         for notification in notifications:
-            print(f"Sending notification to user {self.user.id}...blaaa")
             notification_data = {
                 "type": "send_notification",
                 "id": notification.id,
@@ -60,15 +60,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 "created_at": notification.created_at.isoformat(),
                 "is_read": notification.is_read,
             }
-            print(notification_data)
             try:
                 await self.send(text_data=json.dumps(notification_data))
-                print(f"Notification sent to user {self.user.id}.")
                 # Update the is_send flag after sending the notification.
                 notification.is_send = True
                 await sync_to_async(notification.save)()
             except Exception as e:
-                print(f"Failed to send notification to user {self.user.id}: {e}")
+                logger.error(f"Failed to send notification to user {self.user.id}: {e}")
 
     async def send_notification(self, event):
         await self.send(text_data=json.dumps(event))
