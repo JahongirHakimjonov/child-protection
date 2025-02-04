@@ -17,7 +17,7 @@ RUN pip install --upgrade pip gunicorn uvicorn[standard]
 
 # Copy scripts and set permissions
 COPY ./deployments/compose/django/celery/worker/start /start-celeryworker
-COPY ./deployments/compose/django/celery/beat/start /start-celerybeat
+#COPY ./deployments/compose/django/celery/beat/start /start-celerybeat
 #COPY ./deployments/compose/django/celery/flower/start /start-flower
 COPY ./deployments/compose/django/entrypoint /entrypoint
 COPY ./deployments/compose/django/start /start
@@ -28,9 +28,9 @@ RUN sed -i 's/\r$//g' /start-celeryworker && \
     chmod +x /start-celeryworker
 
 # Copy and set permissions for celery beat start script
-COPY ./deployments/compose/django/celery/beat/start /start-celerybeat
-RUN sed -i 's/\r$//g' /start-celerybeat && \
-    chmod +x /start-celerybeat
+#COPY ./deployments/compose/django/celery/beat/start /start-celerybeat
+#RUN sed -i 's/\r$//g' /start-celerybeat && \
+#    chmod +x /start-celerybeat
 
 # Copy and set permissions for flower start script
 #COPY ./deployments/compose/django/celery/flower/start /start-flower
