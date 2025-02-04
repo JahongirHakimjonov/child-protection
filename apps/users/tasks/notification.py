@@ -34,12 +34,12 @@ def send_fcm_notification(notification, fcm_tokens):
 def send_notification_task(notification_id):
     try:
         notification = Notification.objects.get(id=notification_id)
-        fcm_tokens = ActiveSessions.objects.filter(
-            user=notification.user, is_active=True, fcm_token__isnull=False
-        ).values_list("fcm_token", flat=True)
-        send_fcm_notification(notification, fcm_tokens)
-        notification.is_send = True
-        notification.save()
+        # fcm_tokens = ActiveSessions.objects.filter(
+        #     user=notification.user, is_active=True, fcm_token__isnull=False
+        # ).values_list("fcm_token", flat=True)
+        # send_fcm_notification(notification, fcm_tokens)
+        # notification.is_send = True
+        # notification.save()
         logger.info(f"Notification sent to user {notification.user.id}")
     except Notification.DoesNotExist:
         logger.error(f"Notification with id {notification_id} does not exist")
@@ -63,12 +63,12 @@ def send_notification_to_all_task(notification_id):
                 type=NotificationType.NONE,
                 is_send=True,
             )
-            fcm_tokens = ActiveSessions.objects.filter(
-                user=user, is_active=True, fcm_token__isnull=False
-            ).values_list("fcm_token", flat=True)
-            send_fcm_notification(notification, fcm_tokens)
-        notification.is_send = True
-        notification.save()
+        #     fcm_tokens = ActiveSessions.objects.filter(
+        #         user=user, is_active=True, fcm_token__isnull=False
+        #     ).values_list("fcm_token", flat=True)
+        #     send_fcm_notification(notification, fcm_tokens)
+        # notification.is_send = True
+        # notification.save()
         logger.info("Notification sent to all users")
     except Notification.DoesNotExist:
         logger.error(f"Notification with id {notification_id} does not exist")
