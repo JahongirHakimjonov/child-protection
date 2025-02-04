@@ -25,11 +25,11 @@ class CourseCategoryAdmin(ModelAdmin, TabbedTranslationAdmin):
     search_fields = ["name"]
     readonly_fields = ["created_at", "updated_at", "lesson_count"]
 
-    def get_form(self, request, obj=None, change=False, **kwargs):
-        form = super().get_form(request, obj, change, **kwargs)
-        form.base_fields["first_color"].widget = UnfoldAdminColorInputWidget()
-        form.base_fields["second_color"].widget = UnfoldAdminColorInputWidget()
-        return form
+    # def get_form(self, request, obj=None, change=False, **kwargs):
+    #     form = super().get_form(request, obj, change, **kwargs)
+    #     form.base_fields["first_color"].widget = UnfoldAdminColorInputWidget()
+    #     form.base_fields["second_color"].widget = UnfoldAdminColorInputWidget()
+    #     return form
 
 
 @admin.register(CourseLesson)
