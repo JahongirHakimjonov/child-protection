@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from apps.mobile.models.banner import Banner
 from apps.moderator.serializers.banner import ModeratorBannerSerializer
 from apps.shared.permissions.admin import IsAdmin
+from apps.shared.pagination.custom import CustomPagination
 
 
 class ModeratorBannerView(APIView):
@@ -15,8 +16,13 @@ class ModeratorBannerView(APIView):
         return Banner.objects.all()
 
     def get(self, request):
+        is_active = request.query_params.get("is_active")
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
+        if is_active is not None:
+            queryset.filter(is_active=is_active)
+        paginator = CustomPagination
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
         return Response(
             {
                 "success": True,

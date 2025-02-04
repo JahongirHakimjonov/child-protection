@@ -29,10 +29,6 @@ from apps.moderator.views.notification import (
 )
 from apps.moderator.views.user import ModeratorUserView, ModeratorUserDetailView
 from apps.moderator.views.chat import (
-    ModeratorChatResourceView,
-    ModeratorChatResourceDetailView,
-    ModeratorChatRoomView,
-    ModeratorChatRoomDetailView,
     ModeratorMessageView,
     ModeratorMessageDetailView,
 )
@@ -153,26 +149,6 @@ urlpatterns = [
         "user/<int:pk>/",
         ModeratorUserDetailView.as_view(),
         name="moderator_user_detail",
-    ),
-    path(
-        "chat-resource/",
-        ModeratorChatResourceView.as_view(),
-        name="moderator_chat_resource",
-    ),
-    path(
-        "chat-resource/<int:pk>/",
-        ModeratorChatResourceDetailView.as_view(),
-        name="moderator_chat_resource_detail",
-    ),
-    path(
-        "chat-room/",
-        ModeratorChatRoomView.as_view(),
-        name="moderator_chat_room",
-    ),
-    path(
-        "chat-room/<int:pk>/",
-        ModeratorChatRoomDetailView.as_view(),
-        name="moderator_chat_room_detail",
     ),
     path(
         "message/",

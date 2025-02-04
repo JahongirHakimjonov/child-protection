@@ -1,6 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Q
 
 from apps.mobile.models.course import CourseCategory, CourseLessonResource, CourseLesson
 from apps.moderator.serializers.course import (
@@ -9,6 +10,7 @@ from apps.moderator.serializers.course import (
     ModeratorCourseLessonSerializer,
 )
 from apps.shared.permissions.admin import IsAdmin
+from apps.shared.pagination.custom import CustomPagination
 
 
 class ModeratorCourseCategoryView(APIView):
@@ -19,8 +21,24 @@ class ModeratorCourseCategoryView(APIView):
         return CourseCategory.objects.all()
 
     def get(self, request):
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
+        if is_active is not None:
+            queryset = queryset.filter(is_active=is_active)
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(title__icontains=search_term)
+                    | Q(sub_title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                )
+
+        paginator = CustomPagination
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
         return Response(
             {
                 "success": True,
@@ -106,8 +124,24 @@ class ModeratorCourseLessonResourceView(APIView):
         return CourseLessonResource.objects.all()
 
     def get(self, request):
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
+        if is_active is not None:
+            queryset = queryset.filter(is_active=is_active)
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(name__icontains=search_term)
+                    | Q(lesson__title__icontains=search_term)
+                )
+        paginator = CustomPagination
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
         return Response(
             {
                 "success": True,
@@ -195,8 +229,24 @@ class ModeratorCourseLessonView(APIView):
         return CourseLesson.objects.all()
 
     def get(self, request):
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
+        if is_active is not None:
+            queryset = queryset.filter(is_active=is_active)
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(text__icontains=search_term)
+                    | Q(category__title__icontains=search_term)
+                )
+        paginator = CustomPagination
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
         return Response(
             {
                 "success": True,

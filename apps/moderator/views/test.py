@@ -1,6 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Q
 
 from apps.mobile.models.test import Test, TestQuestion, Answer
 from apps.moderator.serializers.test import (
@@ -9,6 +10,7 @@ from apps.moderator.serializers.test import (
     ModeratorAnswerSerializer,
 )
 from apps.shared.permissions.admin import IsAdmin
+from apps.shared.pagination.custom import CustomPagination
 
 
 class ModeratorTestView(APIView):
@@ -19,7 +21,27 @@ class ModeratorTestView(APIView):
         return Test.objects.all()
 
     def get(self, request):
-        serializer = self.serializer_class(self.get_queryset, many=True)
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
+        queryset = self.get_queryset()
+        if is_active is not None:
+            queryset = queryset.filter(is_active=is_active)
+
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(question_count__icontains=search_term)
+                    | Q(course__title__icontains=search_term)
+                    | Q(course__description__icontains=search_term)
+                    | Q(course__text__icontains=search_term)
+                )
+        paginator = CustomPagination
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
         return Response(
             {"success": True, "message": "Test list", "data": serializer.data}
         )
@@ -95,7 +117,24 @@ class ModeratorTestQuestionView(APIView):
         return TestQuestion.objects.all()
 
     def get(self, request):
-        serializer = self.serializer_class(self.get_queryset, many=True)
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
+        queryset = self.get_queryset()
+        if is_active is not None:
+            queryset = queryset.filter(is_active=is_active)
+
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(question__icontains=search_term)
+                    | Q(test__title__icontains=search_term)
+                    | Q(test__description__icontains=search_term)
+                )
+        paginator = CustomPagination
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
         return Response(
             {"success": True, "message": "TestQuestion list", "data": serializer.data}
         )
@@ -177,7 +216,25 @@ class ModeratorAnswerView(APIView):
         return Answer.objects.all()
 
     def get(self, request):
-        serializer = self.serializer_class(self.get_queryset, many=True)
+        search = request.query_params.get("search")
+        is_correct = request.query_params.get("is_correct")
+        queryset = self.get_queryset()
+        if is_correct is not None:
+            queryset = queryset.filter(is_correct=is_correct)
+
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(question__question__icontains=search_term)
+                    | Q(answer__icontains=search_term)
+                    | Q(type__icontains=search_term)
+                    | Q(ball__icontains=search_term)
+                )
+        paginator = CustomPagination
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
         return Response(
             {"success": True, "message": "Answer list", "data": serializer.data}
         )

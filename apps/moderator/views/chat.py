@@ -1,166 +1,14 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Q
 
-from apps.chat.models.chat import ChatResource, ChatRoom, Message
+from apps.chat.models.chat import Message
 from apps.moderator.serializers.chat import (
-    ModeratorChatResourceSerializer,
-    ModeratorChatRoomSerializer,
     ModeratorMessageSerializer,
 )
 from apps.shared.permissions.admin import IsAdmin
-
-
-class ModeratorChatResourceView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorChatResourceSerializer
-
-    def get_queryset(self):
-        return ChatResource.objects.all()
-
-    def get(self, request):
-        serializer = self.serializer_class(self.get_queryset, many=True)
-        return Response(
-            {"success": True, "message": "ChatResource list", "data": serializer.data}
-        )
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    "success": True,
-                    "message": "ChatResource created",
-                    "data": serializer.data,
-                }
-            )
-
-        return Response(
-            {
-                "success": False,
-                "message": serializer.errors,
-            }
-        )
-
-
-class ModeratorChatResourceDetailView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorChatResourceSerializer
-
-    def get_object(self, pk):
-        try:
-            return ChatResource.objects.get(pk=pk)
-        except ChatResource.DoesNotExist:
-            return Response(
-                {"success": False, "message": "ChatResource does not exist"}
-            )
-
-    def get(self, request, pk):
-        chatresource = self.get_object(pk=pk)
-        serializer = self.serializer_class(data=chatresource)
-        return Response(
-            {
-                "success": True,
-                "message": "ChatResource detail",
-                "data": serializer.data,
-            }
-        )
-
-    def patch(self, request, pk):
-        chatresource = self.get_object(pk=pk)
-        serializer = self.serializer_class(chatresource, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    "success": True,
-                    "message": "ChatResource updated",
-                    "data": serializer.data,
-                }
-            )
-        return Response({"success": False, "message": "ChatResource does not exist"})
-
-    def delete(self, request, pk):
-        chatresource = self.get_object(pk=pk)
-        chatresource.delete()
-        return Response({"success": True, "message": "ChatResource deleted"})
-
-
-########################################################################################################################
-########################################################################################################################
-########################################################################################################################
-########################################################################################################################
-
-
-class ModeratorChatRoomView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorChatRoomSerializer
-
-    def get_queryset(self):
-        return ChatRoom.objects.all()
-
-    def get(self, request):
-        serializer = self.serializer_class(self.get_queryset(), many=True)
-        return Response(
-            {"success": True, "message": "ChatRoom list", "data": serializer.data}
-        )
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    "success": True,
-                    "message": "ChatRoom created",
-                    "data": serializer.data,
-                }
-            )
-        return Response({"success": False, "message": serializer.errors})
-
-
-class ModeratorChatRoomDetailView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorChatRoomSerializer
-
-    def get_object(self, pk):
-        try:
-            return ChatRoom.objects.get(pk=pk)
-        except ChatRoom.DoesNotExist:
-            return Response({"success": False, "message": "ChatRoom does not exist"})
-
-    def get(self, request, pk):
-        chatroom = self.get_object(pk)
-        serializer = self.serializer_class(chatroom)
-        return Response(
-            {"success": True, "message": "ChatRoom detail", "data": serializer.data}
-        )
-
-    def patch(self, request, pk):
-        chatroom = self.get_object(pk)
-        serializer = self.serializer_class(chatroom, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    "success": True,
-                    "message": "ChatRoom updated",
-                    "data": serializer.data,
-                }
-            )
-        return Response({"success": False, "message": serializer.errors})
-
-    def delete(self, request, pk):
-        chatroom = self.get_object(pk)
-        chatroom.delete()
-        return Response({"success": True, "message": "ChatRoom deleted"})
-
-
-########################################################################################################################
-########################################################################################################################
-########################################################################################################################
-########################################################################################################################
+from apps.shared.pagination.custom import CustomPagination
 
 
 class ModeratorMessageView(APIView):
@@ -171,7 +19,29 @@ class ModeratorMessageView(APIView):
         return Message.objects.all()
 
     def get(self, request):
-        serializer = self.serializer_class(self.get_queryset(), many=True)
+        search = request.query_params.get("search")
+        is_admin = request.query_params.get("is_admin")
+        is_sent = request.query_params.get("is_sent")
+        queryset = self.get_queryset()
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(chat__name__icontains=search_term)
+                    | Q(sender__name__icontains=search_term)
+                    | Q(sender__phone__icontains=search_term)
+                    | Q(message__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
+        if is_admin is not None:
+            queryset = queryset.filter(is_admin=is_admin)
+        if is_sent is not None:
+            queryset = queryset.filter(is_sent=is_sent)
+
+        paginator = CustomPagination
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
         return Response(
             {"success": True, "message": "Message list", "data": serializer.data}
         )

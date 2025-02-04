@@ -1,11 +1,12 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.db.models import Q
 from apps.users.models.notification import Notification
 
 from apps.moderator.serializers.notification import ModeratorNotificationSerializer
 from apps.shared.permissions.admin import IsAdmin
+from apps.shared.pagination.custom import CustomPagination
 
 
 class ModeratorNotificationView(APIView):
@@ -16,7 +17,28 @@ class ModeratorNotificationView(APIView):
         return Notification.objects.all()
 
     def get(self, request):
-        serializer = self.serializer_class(self.get_queryset, many=True)
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
+        is_read = request.query_params.get("is_read")
+        queryset = self.get_queryset()
+        if is_active is not None:
+            queryset = queryset.filter(is_active=is_active)
+        if is_read is not None:
+            queryset = queryset.filter(is_read=is_read)
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(user__phone__icontains=search_term)
+                    | Q(user__username__icontains=search_term)
+                    | Q(title__icontains=search_term)
+                    | Q(message__icontains=search_term)
+                )
+
+        paginator = CustomPagination
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
         return Response(
             {"success": True, "message": "Notification list", "data": serializer.data}
         )
