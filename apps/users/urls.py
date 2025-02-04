@@ -11,6 +11,7 @@ from apps.users.views.custom import (
     ListSessionView,
 )
 from apps.users.views.me import MeView
+from apps.users.views.notification import NotificationView
 from apps.users.views.passwords import (
     ChangePasswordView,
     SendPasswordResetView,
@@ -42,6 +43,7 @@ urlpatterns = [
     path("auth/session/block/", BlockSessionView.as_view(), name="block_session"),
     path("auth/session/list/", ListSessionView.as_view(), name="list_session"),
     path("auth/logout/", LogoutView.as_view(), name="logout"),
+    path("notification/", NotificationView.as_view(), name="notification"),
     path(
         "auth/password/reset/", SendPasswordResetView.as_view(), name="reset-password"
     ),

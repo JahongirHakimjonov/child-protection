@@ -1,6 +1,41 @@
 from django.urls import path
-
 from apps.moderator.views.banner import ModeratorBannerView, ModeratorBannerDetailView
+from apps.moderator.views.course import (
+    ModeratorCourseCategoryView,
+    ModeratorCourseCategoryDetailView,
+    ModeratorCourseLessonResourceView,
+    ModeratorCourseLessonResourceDetailView,
+    ModeratorCourseLessonView,
+    ModeratorCourseLessonDetailView,
+)
+from apps.moderator.views.question import (
+    ModeratorQuestionCategoryView,
+    ModeratorQuestionCategoryDetailView,
+    ModeratorQuestionView,
+    ModeratorQuestionDetailView,
+)
+from apps.moderator.views.test import (
+    ModeratorTestView,
+    ModeratorTestDetailView,
+    ModeratorTestQuestionView,
+    ModeratorTestQuestionDetailView,
+    ModeratorAnswerView,
+    ModeratorAnswerDetailView,
+)
+from apps.moderator.views.help import ModeratorHelpView, ModeratorHelpDetailView
+from apps.moderator.views.notification import (
+    ModeratorNotificationView,
+    ModeratorNotificationDetailView,
+)
+from apps.moderator.views.user import ModeratorUserView, ModeratorUserDetailView
+from apps.moderator.views.chat import (
+    ModeratorChatResourceView,
+    ModeratorChatResourceDetailView,
+    ModeratorChatRoomView,
+    ModeratorChatRoomDetailView,
+    ModeratorMessageView,
+    ModeratorMessageDetailView,
+)
 
 urlpatterns = [
     path("banner/", ModeratorBannerView.as_view(), name="moderator_banner"),
@@ -8,5 +43,145 @@ urlpatterns = [
         "banner/<int:pk>/",
         ModeratorBannerDetailView.as_view(),
         name="moderator_banner_detail",
+    ),
+    path(
+        "course-category/",
+        ModeratorCourseCategoryView.as_view(),
+        name="moderator_course_category",
+    ),
+    path(
+        "course-category/<int:pk>/",
+        ModeratorCourseCategoryDetailView.as_view(),
+        name="moderator_course_detail",
+    ),
+    path(
+        "course-lesson-resource/",
+        ModeratorCourseLessonResourceView.as_view(),
+        name="moderator_category_lesson_resource",
+    ),
+    path(
+        "course-lesson-resource/<int:pk>/",
+        ModeratorCourseLessonResourceDetailView.as_view(),
+        name="moderator_category_lesson_resource_detail",
+    ),
+    path(
+        "course-lesson/",
+        ModeratorCourseLessonView.as_view(),
+        name="moderator_category_lesson",
+    ),
+    path(
+        "course-lesson/<int:pk>/",
+        ModeratorCourseLessonDetailView.as_view(),
+        name="moderator_category_lesson_detail",
+    ),
+    path(
+        "question-category/",
+        ModeratorQuestionCategoryView.as_view(),
+        name="moderator_question_category",
+    ),
+    path(
+        "question-category/<int:pk>/",
+        ModeratorQuestionCategoryDetailView.as_view(),
+        name="moderator_question_category_detail",
+    ),
+    path(
+        "question/",
+        ModeratorQuestionView.as_view(),
+        name="moderator_question",
+    ),
+    path(
+        "question/<int:pk>/",
+        ModeratorQuestionDetailView.as_view(),
+        name="moderator_question_detail",
+    ),
+    path(
+        "test/",
+        ModeratorTestView.as_view(),
+        name="moderator_test",
+    ),
+    path(
+        "test/<int:pk>/",
+        ModeratorTestDetailView.as_view(),
+        name="moderator_test_detail",
+    ),
+    path(
+        "test-question/",
+        ModeratorTestQuestionView.as_view(),
+        name="moderator_test_question",
+    ),
+    path(
+        "test-question/<int:pk>/",
+        ModeratorTestQuestionDetailView.as_view(),
+        name="moderator_test_question_detail",
+    ),
+    path(
+        "answer/",
+        ModeratorAnswerView.as_view(),
+        name="moderator_answer",
+    ),
+    path(
+        "answer/<int:pk>/",
+        ModeratorAnswerDetailView.as_view(),
+        name="moderator_answer_detail",
+    ),
+    path(
+        "help/",
+        ModeratorHelpView.as_view(),
+        name="moderator_help",
+    ),
+    path(
+        "help/<int:pk>/",
+        ModeratorHelpDetailView.as_view(),
+        name="moderator_help_detail",
+    ),
+    path(
+        "notification/",
+        ModeratorNotificationView.as_view(),
+        name="moderator_notification",
+    ),
+    path(
+        "notification/<int:pk>/",
+        ModeratorNotificationDetailView.as_view(),
+        name="moderator_notification_detail",
+    ),
+    path(
+        "user/",
+        ModeratorUserView.as_view(),
+        name="moderator_user",
+    ),
+    path(
+        "user/<int:pk>/",
+        ModeratorUserDetailView.as_view(),
+        name="moderator_user_detail",
+    ),
+    path(
+        "chat-resource/",
+        ModeratorChatResourceView.as_view(),
+        name="moderator_chat_resource",
+    ),
+    path(
+        "chat-resource/<int:pk>/",
+        ModeratorChatResourceDetailView.as_view(),
+        name="moderator_chat_resource_detail",
+    ),
+    path(
+        "chat-room/",
+        ModeratorChatRoomView.as_view(),
+        name="moderator_chat_room",
+    ),
+    path(
+        "chat-room/<int:pk>/",
+        ModeratorChatRoomDetailView.as_view(),
+        name="moderator_chat_room_detail",
+    ),
+    path(
+        "message/",
+        ModeratorMessageView.as_view(),
+        name="moderator_message",
+    ),
+    path(
+        "message/<int:pk>/",
+        ModeratorMessageDetailView.as_view(),
+        name="moderator_message_detail",
     ),
 ]
