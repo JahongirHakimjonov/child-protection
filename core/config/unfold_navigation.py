@@ -248,6 +248,22 @@ PAGES = [
                     request.user, "view_victim"
                 ),
             },
+            {
+                "title": _("Yangiliklar"),
+                "icon": "news",
+                "link": reverse_lazy("admin:mobile_news_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_news"
+                ),
+            },
+            {
+                "title": _("Joylashuvlar"),
+                "icon": "where_to_vote",
+                "link": reverse_lazy("admin:mobile_place_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_place"
+                ),
+            },
         ],
     },
 ]
