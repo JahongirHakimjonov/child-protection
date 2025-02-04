@@ -2,7 +2,6 @@ from django.contrib import admin
 from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
 from unfold.admin import ModelAdmin
 from unfold.admin import TabularInline
-from unfold.widgets import UnfoldAdminColorInputWidget
 
 from apps.mobile.models.course import (
     CourseCategory,
