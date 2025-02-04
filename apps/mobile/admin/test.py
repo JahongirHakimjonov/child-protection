@@ -1,21 +1,21 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin, TabularInline
-
+from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
 from apps.mobile.models.test import Answer, TestQuestion, Test
 
 
-class AnswerInline(TabularInline):
+class AnswerInline(TabularInline, TranslationTabularInline):
     model = Answer
     extra = 0
 
 
-class TestQuestionInline(TabularInline):
+class TestQuestionInline(TabularInline, TranslationTabularInline):
     model = TestQuestion
     extra = 0
 
 
 @admin.register(Answer)
-class AnswerAdmin(ModelAdmin):
+class AnswerAdmin(ModelAdmin, TabbedTranslationAdmin):
     list_display = ["id", "answer", "type"]
     search_fields = ["answer", "type"]
     list_filter = ["type"]
@@ -23,7 +23,7 @@ class AnswerAdmin(ModelAdmin):
 
 
 @admin.register(TestQuestion)
-class TestQuestionAdmin(ModelAdmin):
+class TestQuestionAdmin(ModelAdmin, TabbedTranslationAdmin):
     list_display = ["id", "test", "question"]
     search_fields = ["test", "question"]
     list_filter = ["test"]
@@ -32,7 +32,7 @@ class TestQuestionAdmin(ModelAdmin):
 
 
 @admin.register(Test)
-class TestAdmin(ModelAdmin):
+class TestAdmin(ModelAdmin, TabbedTranslationAdmin):
     list_display = ["id", "title", "description"]
     search_fields = ["title", "description"]
     list_filter = ["title"]

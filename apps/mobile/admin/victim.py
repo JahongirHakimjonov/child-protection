@@ -1,11 +1,12 @@
 from django.contrib import admin
+from modeltranslation.admin import TabbedTranslationAdmin
 from unfold.admin import ModelAdmin
 
 from apps.mobile.models.victim import Victim, VictimType
 
 
 @admin.register(VictimType)
-class VictimTypeAdmin(ModelAdmin):
+class VictimTypeAdmin(ModelAdmin, TabbedTranslationAdmin):
     list_display = ["id", "name"]
     search_fields = ["name"]
     list_per_page = 50

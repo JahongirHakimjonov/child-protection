@@ -1,4 +1,5 @@
 from django.contrib import admin
+from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
 from unfold.admin import ModelAdmin
 from unfold.admin import TabularInline
 from unfold.widgets import UnfoldAdminColorInputWidget
@@ -10,7 +11,7 @@ from apps.mobile.models.course import (
 )
 
 
-class ResourceInline(TabularInline):
+class ResourceInline(TabularInline, TranslationTabularInline):
     model = CourseLessonResource
     extra = 0
     tab = True
@@ -19,7 +20,7 @@ class ResourceInline(TabularInline):
 
 
 @admin.register(CourseCategory)
-class CourseCategoryAdmin(ModelAdmin):
+class CourseCategoryAdmin(ModelAdmin, TabbedTranslationAdmin):
     list_display = ["id", "title", "image"]
     search_fields = ["name"]
     readonly_fields = ["created_at", "updated_at", "lesson_count"]
@@ -32,7 +33,7 @@ class CourseCategoryAdmin(ModelAdmin):
 
 
 @admin.register(CourseLesson)
-class LessonAdmin(ModelAdmin):
+class LessonAdmin(ModelAdmin, TabbedTranslationAdmin):
     list_display = [
         "id",
         "category",
@@ -90,7 +91,7 @@ class LessonAdmin(ModelAdmin):
 
 
 @admin.register(CourseLessonResource)
-class LessonResourceAdmin(ModelAdmin):
+class LessonResourceAdmin(ModelAdmin, TabbedTranslationAdmin):
     list_display = ["id", "lesson", "title"]
     search_fields = ["title"]
     readonly_fields = ["created_at", "updated_at", "size", "type", "name"]
