@@ -15,7 +15,7 @@ class ResourceInline(TabularInline, TranslationTabularInline):
     model = CourseLessonResource
     extra = 0
     tab = True
-    fields = ["title", "file"]
+    fields = ["title", "description", "banner", "file"]
     show_change_link = True
 
 
