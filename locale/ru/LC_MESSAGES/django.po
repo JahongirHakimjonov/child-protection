@@ -16,444 +16,445 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
-"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
 #: apps/mobile/models/course.py:12
 msgid "Course Category"
-msgstr ""
+msgstr "Категория курса"
 
 #: apps/mobile/models/course.py:13
 msgid "Course Categories"
-msgstr ""
+msgstr "Категории курсов"
 
 #: apps/mobile/models/course.py:34
 msgid "Course"
-msgstr ""
+msgstr "Курс"
 
 #: apps/mobile/models/course.py:35
 msgid "Courses"
-msgstr ""
+msgstr "Курсы"
 
 #: apps/mobile/models/course.py:50
 msgid "Course Lesson"
-msgstr ""
+msgstr "Урок курса"
 
 #: apps/mobile/models/course.py:51
 msgid "Course Lessons"
-msgstr ""
+msgstr "Уроки курса"
 
 #: apps/mobile/models/course.py:68
 msgid "Course Lesson Resource"
-msgstr ""
+msgstr "Ресурс урока курса"
 
 #: apps/mobile/models/course.py:69
 msgid "Course Lesson Resources"
-msgstr ""
+msgstr "Ресурсы урока курса"
 
 #: apps/mobile/models/course.py:87
 msgid "File Size"
-msgstr ""
+msgstr "Размер файла"
 
 #: apps/mobile/models/course.py:94
 msgid "File Type"
-msgstr ""
+msgstr "Тип файла"
 
 #: apps/mobile/models/course.py:99
 msgid "File Name"
-msgstr ""
+msgstr "Название файла"
 
 #: apps/mobile/models/question.py:11
 msgid "Question Category"
-msgstr ""
+msgstr "Категория вопросов"
 
 #: apps/mobile/models/question.py:12
 msgid "Question Categories"
-msgstr ""
+msgstr "Категории вопросов"
 
 #: apps/mobile/models/question.py:27
 msgid "Question"
-msgstr ""
+msgstr "Вопрос"
 
 #: apps/mobile/models/question.py:28
 msgid "Questions"
-msgstr ""
+msgstr "Вопросы"
 
 #: apps/shared/enums/status.py:6
 msgid "Active"
-msgstr ""
+msgstr "Активный"
 
 #: apps/shared/enums/status.py:7
 msgid "Pending"
-msgstr ""
+msgstr "Ожидается"
 
 #: apps/shared/enums/status.py:8
 msgid "Rejected"
-msgstr ""
+msgstr "Отказано"
 
 #: apps/users/admin/users.py:63 apps/users/models/users.py:48
 msgid "Role"
-msgstr ""
+msgstr "Роль"
 
 #: apps/users/models/notification.py:8
 msgid "Single"
-msgstr ""
+msgstr "Одиночный"
 
 #: apps/users/models/notification.py:9
 msgid "All"
-msgstr ""
+msgstr "Все"
 
 #: apps/users/models/notification.py:10
 msgid "None"
-msgstr ""
+msgstr "Нет"
 
 #: apps/users/models/notification.py:18 apps/users/models/users.py:101
 #: apps/users/models/users.py:143 apps/users/models/users.py:167
 msgid "User"
-msgstr ""
+msgstr "Пользователь"
 
 #: apps/users/models/notification.py:26
 msgid "Banner"
-msgstr ""
+msgstr "Флаг"
 
 #: apps/users/models/notification.py:28
 msgid "Title"
-msgstr ""
+msgstr "Название"
 
 #: apps/users/models/notification.py:29
 msgid "Message"
-msgstr ""
+msgstr "Сообщение"
 
 #: apps/users/models/notification.py:30
 msgid "Is Send"
-msgstr ""
+msgstr "Отправлено"
 
 #: apps/users/models/notification.py:31
 msgid "Is Read"
-msgstr ""
+msgstr "Прочитан"
 
 #: apps/users/models/notification.py:36
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: apps/users/models/notification.py:41
 msgid "Notification"
-msgstr ""
+msgstr "Уведомление"
 
 #: apps/users/models/notification.py:42
 msgid "Notifications"
-msgstr ""
+msgstr "Уведомления"
 
 #: apps/users/models/sms.py:17
 msgid "Kod"
-msgstr ""
+msgstr "Код"
 
 #: apps/users/models/sms.py:18
 msgid "Urinishlar soni"
-msgstr ""
+msgstr "Количество попыток"
 
 #: apps/users/models/sms.py:20
 msgid "Qayta yuborishlar soni"
-msgstr ""
+msgstr "Количество повторных отправлений"
 
 #: apps/users/models/sms.py:22 apps/users/models/users.py:31
 msgid "Telefon raqami"
-msgstr ""
+msgstr "Номер телефона"
 
 #: apps/users/models/sms.py:23
 msgid "Muddati"
-msgstr ""
+msgstr "Срок"
 
 #: apps/users/models/sms.py:25
 msgid "Bloklanish vaqti"
-msgstr ""
+msgstr "Bloklanish vaqti"
 
 #: apps/users/models/sms.py:30
 msgid "Qayta yuborish bloklanish vaqti"
-msgstr ""
+msgstr "Qayta yuborish bloklanish vaqti"
 
 #: apps/users/models/sms.py:86
 msgid "SMS tasdiqlash"
-msgstr ""
+msgstr "Подтверждение SMS"
 
 #: apps/users/models/sms.py:87
 msgid "SMS tasdiqlashlar"
-msgstr ""
+msgstr "СМС-подтверждения"
 
 #: apps/users/models/sms.py:93
 msgid "Token"
-msgstr ""
+msgstr "Жетон"
 
 #: apps/users/models/sms.py:95 apps/users/models/users.py:17
 #: apps/users/models/users.py:66 apps/users/models/users.py:85
 msgid "Foydalanuvchi"
-msgstr ""
+msgstr "Пользователь"
 
 #: apps/users/models/sms.py:102 apps/users/models/sms.py:103
 msgid "Tokenni tiklash"
-msgstr ""
+msgstr "Восстановление токенов"
 
 #: apps/users/models/users.py:16
 msgid "Admin"
-msgstr ""
+msgstr "Администратор"
 
 #: apps/users/models/users.py:18
 msgid "Moderator"
-msgstr ""
+msgstr "Модератор"
 
 #: apps/users/models/users.py:22
 msgid "Telefon"
-msgstr ""
+msgstr "Телефон"
 
 #: apps/users/models/users.py:23
 msgid "Google"
-msgstr ""
+msgstr "Google"
 
 #: apps/users/models/users.py:24
 msgid "WhatsApp"
-msgstr ""
+msgstr "WhatsApp"
 
 #: apps/users/models/users.py:38
 msgid "Foydalanuvchi nomi"
-msgstr ""
+msgstr "Пользовательское имя"
 
 #: apps/users/models/users.py:42
 msgid "Avatar"
-msgstr ""
+msgstr "Аватар"
 
 #: apps/users/models/users.py:53
 msgid "Ro'yxatdan o'tish turi"
-msgstr ""
+msgstr "Вид регистрации"
 
 #: apps/users/models/users.py:86 core/config/unfold_navigation.py:29
 #: core/config/unfold_navigation.py:40
 msgid "Foydalanuvchilar"
-msgstr ""
+msgstr "Пользователи"
 
 #: apps/users/models/users.py:103
 msgid "IP address"
-msgstr ""
+msgstr "IP-адрес"
 
 #: apps/users/models/users.py:104
 msgid "User agent"
-msgstr ""
+msgstr "Пользовательский агент"
 
 #: apps/users/models/users.py:106
 msgid "Location"
-msgstr ""
+msgstr "Местонахождение"
 
 #: apps/users/models/users.py:109
 msgid "Last activity"
-msgstr ""
+msgstr "Последняя активность"
 
 #: apps/users/models/users.py:113
 msgid "FCM token"
-msgstr ""
+msgstr "Жетон FCM"
 
 #: apps/users/models/users.py:118
 msgid "Refresh token"
-msgstr ""
+msgstr "Обновление жетона"
 
 #: apps/users/models/users.py:119
 msgid "Access token"
-msgstr ""
+msgstr "Доступный жетон"
 
 #: apps/users/models/users.py:121
 msgid "Expired at"
-msgstr ""
+msgstr "Срок действия:"
 
 #: apps/users/models/users.py:123
 msgid "Is active"
-msgstr ""
+msgstr "Активно"
 
 #: apps/users/models/users.py:125
 msgid "Data"
-msgstr ""
+msgstr "Данные"
 
 #: apps/users/models/users.py:129
 msgid "Active session"
-msgstr ""
+msgstr "Активное сеанс"
 
 #: apps/users/models/users.py:130
 msgid "Active sessions"
-msgstr ""
+msgstr "Активные сессии"
 
 #: apps/users/models/users.py:135
 msgid "Session"
-msgstr ""
+msgstr "Сеанс"
 
 #: apps/users/models/users.py:149
 msgid "Provider"
-msgstr ""
+msgstr "Провайдер"
 
 #: apps/users/models/users.py:152
 msgid "Provider ID"
-msgstr ""
+msgstr "ID провайдера"
 
 #: apps/users/models/users.py:154
 msgid "Extra data"
-msgstr ""
+msgstr "Дополнительные данные"
 
 #: apps/users/models/users.py:158 apps/users/models/users.py:159
 msgid "User data"
-msgstr ""
+msgstr "Данные пользователя"
 
 #: apps/users/serializers/passwords.py:41
 #: apps/users/serializers/passwords.py:52
 msgid "User does not exist"
-msgstr ""
+msgstr "Пользователя не существует"
 
 #: apps/users/serializers/register.py:27 apps/users/serializers/register.py:44
 msgid "Telefon raqami noto‘g‘ri"
-msgstr ""
+msgstr "Неверный телефонный номер"
 
 #: apps/users/serializers/register.py:30
 msgid "Telefon raqami allaqachon mavjud"
-msgstr ""
+msgstr "Telefon raqami allaqachon mavjud"
 
 #: apps/users/serializers/users.py:58
 msgid "Foydalanuvchi topilmadi. Iltimos, qayta  urinib ko'ring."
-msgstr ""
+msgstr "Foydalanuvchi topilmadi. Iltimos, qayta urinib köring."
 
 #: apps/users/services/sms.py:29
 #, python-brace-format
 msgid "Qayta yuborish bloklandi, qayta urunib ko'ring {expired}"
-msgstr ""
+msgstr "Qayta yuborish bloklandi, qayta urunib köring {expired}"
 
 #: apps/users/services/sms.py:56 apps/users/services/sms.py:74
 msgid "Invalid confirmation code"
-msgstr ""
+msgstr "Неверный код подтверждения"
 
 #: apps/users/services/sms.py:61
 msgid "Time for confirmation has expired"
-msgstr ""
+msgstr "Срок подтверждения истек"
 
 #: apps/users/services/sms.py:65
 #, python-brace-format
 msgid "Try again in {expired}"
-msgstr ""
+msgstr "Повторите попытку через {expired}"
 
 #: apps/users/tasks/sms.py:14
 #, python-format
 msgid "Ro'yxatdan o'tishingiz uchun tasdiqlash kodi: %(code)s"
-msgstr ""
+msgstr "Röyxatdan ötishingiz uchun tasdiqlash kodi: % (code) s"
 
 #: apps/users/views/passwords.py:68
 msgid "Tasdiqlandi"
-msgstr ""
+msgstr "Подтверждено"
 
 #: apps/users/views/passwords.py:78
 msgid "Tasdiqlash ko'di xato"
-msgstr ""
+msgstr "Tasdiqlash kodi xato"
 
 #: apps/users/views/passwords.py:105
 msgid "Token xato"
-msgstr ""
+msgstr "Токен ошибка"
 
 #: apps/users/views/passwords.py:117
 msgid "Parol yangilandi"
-msgstr ""
+msgstr "Пароль изменен"
 
 #: apps/users/views/register.py:42
 #, python-brace-format
 msgid ""
-"Registration data saved. Please confirm your code. SMS sent to {phone} phone "
-"number."
+"Registration data saved. Please confirm your code. SMS sent to {phone} phone"
+" number."
 msgstr ""
+"Регистрационные данные сохранены. Подтвердите код. СМС отправлен на номер "
+"телефона {phone}."
 
 #: apps/users/views/register.py:50 apps/users/views/register.py:145
 msgid "Invalid data."
-msgstr ""
+msgstr "Неверные данные."
 
 #: apps/users/views/register.py:86
 msgid "Phone number already exists."
-msgstr ""
+msgstr "Номер телефона уже существует."
 
 #: apps/users/views/register.py:120
 msgid "User created."
-msgstr ""
+msgstr "Создано пользователем."
 
 #: apps/users/views/register.py:139
 msgid "Invalid phone number or code."
-msgstr ""
+msgstr "Неверный телефонный номер или код."
 
 #: apps/users/views/register.py:165
 #, python-brace-format
 msgid "Confirmation code sent to {phone} phone number."
-msgstr ""
+msgstr "Код подтверждения отправлен на номер телефона {phone}."
 
 #: apps/users/views/users.py:32
 msgid "Avatar successfully updated."
-msgstr ""
+msgstr "Аватар обновлен."
 
 #: apps/users/views/users.py:49
 msgid "User information successfully updated."
-msgstr ""
+msgstr "Информация пользователя обновлена."
 
 #: apps/users/views/users.py:62
 msgid "Delete user account."
-msgstr ""
+msgstr "Удалить пользовательский счет."
 
 #: apps/users/views/users.py:63
 msgid "Delete authenticated user account."
-msgstr ""
+msgstr "Удалить аутентифицированный пользовательский счет."
 
 #: apps/users/views/users.py:76
 msgid "Account successfully deleted."
-msgstr ""
+msgstr "Счет удалось удалить."
 
 #: apps/users/views/users.py:84
 msgid "Incorrect password provided."
-msgstr ""
+msgstr "Введен неверный пароль."
 
 #: apps/users/views/users.py:95
 msgid "Logout user."
-msgstr ""
+msgstr "Пользователь при выходе."
 
 #: apps/users/views/users.py:96
 msgid "Logout authenticated user."
-msgstr ""
+msgstr "Выход аутентифицированного пользователя."
 
 #: apps/users/views/users.py:114
 msgid "Incorrect session id provided."
-msgstr ""
+msgstr "Неверный идентификатор сеанса."
 
 #: apps/users/views/users.py:118
 msgid "User successfully logged out."
-msgstr ""
+msgstr "Пользователь вышел из системы."
 
 #: core/config/unfold_navigation.py:21
 msgid "Bosh sahifa"
-msgstr ""
+msgstr "Главная страница"
 
 #: core/config/unfold_navigation.py:32
 msgid "Guruhlar"
-msgstr ""
+msgstr "Групповой"
 
 #: core/config/unfold_navigation.py:48
 msgid "SMS Kodlar"
-msgstr ""
+msgstr "Коды SMS"
 
 #: core/config/unfold_navigation.py:59
 msgid "Foydalanuvchi ma'lumotlari"
-msgstr ""
+msgstr "Пользовательская информация"
 
 #: core/config/unfold_navigation.py:62
 msgid "Aktiv sessiyalar"
-msgstr ""
+msgstr "Активные сессии"
 
 #: core/config/unfold_navigation.py:70
 msgid "User Social data"
-msgstr ""
+msgstr "Социальные данные пользователя"
 
 #: core/config/unfold_navigation.py:78
 msgid "Bildirishnomalar"
-msgstr ""
+msgstr "Уведомления"
 
 #: core/settings.py:101
 msgid "Uzbek"
-msgstr ""
+msgstr "узбекский"
 
 #: core/settings.py:102
 msgid "Russia"
-msgstr ""
+msgstr "Россия"
