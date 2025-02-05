@@ -2,6 +2,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Q
+from rest_framework.generics import get_object_or_404
 
 from apps.chat.models.chat import Message
 from apps.moderator.serializers.chat import (
@@ -23,6 +24,12 @@ class ModeratorMessageView(APIView):
         is_admin = request.query_params.get("is_admin")
         is_sent = request.query_params.get("is_sent")
         queryset = self.get_queryset()
+
+        tf = {"true": True, "false": False}
+        if is_admin is not None:
+            queryset = queryset.filter(is_admin=tf.get(is_admin.lower(), None))
+        if is_sent is not None:
+            queryset = queryset.filter(is_sent=tf.get(is_sent.lower(), None))
         if search:
             search_terms = search[:100].split()
             query = Q()
@@ -34,17 +41,12 @@ class ModeratorMessageView(APIView):
                     | Q(message__icontains=search_term)
                 )
             queryset = queryset.filter(query)
-        if is_admin is not None:
-            queryset = queryset.filter(is_admin=is_admin)
-        if is_sent is not None:
-            queryset = queryset.filter(is_sent=is_sent)
-
-        paginator = CustomPagination
+        paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(paginated_queryset, many=True)
-        return Response(
-            {"success": True, "message": "Message list", "data": serializer.data}
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -64,21 +66,17 @@ class ModeratorMessageDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorMessageSerializer
 
-    def get_object(self, pk):
-        try:
-            return Message.objects.get(pk=pk)
-        except Message.DoesNotExist:
-            return Response({"success": False, "message": "Message does not exist"})
-
     def get(self, request, pk):
-        message = self.get_object(pk)
+        message = get_object_or_404(Message, pk)
+        if not message:
+            return Response({"message": "bla bla"})
         serializer = self.serializer_class(message)
         return Response(
             {"success": True, "message": "Message detail", "data": serializer.data}
         )
 
     def patch(self, request, pk):
-        message = self.get_object(pk)
+        message = get_object_or_404(Message, pk)
         serializer = self.serializer_class(message, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -92,6 +90,6 @@ class ModeratorMessageDetailView(APIView):
         return Response({"success": False, "message": serializer.errors})
 
     def delete(self, request, pk):
-        message = self.get_object(pk)
+        message = get_object_or_404(Message, pk)
         message.delete()
         return Response({"success": True, "message": "Message deleted"})

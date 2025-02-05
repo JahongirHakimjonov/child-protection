@@ -2,9 +2,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Q
+from rest_framework.generics import get_object_or_404
 
 from apps.mobile.models.help import Help
-
 from apps.moderator.serializers.help import ModeratorHelpSerializer
 from apps.shared.permissions.admin import IsAdmin
 from apps.shared.pagination.custom import CustomPagination
@@ -29,12 +29,13 @@ class ModeratorHelpView(APIView):
                     | Q(user__phone__icontains=search_term)
                     | Q(status__icontains=search_term)
                 )
-        paginator = CustomPagination
+            queryset = queryset.filter(query)
+        paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(paginated_queryset, many=True)
-        return Response(
-            {"success": True, "message": "Help list", "data": serializer.data}
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -56,15 +57,9 @@ class ModeratorHelpDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorHelpSerializer
 
-    def get_object(self, pk):
-        try:
-            return Help.objects.get(pk=pk)
-        except Help.DoesNotExist:
-            return Response({"success": False, "message": "Help does not exist"})
-
     def get(self, request, pk):
-        help_object = self.get_object(pk=pk)
-        serializer = self.serializer_class(data=help_object)
+        help_object = get_object_or_404(Help, pk)
+        serializer = self.serializer_class(help_object)
         return Response(
             {
                 "success": True,
@@ -74,7 +69,7 @@ class ModeratorHelpDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        help_object = self.get_object(pk=pk)
+        help_object = get_object_or_404(Help, pk)
         serializer = self.serializer_class(help_object, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -88,6 +83,6 @@ class ModeratorHelpDetailView(APIView):
         return Response({"success": False, "message": "Help does not exist"})
 
     def delete(self, request, pk):
-        help_object = self.get_object(pk=pk)
+        help_object = get_object_or_404(Help, pk)
         help_object.delete()
         return Response({"success": True, "message": "Help deleted"})

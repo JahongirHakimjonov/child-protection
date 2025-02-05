@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Q
 from apps.users.models.notification import Notification
+from rest_framework.generics import get_object_or_404
 
 from apps.moderator.serializers.notification import ModeratorNotificationSerializer
 from apps.shared.permissions.admin import IsAdmin
@@ -21,10 +22,12 @@ class ModeratorNotificationView(APIView):
         is_active = request.query_params.get("is_active")
         is_read = request.query_params.get("is_read")
         queryset = self.get_queryset()
+
+        tf = {"true": True, "false": False}
         if is_active is not None:
-            queryset = queryset.filter(is_active=is_active)
+            queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
         if is_read is not None:
-            queryset = queryset.filter(is_read=is_read)
+            queryset = queryset.filter(is_read=tf.get(is_read.lower(), None))
         if search:
             search_terms = search[:100].split()
             query = Q()
@@ -35,13 +38,14 @@ class ModeratorNotificationView(APIView):
                     | Q(title__icontains=search_term)
                     | Q(message__icontains=search_term)
                 )
+            queryset = queryset.filter(query)
 
-        paginator = CustomPagination
+        paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(paginated_queryset, many=True)
-        return Response(
-            {"success": True, "message": "Notification list", "data": serializer.data}
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -67,17 +71,9 @@ class ModeratorNotificationDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorNotificationSerializer
 
-    def get_object(self, pk):
-        try:
-            return Notification.objects.get(pk=pk)
-        except Notification.DoesNotExist:
-            return Response(
-                {"success": False, "message": "Notification does not exist"}
-            )
-
     def get(self, request, pk):
-        notification = self.get_object(pk=pk)
-        serializer = self.serializer_class(data=notification)
+        notification = get_object_or_404(Notification, pk)
+        serializer = self.serializer_class(notification)
         return Response(
             {
                 "success": True,
@@ -87,7 +83,7 @@ class ModeratorNotificationDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        notification = self.get_object(pk=pk)
+        notification = get_object_or_404(Notification, pk)
         serializer = self.serializer_class(notification, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -101,6 +97,6 @@ class ModeratorNotificationDetailView(APIView):
         return Response({"success": False, "message": "Notification does not exist"})
 
     def delete(self, request, pk):
-        notification = self.get_object(pk=pk)
+        notification = get_object_or_404(Notification, pk)
         notification.delete()
         return Response({"success": True, "message": "Notification deleted"})
