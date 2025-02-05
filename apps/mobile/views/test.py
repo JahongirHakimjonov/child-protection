@@ -1,10 +1,10 @@
 from drf_spectacular.utils import OpenApiParameter, extend_schema
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.mobile.models.test import TestQuestion, Test
-from apps.mobile.serializers.test import QuestionSerializer, TestSerializer
+from apps.mobile.serializers.test import TestQuestionSerializer, TestSerializer
 
 
 class TestList(APIView):
@@ -33,7 +33,7 @@ class TestList(APIView):
 
 
 class TestQuestionList(APIView):
-    serializer_class = QuestionSerializer
+    serializer_class = TestQuestionSerializer
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
@@ -43,7 +43,7 @@ class TestQuestionList(APIView):
                 name="test_id", description="Filter", required=True, type=int
             ),
         ],
-        responses={200: QuestionSerializer(many=True)},
+        responses={200: TestQuestionSerializer(many=True)},
     )
     def get(self, request, test_id=None):
         questions = TestQuestion.objects.filter(is_active=True, test_id=test_id)
@@ -58,6 +58,7 @@ class TestQuestionList(APIView):
 
 
 class TestResult(APIView):
+    serializer_class = TestSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

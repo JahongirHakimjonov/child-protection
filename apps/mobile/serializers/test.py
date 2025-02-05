@@ -15,7 +15,7 @@ class TestSerializer(serializers.ModelSerializer):
         )
 
 
-class AnswerSerializer(serializers.ModelSerializer):
+class TestAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
         fields = (
@@ -25,7 +25,7 @@ class AnswerSerializer(serializers.ModelSerializer):
         )
 
 
-class QuestionSerializer(serializers.ModelSerializer):
+class TestQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestQuestion
         fields = (
@@ -36,5 +36,5 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response["answers"] = AnswerSerializer(instance.answers.all(), many=True).data
+        response["answers"] = TestAnswerSerializer(instance.answers.all(), many=True).data
         return response

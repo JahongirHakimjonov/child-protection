@@ -60,7 +60,7 @@ class ModeratorPlaceDetail(APIView):
     serializer_class = ModeratorPlaceDetailSerializer
 
     @extend_schema(
-        operation_id='moderator_place_detail',
+        operation_id='moderator_place_detail_get',
     )
     def get(self, request, pk):
         place = get_object_or_404(Place, pk=pk)
@@ -74,7 +74,7 @@ class ModeratorPlaceDetail(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_place_detail',
+        operation_id='moderator_place_detail_patch',
     )
     def put(self, request, pk):
         place = get_object_or_404(Place, pk=pk)
@@ -98,7 +98,7 @@ class ModeratorPlaceDetail(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_place_detail',
+        operation_id='moderator_place_detail_delete',
     )
     def delete(self, request, pk):
         place = get_object_or_404(Place, pk=pk)

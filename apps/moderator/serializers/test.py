@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.mobile.models.test import Answer, TestQuestion, Test, AnswerType
+from apps.mobile.models.test import Answer, TestQuestion, Test
 from apps.moderator.serializers.course import ModeratorCourseLessonSerializer
 
 
@@ -40,7 +40,7 @@ class ModeratorTestDetailSerializer(serializers.ModelSerializer):
         )
 
 
-class ModeratorQuestionSerializer(serializers.ModelSerializer):
+class ModeratorTestQuestionSerializer(serializers.ModelSerializer):
     test = ModeratorTestSerializer()
 
     class Meta:
@@ -54,13 +54,13 @@ class ModeratorQuestionSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response["answers"] = ModeratorAnswerSerializer(
+        response["answers"] = ModeratorTestAnswerSerializer(
             instance.answers.all(), many=True
         ).data
         return response
 
 
-class ModeratorQuestionDetailSerializer(serializers.ModelSerializer):
+class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
     test = ModeratorTestSerializer()
 
     class Meta:
@@ -76,31 +76,22 @@ class ModeratorQuestionDetailSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response["answers"] = ModeratorAnswerSerializer(
+        response["answers"] = ModeratorTestAnswerSerializer(
             instance.answers.all(), many=True
         ).data
         return response
 
 
-class ModeratorAnswerSerializer(serializers.ModelSerializer):
-    question = ModeratorQuestionSerializer()
-    type = serializers.ChoiceField(choices=AnswerType)
+class ModeratorTestAnswerSerializer(serializers.ModelSerializer):
+    question = ModeratorTestQuestionSerializer()
 
     class Meta:
         model = Answer
-        fields = (
-            "id",
-            "question",
-            "answer",
-            "type",
-            "ball",
-            "is_correct",
-        )
+        fields = ("id", "question", "answer", "type", "ball", "is_correct")
 
 
-class ModeratorAnswerDetailSerializer(serializers.ModelSerializer):
-    question = ModeratorQuestionSerializer()
-    type = serializers.ChoiceField(choices=AnswerType)
+class ModeratorTestAnswerDetailSerializer(serializers.ModelSerializer):
+    question = ModeratorTestQuestionSerializer()
 
     class Meta:
         model = Answer
