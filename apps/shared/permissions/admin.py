@@ -7,5 +7,5 @@ class IsAdmin(BasePermission):
     def has_permission(self, request, view):
         return (
             request.user.role == RoleChoices.ADMIN
-            or request.role == RoleChoices.SUPER_ADMIN
+            or request.user.role == RoleChoices.SUPER_ADMIN
         )
