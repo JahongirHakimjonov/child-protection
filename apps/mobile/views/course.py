@@ -71,9 +71,7 @@ class CourseCategoryDetailAPIView(APIView):
     def get_queryset(self):
         return CourseCategory.objects.filter(is_active=True)
 
-    @extend_schema(
-    operation_id="course-category-detail"
-    )
+    @extend_schema(operation_id="course-category-detail")
     def get(self, request, pk):
         category = self.get_queryset().filter(id=pk).first()
         if category:

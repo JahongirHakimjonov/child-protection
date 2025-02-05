@@ -60,7 +60,7 @@ class ModeratorHelpDetailView(APIView):
     serializer_class = ModeratorHelpSerializer
 
     @extend_schema(
-        operation_id='moderator_help_detail_get',
+        operation_id="moderator_help_detail_get",
     )
     def get(self, request, pk):
         help_object = get_object_or_404(Help, pk)
@@ -74,7 +74,7 @@ class ModeratorHelpDetailView(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_help_detail_patch',
+        operation_id="moderator_help_detail_patch",
     )
     def patch(self, request, pk):
         help_object = get_object_or_404(Help, pk)
@@ -91,7 +91,7 @@ class ModeratorHelpDetailView(APIView):
         return Response({"success": False, "message": "Help does not exist"})
 
     @extend_schema(
-        operation_id='moderator_help_detail_delete',
+        operation_id="moderator_help_detail_delete",
     )
     def delete(self, request, pk):
         help_object = get_object_or_404(Help, pk)
