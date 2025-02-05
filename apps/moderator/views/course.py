@@ -1,4 +1,6 @@
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema
+
 from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -77,6 +79,9 @@ class ModeratorCourseCategoryDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorCourseCategoryDetailSerializer
 
+    @extend_schema(
+        operation_id='moderator_course_detail_get',
+    )
     def get(self, request, pk):
         coursecategory = get_object_or_404(CourseCategory, pk)
         serializer = self.serializer_class(coursecategory)
@@ -88,6 +93,9 @@ class ModeratorCourseCategoryDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id='moderator_course_detail_patch',
+    )
     def patch(self, request, pk):
         coursecategory = get_object_or_404(CourseCategory, pk)
         serializer = self.serializer_class(coursecategory, data=request.data)
@@ -102,6 +110,9 @@ class ModeratorCourseCategoryDetailView(APIView):
             )
         return Response({"success": False, "message": "CourseCategory does not exist"})
 
+    @extend_schema(
+        operation_id='moderator_course_detail_delete',
+    )
     def delete(self, request, pk):
         coursecategory = get_object_or_404(CourseCategory, pk)
         coursecategory.delete()
@@ -173,6 +184,9 @@ class ModeratorCourseLessonResourceDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorLessonResourceDetailSerializer
 
+    @extend_schema(
+        operation_id='moderator_category_lesson_resource_detail_get',
+    )
     def get(self, request, pk):
         course_lesson_resource = get_object_or_404(CourseLessonResource, pk)
         serializer = self.serializer_class(course_lesson_resource)
@@ -184,6 +198,9 @@ class ModeratorCourseLessonResourceDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id='moderator_category_lesson_resource_detail_patch',
+    )
     def patch(self, request, pk):
         course_lesson_resource = get_object_or_404(CourseLessonResource, pk)
         serializer = self.serializer_class(course_lesson_resource, data=request.data)
@@ -200,6 +217,9 @@ class ModeratorCourseLessonResourceDetailView(APIView):
             {"success": False, "message": "CourseLessonResource does not exist"}
         )
 
+    @extend_schema(
+        operation_id='moderator_category_lesson_resource_detail_delete',
+    )
     def delete(self, request, pk):
         courselessonresource = get_object_or_404(CourseLessonResource, pk)
         courselessonresource.delete()
@@ -273,6 +293,9 @@ class ModeratorCourseLessonDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorCourseLessonDetailSerializer
 
+    @extend_schema(
+        operation_id='moderator_category_lesson_detail_get',
+    )
     def get(self, request, pk):
         courselesson = get_object_or_404(CourseLesson, pk)
         serializer = self.serializer_class(courselesson)
@@ -284,6 +307,9 @@ class ModeratorCourseLessonDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id='moderator_category_lesson_detail_patch',
+    )
     def patch(self, request, pk):
         course_lesson = get_object_or_404(CourseLesson, pk)
         serializer = self.serializer_class(course_lesson, data=request.data)
@@ -298,6 +324,9 @@ class ModeratorCourseLessonDetailView(APIView):
             )
         return Response({"success": False, "message": "CourseLesson does not exist"})
 
+    @extend_schema(
+        operation_id='moderator_category_lesson_detail_delete',
+    )
     def delete(self, request, pk):
         course_lesson = get_object_or_404(CourseLesson, pk)
         course_lesson.delete()

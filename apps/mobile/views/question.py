@@ -76,6 +76,10 @@ class QuestionDetailAPIView(APIView):
         except Question.DoesNotExist:
             return None
 
+    @extend_schema(
+        operation_id="question-detail",
+        responses={200: QuestionSerializer},
+    )
     def get(self, request, pk):
         question = self.get_object(pk)
         if question is None:

@@ -23,6 +23,7 @@ from apps.mobile.views.test import TestResult, TestList, TestQuestionList
 from apps.mobile.views.victim import VictimTypeList, VictimList
 from apps.mobile.views.victim_stat import VictimStat
 
+
 urlpatterns = [
     path(
         "course/category/", CourseCategoryListAPIView.as_view(), name="course-category"

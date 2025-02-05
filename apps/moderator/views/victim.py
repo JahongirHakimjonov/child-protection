@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -37,6 +38,9 @@ class VictimTypeDetail(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorVictimTypeDetailSerializer
 
+    @extend_schema(
+        operation_id="moderator_victim_type_detail_get"
+    )
     def get(self, request, pk):
         victim_type = get_object_or_404(VictimType, pk=pk)
         serializer = self.serializer_class(victim_type)
@@ -44,6 +48,9 @@ class VictimTypeDetail(APIView):
             {"success": True, "message": "Victim Type found", "data": serializer.data}
         )
 
+    @extend_schema(
+        operation_id="moderator_victim_type_detail_patch"
+    )
     def patch(self, request, pk):
         victim_type = get_object_or_404(VictimType, pk=pk)
         serializer = self.serializer_class(victim_type, data=request.data, partial=True)
@@ -53,6 +60,9 @@ class VictimTypeDetail(APIView):
             {"success": True, "message": "Victim Type updated", "data": serializer.data}
         )
 
+    @extend_schema(
+        operation_id="moderator_victim_type_detail_delete"
+    )
     def delete(self, request, pk):
         victim_type = get_object_or_404(VictimType, pk=pk)
         victim_type.delete()
@@ -86,6 +96,9 @@ class VictimDetail(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorVictimSerializer
 
+    @extend_schema(
+        operation_id="moderator_victim_detail_get"
+    )
     def get(self, request, pk):
         victim = get_object_or_404(Victim, pk=pk)
         serializer = self.serializer_class(victim)
@@ -93,6 +106,9 @@ class VictimDetail(APIView):
             {"success": True, "message": "Victim found", "data": serializer.data}
         )
 
+    @extend_schema(
+        operation_id="moderator_victim_detail_patch"
+    )
     def patch(self, request, pk):
         victim = get_object_or_404(Victim, pk=pk)
         serializer = self.serializer_class(victim, data=request.data, partial=True)
@@ -102,6 +118,9 @@ class VictimDetail(APIView):
             {"success": True, "message": "Victim updated", "data": serializer.data}
         )
 
+    @extend_schema(
+        operation_id="moderator_victim_detail_delete"
+    )
     def delete(self, request, pk):
         victim = get_object_or_404(Victim, pk=pk)
         victim.delete()

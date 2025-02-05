@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -58,6 +59,9 @@ class ModeratorPlaceDetail(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorPlaceDetailSerializer
 
+    @extend_schema(
+        operation_id='moderator_place_detail',
+    )
     def get(self, request, pk):
         place = get_object_or_404(Place, pk=pk)
         serializer = self.serializer_class(place)
@@ -69,6 +73,9 @@ class ModeratorPlaceDetail(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id='moderator_place_detail',
+    )
     def put(self, request, pk):
         place = get_object_or_404(Place, pk=pk)
         serializer = self.serializer_class(place, data=request.data)
@@ -90,6 +97,9 @@ class ModeratorPlaceDetail(APIView):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    @extend_schema(
+        operation_id='moderator_place_detail',
+    )
     def delete(self, request, pk):
         place = get_object_or_404(Place, pk=pk)
         place.delete()

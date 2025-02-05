@@ -71,6 +71,9 @@ class CourseCategoryDetailAPIView(APIView):
     def get_queryset(self):
         return CourseCategory.objects.filter(is_active=True)
 
+    @extend_schema(
+    operation_id="course-category-detail"
+    )
     def get(self, request, pk):
         category = self.get_queryset().filter(id=pk).first()
         if category:
@@ -139,6 +142,7 @@ class LessonDetailAPIView(APIView):
         return CourseLesson.objects.filter(is_active=True)
 
     @extend_schema(
+        operation_id="course-lesson-detail",
         parameters=[
             OpenApiParameter(
                 name="category_id", description="Filter", required=True, type=int
@@ -232,6 +236,7 @@ class LessonResourceDetailAPIView(APIView):
         return CourseLessonResource.objects.filter(is_active=True)
 
     @extend_schema(
+        operation_id="course-resource-detail",
         parameters=[
             OpenApiParameter(
                 name="lesson_id", description="Filter", required=True, type=int
