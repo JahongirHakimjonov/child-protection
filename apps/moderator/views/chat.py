@@ -69,7 +69,7 @@ class ModeratorMessageDetailView(APIView):
     serializer_class = ModeratorMessageSerializer
 
     @extend_schema(
-        operation_id='moderator_message_detail_get',
+        operation_id="moderator_message_detail_get",
     )
     def get(self, request, pk):
         message = get_object_or_404(Message, pk)
@@ -79,7 +79,7 @@ class ModeratorMessageDetailView(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_message_detail_patch',
+        operation_id="moderator_message_detail_patch",
     )
     def patch(self, request, pk):
         message = get_object_or_404(Message, pk)
@@ -96,7 +96,7 @@ class ModeratorMessageDetailView(APIView):
         return Response({"success": False, "message": serializer.errors})
 
     @extend_schema(
-        operation_id='moderator_message_detail_delete',
+        operation_id="moderator_message_detail_delete",
     )
     def delete(self, request, pk):
         message = get_object_or_404(Message, pk)

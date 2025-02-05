@@ -243,7 +243,6 @@ class ModeratorAnswerView(APIView):
             return ModeratorTestAnswerSerializer
         return ModeratorTestAnswerDetailSerializer
 
-
     def get(self, request):
         search = request.query_params.get("search")
         is_correct = request.query_params.get("is_correct")
