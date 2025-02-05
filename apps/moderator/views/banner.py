@@ -55,7 +55,7 @@ class ModeratorBannerDetailView(APIView):
     serializer_class = ModeratorBannerSerializer
 
     @extend_schema(
-    operation_id='moderator_banner_detail_get',
+        operation_id="moderator_banner_detail_get",
     )
     def get(self, request, pk):
         banner = get_object_or_404(Banner, pk)
@@ -69,7 +69,7 @@ class ModeratorBannerDetailView(APIView):
         )
 
     @extend_schema(
-    operation_id='moderator_banner_detail_patch',
+        operation_id="moderator_banner_detail_patch",
     )
     def patch(self, request, pk):
         banner = get_object_or_404(Banner, pk)
@@ -91,7 +91,7 @@ class ModeratorBannerDetailView(APIView):
         )
 
     @extend_schema(
-    operation_id='moderator_banner_detail_delete',
+        operation_id="moderator_banner_detail_delete",
     )
     def delete(self, request, pk):
         banner = get_object_or_404(Banner, pk)

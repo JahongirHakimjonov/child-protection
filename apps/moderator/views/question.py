@@ -74,7 +74,7 @@ class ModeratorQuestionCategoryDetailView(APIView):
     serializer_class = ModeratorQuestionCategoryDetailSerializer
 
     @extend_schema(
-        operation_id='moderator_question_category_detail_get',
+        operation_id="moderator_question_category_detail_get",
     )
     def get(self, request, pk):
         question_category = get_object_or_404(QuestionCategory, pk)
@@ -88,7 +88,7 @@ class ModeratorQuestionCategoryDetailView(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_question_category_detail_patch',
+        operation_id="moderator_question_category_detail_patch",
     )
     def patch(self, request, pk):
         questioncategory = get_object_or_404(QuestionCategory, pk)
@@ -107,7 +107,7 @@ class ModeratorQuestionCategoryDetailView(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_question_category_detail_delete',
+        operation_id="moderator_question_category_detail_delete",
     )
     def delete(self, request, pk):
         questioncategory = get_object_or_404(QuestionCategory, pk)
@@ -183,7 +183,7 @@ class ModeratorQuestionDetailView(APIView):
     serializer_class = ModeratorQuestionDetailSerializer
 
     @extend_schema(
-        operation_id='moderator_question_detail_get',
+        operation_id="moderator_question_detail_get",
     )
     def get(self, request, pk):
         question = get_object_or_404(Question, pk)
@@ -197,7 +197,7 @@ class ModeratorQuestionDetailView(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_question_detail_patch',
+        operation_id="moderator_question_detail_patch",
     )
     def patch(self, request, pk):
         question = get_object_or_404(Question, pk)
@@ -214,7 +214,7 @@ class ModeratorQuestionDetailView(APIView):
         return Response({"success": False, "message": "Question does not exist"})
 
     @extend_schema(
-        operation_id='moderator_question_detail_delete',
+        operation_id="moderator_question_detail_delete",
     )
     def delete(self, request, pk):
         question = get_object_or_404(Question, pk)

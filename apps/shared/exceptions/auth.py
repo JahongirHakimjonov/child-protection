@@ -37,6 +37,6 @@ def custom_exception_handler(exc, context):
                     "error": str(exc),
                     "context": str(context),
                     "response": str(response),
-                }
+                },
             }
     return response
