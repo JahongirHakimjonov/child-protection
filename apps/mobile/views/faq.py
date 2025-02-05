@@ -23,8 +23,10 @@ class FAQList(APIView):
             serializer = self.serializer_class(page, many=True)
             return paginator.get_paginated_response(serializer.data)
         serializer = self.serializer_class(queryset, many=True)
-        return Response({
-            "success": True,
-            "message": "FAQs fetched successfully",
-            "data": serializer.data
-        })
+        return Response(
+            {
+                "success": True,
+                "message": "FAQs fetched successfully",
+                "data": serializer.data,
+            }
+        )

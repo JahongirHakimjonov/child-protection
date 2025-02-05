@@ -8,7 +8,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ['id', 'name', 'longitude', 'latitude', 'distance', 'created_at']
+        fields = ["id", "name", "longitude", "latitude", "distance", "created_at"]
 
     def get_distance(self, obj):
-        return f"{obj.distance:.2f} KM" if hasattr(obj, 'distance') else None
+        return f"{obj.distance:.2f} KM" if hasattr(obj, "distance") else None
