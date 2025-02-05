@@ -1,5 +1,10 @@
 from django.urls import path
+
 from apps.moderator.views.banner import ModeratorBannerView, ModeratorBannerDetailView
+from apps.moderator.views.chat import (
+    ModeratorMessageView,
+    ModeratorMessageDetailView,
+)
 from apps.moderator.views.course import (
     ModeratorCourseCategoryView,
     ModeratorCourseCategoryDetailView,
@@ -8,6 +13,13 @@ from apps.moderator.views.course import (
     ModeratorCourseLessonView,
     ModeratorCourseLessonDetailView,
 )
+from apps.moderator.views.faq import ModeratorFAQView, ModeratorFAQDetailView
+from apps.moderator.views.help import ModeratorHelpView, ModeratorHelpDetailView
+from apps.moderator.views.notification import (
+    ModeratorNotificationView,
+    ModeratorNotificationDetailView,
+)
+from apps.moderator.views.places import ModeratorPlaceList, ModeratorPlaceDetail
 from apps.moderator.views.question import (
     ModeratorQuestionCategoryView,
     ModeratorQuestionCategoryDetailView,
@@ -22,15 +34,12 @@ from apps.moderator.views.test import (
     ModeratorAnswerView,
     ModeratorAnswerDetailView,
 )
-from apps.moderator.views.help import ModeratorHelpView, ModeratorHelpDetailView
-from apps.moderator.views.notification import (
-    ModeratorNotificationView,
-    ModeratorNotificationDetailView,
-)
 from apps.moderator.views.user import ModeratorUserView, ModeratorUserDetailView
-from apps.moderator.views.chat import (
-    ModeratorMessageView,
-    ModeratorMessageDetailView,
+from apps.moderator.views.victim import (
+    VictimList,
+    VictimDetail,
+    VictimTypeList,
+    VictimTypeDetail,
 )
 
 urlpatterns = [
@@ -159,5 +168,45 @@ urlpatterns = [
         "message/<int:pk>/",
         ModeratorMessageDetailView.as_view(),
         name="moderator_message_detail",
+    ),
+    path(
+        "faq/",
+        ModeratorFAQView.as_view(),
+        name="moderator_faq",
+    ),
+    path(
+        "faq/<int:pk>/",
+        ModeratorFAQDetailView.as_view(),
+        name="moderator_faq",
+    ),
+    path(
+        "place/",
+        ModeratorPlaceList.as_view(),
+        name="moderator_place",
+    ),
+    path(
+        "place/<int:pk>/",
+        ModeratorPlaceDetail.as_view(),
+        name="moderator_place_detail",
+    ),
+    path(
+        "victim/",
+        VictimList.as_view(),
+        name="moderator_victim",
+    ),
+    path(
+        "victim/<int:pk>/",
+        VictimDetail.as_view(),
+        name="moderator_victim_detail",
+    ),
+    path(
+        "victim/type/",
+        VictimTypeList.as_view(),
+        name="moderator_victim_type",
+    ),
+    path(
+        "victim/type/<int:pk>/",
+        VictimTypeDetail.as_view(),
+        name="moderator_victim_type_detail",
     ),
 ]

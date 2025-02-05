@@ -1,21 +1,28 @@
+from django.db.models import Q
+from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Q
-from apps.users.models.notification import Notification
-from rest_framework.generics import get_object_or_404
 
-from apps.moderator.serializers.notification import ModeratorNotificationSerializer
-from apps.shared.permissions.admin import IsAdmin
+from apps.moderator.serializers.notification import (
+    ModeratorNotificationSerializer,
+    ModeratorNotificationDetailSerializer,
+)
 from apps.shared.pagination.custom import CustomPagination
+from apps.shared.permissions.admin import IsAdmin
+from apps.users.models.notification import Notification
 
 
 class ModeratorNotificationView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorNotificationSerializer
 
     def get_queryset(self):
         return Notification.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ModeratorNotificationSerializer
+        return ModeratorNotificationDetailSerializer
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -42,13 +49,13 @@ class ModeratorNotificationView(APIView):
 
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(
+        serializer = self.get_serializer_class()(
             paginated_queryset, many=True, context={"rq": request}
         )
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -69,7 +76,7 @@ class ModeratorNotificationView(APIView):
 
 class ModeratorNotificationDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorNotificationSerializer
+    serializer_class = ModeratorNotificationDetailSerializer
 
     def get(self, request, pk):
         notification = get_object_or_404(Notification, pk)
