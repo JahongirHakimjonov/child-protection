@@ -18,3 +18,20 @@ class ModeratorNotificationSerializer(serializers.ModelSerializer):
             "updated_at",
         )
         read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class ModeratorNotificationDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = (
+            "id",
+            "user",
+            "banner",
+            "title",
+            "message",
+            "is_read",
+            "type",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ["id", "created_at", "updated_at"]
