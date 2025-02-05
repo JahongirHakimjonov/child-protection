@@ -21,7 +21,7 @@ class ModeratorBannerView(APIView):
         queryset = self.get_queryset()
         tf = {"true": True, "false": False}
         if is_active is not None:
-            queryset = queryset.filter(is_sent=tf.get(is_active.lower(), None))
+            queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
         serializer = self.serializer_class(

@@ -261,8 +261,6 @@ class ModeratorAnswerDetailView(APIView):
 
     def get(self, request, pk):
         answer = get_object_or_404(Answer, pk)
-        if isinstance(answer, Response):
-            return Response({"message": "blaaaaaa"})
         serializer = self.serializer_class(answer)
         return Response(
             {

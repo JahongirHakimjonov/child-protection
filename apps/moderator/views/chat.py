@@ -68,8 +68,6 @@ class ModeratorMessageDetailView(APIView):
 
     def get(self, request, pk):
         message = get_object_or_404(Message, pk)
-        if not message:
-            return Response({"message": "bla bla"})
         serializer = self.serializer_class(message)
         return Response(
             {"success": True, "message": "Message detail", "data": serializer.data}
