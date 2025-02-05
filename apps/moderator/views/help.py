@@ -91,7 +91,7 @@ class ModeratorHelpDetailView(APIView):
         return Response({"success": False, "message": "Help does not exist"})
 
     @extend_schema(
-        operation_id='moderator_help_detail',
+        operation_id='moderator_help_detail_delete',
     )
     def delete(self, request, pk):
         help_object = get_object_or_404(Help, pk)

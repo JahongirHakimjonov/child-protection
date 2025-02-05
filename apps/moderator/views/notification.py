@@ -81,7 +81,7 @@ class ModeratorNotificationDetailView(APIView):
     serializer_class = ModeratorNotificationDetailSerializer
 
     @extend_schema(
-        operation_id='moderator_notification_detail',
+        operation_id='moderator_notification_detail_get',
     )
     def get(self, request, pk):
         notification = get_object_or_404(Notification, pk)
@@ -95,7 +95,7 @@ class ModeratorNotificationDetailView(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_notification_detail',
+        operation_id='moderator_notification_detail_patch',
     )
     def patch(self, request, pk):
         notification = get_object_or_404(Notification, pk)
@@ -111,6 +111,9 @@ class ModeratorNotificationDetailView(APIView):
             )
         return Response({"success": False, "message": "Notification does not exist"})
 
+    @extend_schema(
+        operation_id='moderator_notification_detail_patch_delete',
+    )
     def delete(self, request, pk):
         notification = get_object_or_404(Notification, pk)
         notification.delete()

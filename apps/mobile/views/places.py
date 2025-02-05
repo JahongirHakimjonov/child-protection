@@ -1,7 +1,7 @@
 from django.db.models import F
 from django.db.models.functions import Sqrt, Power, Sin, Cos, Radians
 from drf_spectacular.utils import OpenApiParameter, extend_schema
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 
 from apps.mobile.models.places import Place
@@ -10,7 +10,7 @@ from apps.shared.pagination import CustomPagination
 
 
 class PlacesView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     serializer_class = PlaceSerializer
     pagination_class = CustomPagination
 
