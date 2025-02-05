@@ -1,5 +1,6 @@
 from django.db.models import F
 from django.db.models.functions import Sqrt, Power, Sin, Cos, Radians
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -16,6 +17,17 @@ class PlacesView(APIView):
     def get_queryset(self):
         return Place.objects.filter(is_active=True)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="longitude", description="Longitude", required=False, type=float
+            ),
+            OpenApiParameter(
+                name="latitude", description="Latitude", required=False, type=float
+            ),
+        ],
+        responses={200: PlaceSerializer(many=True)},
+    )
     def get(self, request):
         longitude = request.query_params.get("longitude")
         latitude = request.query_params.get("latitude")
