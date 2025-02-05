@@ -1,3 +1,5 @@
+from drf_spectacular.utils import extend_schema
+
 from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -52,6 +54,9 @@ class ModeratorBannerDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorBannerSerializer
 
+    @extend_schema(
+    operation_id='moderator_banner_detail_get',
+    )
     def get(self, request, pk):
         banner = get_object_or_404(Banner, pk)
         serializer = self.serializer_class(banner)
@@ -63,6 +68,9 @@ class ModeratorBannerDetailView(APIView):
             }
         )
 
+    @extend_schema(
+    operation_id='moderator_banner_detail_patch',
+    )
     def patch(self, request, pk):
         banner = get_object_or_404(Banner, pk)
         serializer = self.serializer_class(banner, data=request.data)
@@ -82,6 +90,9 @@ class ModeratorBannerDetailView(APIView):
             }
         )
 
+    @extend_schema(
+    operation_id='moderator_banner_detail_delete',
+    )
     def delete(self, request, pk):
         banner = get_object_or_404(Banner, pk)
         banner.delete()

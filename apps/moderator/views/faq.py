@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -55,6 +56,9 @@ class ModeratorFAQDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorFAQDetailSerializer
 
+    @extend_schema(
+        operation_id='moderator_faq',
+    )
     def get(self, request, pk):
         faq = get_object_or_404(FAQ, pk)
         serializer = self.serializer_class(faq)
@@ -65,6 +69,9 @@ class ModeratorFAQDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id='moderator_faq',
+    )
     def patch(self, request, pk):
         faq = get_object_or_404(FAQ, pk)
         serializer = self.serializer_class(faq, data=request.data, partial=True)
@@ -84,6 +91,9 @@ class ModeratorFAQDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id='moderator_faq',
+    )
     def delete(self, request, pk):
         faq = get_object_or_404(FAQ, pk)
         faq.delete()

@@ -1,4 +1,6 @@
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema
+
 from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -71,6 +73,9 @@ class ModeratorQuestionCategoryDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorQuestionCategoryDetailSerializer
 
+    @extend_schema(
+        operation_id='moderator_question_category_detail_get',
+    )
     def get(self, request, pk):
         question_category = get_object_or_404(QuestionCategory, pk)
         serializer = self.serializer_class(question_category)
@@ -82,6 +87,9 @@ class ModeratorQuestionCategoryDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id='moderator_question_category_detail_patch',
+    )
     def patch(self, request, pk):
         questioncategory = get_object_or_404(QuestionCategory, pk)
         serializer = self.serializer_class(questioncategory, data=request.data)
@@ -98,6 +106,9 @@ class ModeratorQuestionCategoryDetailView(APIView):
             {"success": False, "message": "QuestionCategory does not exist"}
         )
 
+    @extend_schema(
+        operation_id='moderator_question_category_detail_delete',
+    )
     def delete(self, request, pk):
         questioncategory = get_object_or_404(QuestionCategory, pk)
         questioncategory.delete()
@@ -171,6 +182,9 @@ class ModeratorQuestionDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorQuestionDetailSerializer
 
+    @extend_schema(
+        operation_id='moderator_question_detail_get',
+    )
     def get(self, request, pk):
         question = get_object_or_404(Question, pk)
         serializer = self.serializer_class(question)
@@ -182,6 +196,9 @@ class ModeratorQuestionDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id='moderator_question_detail_patch',
+    )
     def patch(self, request, pk):
         question = get_object_or_404(Question, pk)
         serializer = self.serializer_class(question, data=request.data)
@@ -196,6 +213,9 @@ class ModeratorQuestionDetailView(APIView):
             )
         return Response({"success": False, "message": "Question does not exist"})
 
+    @extend_schema(
+        operation_id='moderator_question_detail_delete',
+    )
     def delete(self, request, pk):
         question = get_object_or_404(Question, pk)
         question.delete()

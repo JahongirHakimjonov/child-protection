@@ -1,4 +1,6 @@
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema
+
 from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -66,6 +68,9 @@ class ModeratorMessageDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorMessageSerializer
 
+    @extend_schema(
+        operation_id='moderator_message_detail',
+    )
     def get(self, request, pk):
         message = get_object_or_404(Message, pk)
         serializer = self.serializer_class(message)
@@ -73,6 +78,9 @@ class ModeratorMessageDetailView(APIView):
             {"success": True, "message": "Message detail", "data": serializer.data}
         )
 
+    @extend_schema(
+        operation_id='moderator_message_detail',
+    )
     def patch(self, request, pk):
         message = get_object_or_404(Message, pk)
         serializer = self.serializer_class(message, data=request.data, partial=True)
@@ -87,6 +95,9 @@ class ModeratorMessageDetailView(APIView):
             )
         return Response({"success": False, "message": serializer.errors})
 
+    @extend_schema(
+        operation_id='moderator_message_detail',
+    )
     def delete(self, request, pk):
         message = get_object_or_404(Message, pk)
         message.delete()

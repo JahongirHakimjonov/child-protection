@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from apps.mobile.models.course import (
@@ -24,6 +25,7 @@ class CourseCategorySerializer(serializers.ModelSerializer):
             "progress_percent",
         ]
 
+    @extend_schema_field(serializers.FloatField)
     def get_progress_percent(self, instance):
         if self.context.get("rq"):
             user = self.context["rq"].user
@@ -57,6 +59,7 @@ class CourseLessonSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
+    @extend_schema_field(serializers.BooleanField)
     def get_is_liked(self, instance):
         if self.context.get("rq"):
             user = self.context["rq"].user

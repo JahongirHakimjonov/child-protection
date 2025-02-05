@@ -1,4 +1,4 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 
 from apps.mobile.models.news import News
@@ -7,7 +7,7 @@ from apps.shared.pagination import CustomPagination
 
 
 class NewsView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     serializer_class = NewsSerializer
     pagination_class = CustomPagination
 

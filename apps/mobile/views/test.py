@@ -1,3 +1,4 @@
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,6 +11,15 @@ class TestList(APIView):
     serializer_class = TestSerializer
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="test",
+        parameters=[
+            OpenApiParameter(
+                name="lesson_id", description="Filter", required=False, type=int
+            ),
+        ],
+        responses={200: TestSerializer(many=True)},
+    )
     def get(self, request, lesson_id=None):
         tests = Test.objects.filter(is_active=True, lesson_id=lesson_id)
         if not tests:
@@ -26,6 +36,15 @@ class TestQuestionList(APIView):
     serializer_class = QuestionSerializer
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        operation_id="question",
+        parameters=[
+            OpenApiParameter(
+                name="test_id", description="Filter", required=True, type=int
+            ),
+        ],
+        responses={200: QuestionSerializer(many=True)},
+    )
     def get(self, request, test_id=None):
         questions = TestQuestion.objects.filter(is_active=True, test_id=test_id)
         if not questions:
