@@ -65,6 +65,7 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
         label={
             RoleChoices.ADMIN: "success",  # green
             RoleChoices.USER: "info",  # blue
+            RoleChoices.SUPER_ADMIN: "primary",  # primary
         },
     )
     def show_role_customized_color(self, obj):
