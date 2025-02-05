@@ -1,6 +1,8 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Q
+from rest_framework.generics import get_object_or_404
 
 from apps.mobile.models.course import CourseCategory, CourseLessonResource, CourseLesson
 from apps.moderator.serializers.course import (
@@ -9,6 +11,7 @@ from apps.moderator.serializers.course import (
     ModeratorCourseLessonSerializer,
 )
 from apps.shared.permissions.admin import IsAdmin
+from apps.shared.pagination.custom import CustomPagination
 
 
 class ModeratorCourseCategoryView(APIView):
@@ -19,15 +22,29 @@ class ModeratorCourseCategoryView(APIView):
         return CourseCategory.objects.all()
 
     def get(self, request):
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(
-            {
-                "success": True,
-                "message": "CourseCategory list",
-                "data": serializer.data,
-            }
+
+        tf = {"true": True, "false": False}
+        if is_active is not None:
+            queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(title__icontains=search_term)
+                    | Q(sub_title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -53,17 +70,9 @@ class ModeratorCourseCategoryDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorCourseCategorySerializer
 
-    def get_object(self, pk):
-        try:
-            return CourseCategory.objects.get(pk=pk)
-        except CourseCategory.DoesNotExist:
-            return Response(
-                {"success": False, "message": "CourseCategory does not exist"}
-            )
-
     def get(self, request, pk):
-        coursecategory = self.get_object(pk=pk)
-        serializer = self.serializer_class(data=coursecategory)
+        coursecategory = get_object_or_404(CourseCategory, pk)
+        serializer = self.serializer_class(coursecategory)
         return Response(
             {
                 "success": True,
@@ -73,7 +82,7 @@ class ModeratorCourseCategoryDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        coursecategory = self.get_object(pk=pk)
+        coursecategory = get_object_or_404(CourseCategory, pk)
         serializer = self.serializer_class(coursecategory, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -87,7 +96,7 @@ class ModeratorCourseCategoryDetailView(APIView):
         return Response({"success": False, "message": "CourseCategory does not exist"})
 
     def delete(self, request, pk):
-        coursecategory = self.get_object(pk=pk)
+        coursecategory = get_object_or_404(CourseCategory, pk)
         coursecategory.delete()
         return Response({"success": True, "message": "CourseCategory deleted"})
 
@@ -106,15 +115,30 @@ class ModeratorCourseLessonResourceView(APIView):
         return CourseLessonResource.objects.all()
 
     def get(self, request):
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(
-            {
-                "success": True,
-                "message": "CourseLessonResource list",
-                "data": serializer.data,
-            }
+
+        tf = {"true": True, "false": False}
+        if is_active is not None:
+            queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(name__icontains=search_term)
+                    | Q(lesson__title__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -140,17 +164,9 @@ class ModeratorCourseLessonResourceDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorCourseLessonSerializer
 
-    def get_object(self, pk):
-        try:
-            return CourseLessonResource.objects.get(pk=pk)
-        except CourseLessonResource.DoesNotExist:
-            return Response(
-                {"success": False, "message": "CourseLessonResource does not exist"}
-            )
-
     def get(self, request, pk):
-        courselessonresource = self.get_object(pk=pk)
-        serializer = self.serializer_class(data=courselessonresource)
+        courselessonresource = get_object_or_404(CourseLessonResource, pk)
+        serializer = self.serializer_class(courselessonresource)
         return Response(
             {
                 "success": True,
@@ -160,7 +176,7 @@ class ModeratorCourseLessonResourceDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        courselessonresource = self.get_object(pk=pk)
+        courselessonresource = get_object_or_404(CourseLessonResource, pk)
         serializer = self.serializer_class(courselessonresource, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -176,7 +192,7 @@ class ModeratorCourseLessonResourceDetailView(APIView):
         )
 
     def delete(self, request, pk):
-        courselessonresource = self.get_object(pk=pk)
+        courselessonresource = get_object_or_404(CourseLessonResource, pk)
         courselessonresource.delete()
         return Response({"success": True, "message": "CourseLessonResource deleted"})
 
@@ -195,15 +211,30 @@ class ModeratorCourseLessonView(APIView):
         return CourseLesson.objects.all()
 
     def get(self, request):
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(
-            {
-                "success": True,
-                "message": "CourseLesson list",
-                "data": serializer.data,
-            }
+
+        tf = {"true": True, "false": False}
+        if is_active is not None:
+            queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(text__icontains=search_term)
+                    | Q(category__title__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -229,17 +260,9 @@ class ModeratorCourseLessonDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorCourseLessonSerializer
 
-    def get_object(self, pk):
-        try:
-            return CourseLesson.objects.get(pk=pk)
-        except CourseLesson.DoesNotExist:
-            return Response(
-                {"success": False, "message": "CourseLesson does not exist"}
-            )
-
     def get(self, request, pk):
-        courselesson = self.get_object(pk=pk)
-        serializer = self.serializer_class(data=courselesson)
+        courselesson = get_object_or_404(CourseLesson, pk)
+        serializer = self.serializer_class(courselesson)
         return Response(
             {
                 "success": True,
@@ -249,7 +272,7 @@ class ModeratorCourseLessonDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        courselesson = self.get_object(pk=pk)
+        courselesson = get_object_or_404(CourseLesson, pk)
         serializer = self.serializer_class(courselesson, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -263,6 +286,6 @@ class ModeratorCourseLessonDetailView(APIView):
         return Response({"success": False, "message": "CourseLesson does not exist"})
 
     def delete(self, request, pk):
-        courselesson = self.get_object(pk=pk)
+        courselesson = get_object_or_404(CourseLesson, pk)
         courselesson.delete()
         return Response({"success": True, "message": "CourseLesson deleted"})

@@ -1,10 +1,12 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import get_object_or_404
 
 from apps.mobile.models.banner import Banner
 from apps.moderator.serializers.banner import ModeratorBannerSerializer
 from apps.shared.permissions.admin import IsAdmin
+from apps.shared.pagination.custom import CustomPagination
 
 
 class ModeratorBannerView(APIView):
@@ -15,15 +17,17 @@ class ModeratorBannerView(APIView):
         return Banner.objects.all()
 
     def get(self, request):
+        is_active = request.query_params.get("is_active")
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(
-            {
-                "success": True,
-                "message": "Banner list",
-                "data": serializer.data,
-            }
+        tf = {"true": True, "false": False}
+        if is_active is not None:
+            queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -48,19 +52,8 @@ class ModeratorBannerDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorBannerSerializer
 
-    def get_object(self, pk):
-        try:
-            return Banner.objects.get(pk=pk)
-        except Banner.DoesNotExist:
-            return Response(
-                {
-                    "success": False,
-                    "message": "Banner does not exist",
-                }
-            )
-
     def get(self, request, pk):
-        banner = self.get_object(pk)
+        banner = get_object_or_404(Banner, pk)
         serializer = self.serializer_class(banner)
         return Response(
             {
@@ -71,7 +64,7 @@ class ModeratorBannerDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        banner = self.get_object(pk)
+        banner = get_object_or_404(Banner, pk)
         serializer = self.serializer_class(banner, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -90,7 +83,7 @@ class ModeratorBannerDetailView(APIView):
         )
 
     def delete(self, request, pk):
-        banner = self.get_object(pk)
+        banner = get_object_or_404(Banner, pk)
         banner.delete()
         return Response(
             {

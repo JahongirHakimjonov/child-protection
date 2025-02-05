@@ -1,6 +1,8 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Q
+from rest_framework.generics import get_object_or_404
 
 from apps.mobile.models.test import Test, TestQuestion, Answer
 from apps.moderator.serializers.test import (
@@ -9,6 +11,7 @@ from apps.moderator.serializers.test import (
     ModeratorAnswerSerializer,
 )
 from apps.shared.permissions.admin import IsAdmin
+from apps.shared.pagination.custom import CustomPagination
 
 
 class ModeratorTestView(APIView):
@@ -19,10 +22,33 @@ class ModeratorTestView(APIView):
         return Test.objects.all()
 
     def get(self, request):
-        serializer = self.serializer_class(self.get_queryset, many=True)
-        return Response(
-            {"success": True, "message": "Test list", "data": serializer.data}
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
+        queryset = self.get_queryset()
+
+        tf = {"true": True, "false": False}
+        if is_active is not None:
+            queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
+
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(question_count__icontains=search_term)
+                    | Q(course__title__icontains=search_term)
+                    | Q(course__description__icontains=search_term)
+                    | Q(course__text__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -44,15 +70,9 @@ class ModeratorTestDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorTestSerializer
 
-    def get_object(self, pk):
-        try:
-            return Test.objects.get(pk=pk)
-        except Test.DoesNotExist:
-            return Response({"success": False, "message": "Test does not exist"})
-
     def get(self, request, pk):
-        test = self.get_object(pk=pk)
-        serializer = self.serializer_class(data=test)
+        test = get_object_or_404(Test, pk)
+        serializer = self.serializer_class(test)
         return Response(
             {
                 "success": True,
@@ -62,7 +82,7 @@ class ModeratorTestDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        test = self.get_object(pk=pk)
+        test = get_object_or_404(Test, pk)
         serializer = self.serializer_class(test, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -76,7 +96,7 @@ class ModeratorTestDetailView(APIView):
         return Response({"success": False, "message": "Test does not exist"})
 
     def delete(self, request, pk):
-        test = self.get_object(pk=pk)
+        test = get_object_or_404(Test, pk)
         test.delete()
         return Response({"success": True, "message": "Test deleted"})
 
@@ -95,10 +115,30 @@ class ModeratorTestQuestionView(APIView):
         return TestQuestion.objects.all()
 
     def get(self, request):
-        serializer = self.serializer_class(self.get_queryset, many=True)
-        return Response(
-            {"success": True, "message": "TestQuestion list", "data": serializer.data}
+        search = request.query_params.get("search")
+        is_active = request.query_params.get("is_active")
+        queryset = self.get_queryset()
+
+        tf = {"true": True, "false": False}
+        if is_active is not None:
+            queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
+
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(question__icontains=search_term)
+                    | Q(test__title__icontains=search_term)
+                    | Q(test__description__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -124,17 +164,9 @@ class ModeratorTestQuestionDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorQuestionSerializer
 
-    def get_object(self, pk):
-        try:
-            return TestQuestion.objects.get(pk=pk)
-        except TestQuestion.DoesNotExist:
-            return Response(
-                {"success": False, "message": "TestQuestion does not exist"}
-            )
-
     def get(self, request, pk):
-        testquestion = self.get_object(pk=pk)
-        serializer = self.serializer_class(data=testquestion)
+        testquestion = get_object_or_404(TestQuestion, pk)
+        serializer = self.serializer_class(testquestion)
         return Response(
             {
                 "success": True,
@@ -144,7 +176,7 @@ class ModeratorTestQuestionDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        testquestion = self.get_object(pk=pk)
+        testquestion = get_object_or_404(TestQuestion, pk)
         serializer = self.serializer_class(testquestion, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -158,7 +190,7 @@ class ModeratorTestQuestionDetailView(APIView):
         return Response({"success": False, "message": "TestQuestion does not exist"})
 
     def delete(self, request, pk):
-        testquestion = self.get_object(pk=pk)
+        testquestion = get_object_or_404(TestQuestion, pk)
         testquestion.delete()
         return Response({"success": True, "message": "TestQuestion deleted"})
 
@@ -171,16 +203,37 @@ class ModeratorTestQuestionDetailView(APIView):
 
 class ModeratorAnswerView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorQuestionSerializer
+    serializer_class = ModeratorAnswerSerializer
 
     def get_queryset(self):
         return Answer.objects.all()
 
     def get(self, request):
-        serializer = self.serializer_class(self.get_queryset, many=True)
-        return Response(
-            {"success": True, "message": "Answer list", "data": serializer.data}
+        search = request.query_params.get("search")
+        is_correct = request.query_params.get("is_correct")
+        queryset = self.get_queryset()
+
+        tf = {"true": True, "false": False}
+        if is_correct is not None:
+            queryset = queryset.filter(is_correct=tf.get(is_correct.lower(), None))
+
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                    Q(question__question__icontains=search_term)
+                    | Q(answer__icontains=search_term)
+                    | Q(type__icontains=search_term)
+                    | Q(ball__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(
+            paginated_queryset, many=True, context={"rq": request}
         )
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -206,15 +259,9 @@ class ModeratorAnswerDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorAnswerSerializer
 
-    def get_object(self, pk):
-        try:
-            return Answer.objects.get(pk=pk)
-        except Answer.DoesNotExist:
-            return Response({"success": False, "message": "Answer does not exist"})
-
     def get(self, request, pk):
-        answer = self.get_object(pk=pk)
-        serializer = self.serializer_class(data=answer)
+        answer = get_object_or_404(Answer, pk)
+        serializer = self.serializer_class(answer)
         return Response(
             {
                 "success": True,
@@ -224,7 +271,7 @@ class ModeratorAnswerDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        answer = self.get_object(pk=pk)
+        answer = get_object_or_404(Answer, pk)
         serializer = self.serializer_class(answer, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -238,6 +285,6 @@ class ModeratorAnswerDetailView(APIView):
         return Response({"success": False, "message": "Answer does not exist"})
 
     def delete(self, request, pk):
-        answer = self.get_object(pk=pk)
+        answer = get_object_or_404(Answer, pk)
         answer.delete()
         return Response({"success": True, "message": "Answer deleted"})
