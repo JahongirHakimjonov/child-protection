@@ -1,4 +1,6 @@
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema
+
 from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -77,6 +79,9 @@ class ModeratorTestDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorTestDetailSerializer
 
+    @extend_schema(
+        operation_id="moderator_test_detail_get",
+    )
     def get(self, request, pk):
         test = get_object_or_404(Test, pk)
         serializer = self.serializer_class(test)
@@ -88,6 +93,9 @@ class ModeratorTestDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id="moderator_test_detail_patch",
+    )
     def patch(self, request, pk):
         test = get_object_or_404(Test, pk)
         serializer = self.serializer_class(test, data=request.data)
@@ -102,6 +110,9 @@ class ModeratorTestDetailView(APIView):
             )
         return Response({"success": False, "message": "Test does not exist"})
 
+    @extend_schema(
+        operation_id="moderator_test_detail_delete",
+    )
     def delete(self, request, pk):
         test = get_object_or_404(Test, pk)
         test.delete()
@@ -175,6 +186,9 @@ class ModeratorTestQuestionDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorQuestionDetailSerializer
 
+    @extend_schema(
+        operation_id="moderator_test_question_detail_get",
+    )
     def get(self, request, pk):
         testquestion = get_object_or_404(TestQuestion, pk)
         serializer = self.serializer_class(testquestion)
@@ -186,6 +200,9 @@ class ModeratorTestQuestionDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id="moderator_test_question_detail_patch",
+    )
     def patch(self, request, pk):
         testquestion = get_object_or_404(TestQuestion, pk)
         serializer = self.serializer_class(testquestion, data=request.data)
@@ -200,6 +217,9 @@ class ModeratorTestQuestionDetailView(APIView):
             )
         return Response({"success": False, "message": "TestQuestion does not exist"})
 
+    @extend_schema(
+        operation_id="moderator_test_question_detail_delete",
+    )
     def delete(self, request, pk):
         testquestion = get_object_or_404(TestQuestion, pk)
         testquestion.delete()
@@ -274,6 +294,9 @@ class ModeratorAnswerDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorAnswerDetailSerializer
 
+    @extend_schema(
+        operation_id="moderator_answer_detail_get",
+    )
     def get(self, request, pk):
         answer = get_object_or_404(Answer, pk)
         serializer = self.serializer_class(answer)
@@ -285,6 +308,9 @@ class ModeratorAnswerDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id="moderator_answer_detail_patch",
+    )
     def patch(self, request, pk):
         answer = get_object_or_404(Answer, pk)
         serializer = self.serializer_class(answer, data=request.data)
@@ -299,6 +325,9 @@ class ModeratorAnswerDetailView(APIView):
             )
         return Response({"success": False, "message": "Answer does not exist"})
 
+    @extend_schema(
+        operation_id="moderator_answer_detail_delete",
+    )
     def delete(self, request, pk):
         answer = get_object_or_404(Answer, pk)
         answer.delete()

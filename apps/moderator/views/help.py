@@ -1,4 +1,6 @@
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema
+
 from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -57,6 +59,9 @@ class ModeratorHelpDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = ModeratorHelpSerializer
 
+    @extend_schema(
+        operation_id='moderator_help_detail_get',
+    )
     def get(self, request, pk):
         help_object = get_object_or_404(Help, pk)
         serializer = self.serializer_class(help_object)
@@ -68,6 +73,9 @@ class ModeratorHelpDetailView(APIView):
             }
         )
 
+    @extend_schema(
+        operation_id='moderator_help_detail_patch',
+    )
     def patch(self, request, pk):
         help_object = get_object_or_404(Help, pk)
         serializer = self.serializer_class(help_object, data=request.data)
@@ -82,6 +90,9 @@ class ModeratorHelpDetailView(APIView):
             )
         return Response({"success": False, "message": "Help does not exist"})
 
+    @extend_schema(
+        operation_id='moderator_help_detail',
+    )
     def delete(self, request, pk):
         help_object = get_object_or_404(Help, pk)
         help_object.delete()
