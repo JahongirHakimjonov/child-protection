@@ -9,11 +9,11 @@ from rest_framework.views import APIView
 from apps.mobile.models.test import Test, TestQuestion, Answer
 from apps.moderator.serializers.test import (
     ModeratorTestSerializer,
-    ModeratorQuestionSerializer,
-    ModeratorAnswerSerializer,
+    ModeratorTestQuestionSerializer,
+    ModeratorTestAnswerSerializer,
     ModeratorTestDetailSerializer,
-    ModeratorQuestionDetailSerializer,
-    ModeratorAnswerDetailSerializer,
+    ModeratorTestQuestionDetailSerializer,
+    ModeratorTestAnswerDetailSerializer,
 )
 from apps.shared.pagination.custom import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
@@ -133,8 +133,8 @@ class ModeratorTestQuestionView(APIView):
 
     def get_serializer_class(self):
         if self.request.method == "GET":
-            return ModeratorQuestionSerializer
-        return ModeratorQuestionDetailSerializer
+            return ModeratorTestQuestionSerializer
+        return ModeratorTestQuestionDetailSerializer
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -184,7 +184,7 @@ class ModeratorTestQuestionView(APIView):
 
 class ModeratorTestQuestionDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorQuestionDetailSerializer
+    serializer_class = ModeratorTestQuestionDetailSerializer
 
     @extend_schema(
         operation_id="moderator_test_question_detail_get",
@@ -240,8 +240,9 @@ class ModeratorAnswerView(APIView):
 
     def get_serializer_class(self):
         if self.request.method == "GET":
-            return ModeratorAnswerSerializer
-        return ModeratorAnswerDetailSerializer
+            return ModeratorTestAnswerSerializer
+        return ModeratorTestAnswerDetailSerializer
+
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -292,7 +293,7 @@ class ModeratorAnswerView(APIView):
 
 class ModeratorAnswerDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorAnswerDetailSerializer
+    serializer_class = ModeratorTestAnswerDetailSerializer
 
     @extend_schema(
         operation_id="moderator_answer_detail_get",

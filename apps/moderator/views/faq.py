@@ -57,7 +57,7 @@ class ModeratorFAQDetailView(APIView):
     serializer_class = ModeratorFAQDetailSerializer
 
     @extend_schema(
-        operation_id='moderator_faq',
+        operation_id='moderator_faq_get',
     )
     def get(self, request, pk):
         faq = get_object_or_404(FAQ, pk)
@@ -70,7 +70,7 @@ class ModeratorFAQDetailView(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_faq',
+        operation_id='moderator_faq_patch',
     )
     def patch(self, request, pk):
         faq = get_object_or_404(FAQ, pk)
@@ -92,7 +92,7 @@ class ModeratorFAQDetailView(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_faq',
+        operation_id='moderator_faq_delete',
     )
     def delete(self, request, pk):
         faq = get_object_or_404(FAQ, pk)

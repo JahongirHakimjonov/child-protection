@@ -66,7 +66,7 @@ class ModeratorUserDetailView(APIView):
     serializer_class = ModeratorUserSerializer
 
     @extend_schema(
-        operation_id='moderator_user_detail',
+        operation_id='moderator_user_detail_get',
     )
     def get(self, request, pk):
         user = get_object_or_404(User, pk)
@@ -80,7 +80,7 @@ class ModeratorUserDetailView(APIView):
         )
 
     @extend_schema(
-        operation_id='moderator_user_detail',
+        operation_id='moderator_user_detail_patch',
     )
     def patch(self, request, pk):
         user = get_object_or_404(User, pk)
@@ -97,7 +97,7 @@ class ModeratorUserDetailView(APIView):
         return Response({"success": False, "message": "User does not exist"})
 
     @extend_schema(
-        operation_id='moderator_user_detail',
+        operation_id='moderator_user_detail_delete',
     )
     def delete(self, request, pk):
         user = get_object_or_404(User, pk)
