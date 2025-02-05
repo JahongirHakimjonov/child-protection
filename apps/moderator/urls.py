@@ -29,10 +29,6 @@ from apps.moderator.views.notification import (
 )
 from apps.moderator.views.user import ModeratorUserView, ModeratorUserDetailView
 from apps.moderator.views.chat import (
-    ModeratorChatResourceView,
-    ModeratorChatResourceDetailView,
-    ModeratorChatRoomView,
-    ModeratorChatRoomDetailView,
     ModeratorMessageView,
     ModeratorMessageDetailView,
 )
@@ -45,42 +41,42 @@ urlpatterns = [
         name="moderator_banner_detail",
     ),
     path(
-        "course-category/",
+        "course/category/",
         ModeratorCourseCategoryView.as_view(),
         name="moderator_course_category",
     ),
     path(
-        "course-category/<int:pk>/",
+        "course/category/<int:pk>/",
         ModeratorCourseCategoryDetailView.as_view(),
         name="moderator_course_detail",
     ),
     path(
-        "course-lesson-resource/",
+        "course/lesson/resource/",
         ModeratorCourseLessonResourceView.as_view(),
         name="moderator_category_lesson_resource",
     ),
     path(
-        "course-lesson-resource/<int:pk>/",
+        "course/lesson/resource/<int:pk>/",
         ModeratorCourseLessonResourceDetailView.as_view(),
         name="moderator_category_lesson_resource_detail",
     ),
     path(
-        "course-lesson/",
+        "course/lesson/",
         ModeratorCourseLessonView.as_view(),
         name="moderator_category_lesson",
     ),
     path(
-        "course-lesson/<int:pk>/",
+        "course/lesson/<int:pk>/",
         ModeratorCourseLessonDetailView.as_view(),
         name="moderator_category_lesson_detail",
     ),
     path(
-        "question-category/",
+        "question/category/",
         ModeratorQuestionCategoryView.as_view(),
         name="moderator_question_category",
     ),
     path(
-        "question-category/<int:pk>/",
+        "question/category/<int:pk>/",
         ModeratorQuestionCategoryDetailView.as_view(),
         name="moderator_question_category_detail",
     ),
@@ -105,12 +101,12 @@ urlpatterns = [
         name="moderator_test_detail",
     ),
     path(
-        "test-question/",
+        "test/question/",
         ModeratorTestQuestionView.as_view(),
         name="moderator_test_question",
     ),
     path(
-        "test-question/<int:pk>/",
+        "test/question/<int:pk>/",
         ModeratorTestQuestionDetailView.as_view(),
         name="moderator_test_question_detail",
     ),
@@ -153,26 +149,6 @@ urlpatterns = [
         "user/<int:pk>/",
         ModeratorUserDetailView.as_view(),
         name="moderator_user_detail",
-    ),
-    path(
-        "chat-resource/",
-        ModeratorChatResourceView.as_view(),
-        name="moderator_chat_resource",
-    ),
-    path(
-        "chat-resource/<int:pk>/",
-        ModeratorChatResourceDetailView.as_view(),
-        name="moderator_chat_resource_detail",
-    ),
-    path(
-        "chat-room/",
-        ModeratorChatRoomView.as_view(),
-        name="moderator_chat_room",
-    ),
-    path(
-        "chat-room/<int:pk>/",
-        ModeratorChatRoomDetailView.as_view(),
-        name="moderator_chat_room_detail",
     ),
     path(
         "message/",
