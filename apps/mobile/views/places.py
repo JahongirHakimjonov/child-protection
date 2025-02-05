@@ -38,11 +38,14 @@ class PlacesView(APIView):
             latitude = float(latitude)
             queryset = queryset.annotate(
                 distance=Sqrt(
-                    Power(Sin(Radians(F('latitude') - latitude) / 2), 2) +
-                    Cos(Radians(latitude)) * Cos(Radians(F('latitude'))) *
-                    Power(Sin(Radians(F('longitude') - longitude) / 2), 2)
-                ) * 2 * 6371
-            ).order_by('distance')
+                    Power(Sin(Radians(F("latitude") - latitude) / 2), 2)
+                    + Cos(Radians(latitude))
+                    * Cos(Radians(F("latitude")))
+                    * Power(Sin(Radians(F("longitude") - longitude) / 2), 2)
+                )
+                * 2
+                * 6371
+            ).order_by("distance")
 
         paginator = self.pagination_class()
         result_page = paginator.paginate_queryset(queryset, request)
