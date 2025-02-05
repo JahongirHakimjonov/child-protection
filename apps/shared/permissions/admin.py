@@ -5,4 +5,7 @@ from apps.users.models.users import RoleChoices
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
-        return request.user.role == RoleChoices.ADMIN
+        return (
+            request.user.role == RoleChoices.ADMIN
+            or request.role == RoleChoices.SUPER_ADMIN
+        )

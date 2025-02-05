@@ -1,25 +1,32 @@
+from django.db.models import Q
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Q
-from rest_framework.generics import get_object_or_404
 
 from apps.mobile.models.course import CourseCategory, CourseLessonResource, CourseLesson
 from apps.moderator.serializers.course import (
     ModeratorCourseCategorySerializer,
     ModeratorLessonResourceSerializer,
     ModeratorCourseLessonSerializer,
+    ModeratorCourseCategoryDetailSerializer,
+    ModeratorLessonResourceDetailSerializer,
+    ModeratorCourseLessonDetailSerializer,
 )
-from apps.shared.permissions.admin import IsAdmin
 from apps.shared.pagination.custom import CustomPagination
+from apps.shared.permissions.admin import IsAdmin
 
 
 class ModeratorCourseCategoryView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorCourseCategorySerializer
 
     def get_queryset(self):
         return CourseCategory.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ModeratorCourseCategorySerializer
+        return ModeratorCourseCategoryDetailSerializer
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -41,13 +48,13 @@ class ModeratorCourseCategoryView(APIView):
             queryset = queryset.filter(query)
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(
+        serializer = self.get_serializer_class()(
             paginated_queryset, many=True, context={"rq": request}
         )
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -68,7 +75,7 @@ class ModeratorCourseCategoryView(APIView):
 
 class ModeratorCourseCategoryDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorCourseCategorySerializer
+    serializer_class = ModeratorCourseCategoryDetailSerializer
 
     def get(self, request, pk):
         coursecategory = get_object_or_404(CourseCategory, pk)
@@ -105,14 +112,16 @@ class ModeratorCourseCategoryDetailView(APIView):
 #######################################################################################################################
 #######################################################################################################################
 #######################################################################################################################
-
-
 class ModeratorCourseLessonResourceView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorLessonResourceSerializer
 
     def get_queryset(self):
         return CourseLessonResource.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ModeratorLessonResourceSerializer
+        return ModeratorLessonResourceDetailSerializer
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -135,13 +144,13 @@ class ModeratorCourseLessonResourceView(APIView):
             queryset = queryset.filter(query)
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(
+        serializer = self.get_serializer_class()(
             paginated_queryset, many=True, context={"rq": request}
         )
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -162,11 +171,11 @@ class ModeratorCourseLessonResourceView(APIView):
 
 class ModeratorCourseLessonResourceDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorCourseLessonSerializer
+    serializer_class = ModeratorLessonResourceDetailSerializer
 
     def get(self, request, pk):
-        courselessonresource = get_object_or_404(CourseLessonResource, pk)
-        serializer = self.serializer_class(courselessonresource)
+        course_lesson_resource = get_object_or_404(CourseLessonResource, pk)
+        serializer = self.serializer_class(course_lesson_resource)
         return Response(
             {
                 "success": True,
@@ -176,8 +185,8 @@ class ModeratorCourseLessonResourceDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        courselessonresource = get_object_or_404(CourseLessonResource, pk)
-        serializer = self.serializer_class(courselessonresource, data=request.data)
+        course_lesson_resource = get_object_or_404(CourseLessonResource, pk)
+        serializer = self.serializer_class(course_lesson_resource, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -205,10 +214,14 @@ class ModeratorCourseLessonResourceDetailView(APIView):
 
 class ModeratorCourseLessonView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorCourseLessonSerializer
 
     def get_queryset(self):
         return CourseLesson.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ModeratorCourseLessonSerializer
+        return ModeratorCourseLessonDetailSerializer
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -231,13 +244,13 @@ class ModeratorCourseLessonView(APIView):
             queryset = queryset.filter(query)
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(
+        serializer = self.get_serializer_class()(
             paginated_queryset, many=True, context={"rq": request}
         )
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -258,7 +271,7 @@ class ModeratorCourseLessonView(APIView):
 
 class ModeratorCourseLessonDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorCourseLessonSerializer
+    serializer_class = ModeratorCourseLessonDetailSerializer
 
     def get(self, request, pk):
         courselesson = get_object_or_404(CourseLesson, pk)
@@ -272,8 +285,8 @@ class ModeratorCourseLessonDetailView(APIView):
         )
 
     def patch(self, request, pk):
-        courselesson = get_object_or_404(CourseLesson, pk)
-        serializer = self.serializer_class(courselesson, data=request.data)
+        course_lesson = get_object_or_404(CourseLesson, pk)
+        serializer = self.serializer_class(course_lesson, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -286,6 +299,6 @@ class ModeratorCourseLessonDetailView(APIView):
         return Response({"success": False, "message": "CourseLesson does not exist"})
 
     def delete(self, request, pk):
-        courselesson = get_object_or_404(CourseLesson, pk)
-        courselesson.delete()
+        course_lesson = get_object_or_404(CourseLesson, pk)
+        course_lesson.delete()
         return Response({"success": True, "message": "CourseLesson deleted"})

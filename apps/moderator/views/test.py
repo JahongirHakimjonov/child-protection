@@ -1,25 +1,32 @@
+from django.db.models import Q
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Q
-from rest_framework.generics import get_object_or_404
 
 from apps.mobile.models.test import Test, TestQuestion, Answer
 from apps.moderator.serializers.test import (
     ModeratorTestSerializer,
     ModeratorQuestionSerializer,
     ModeratorAnswerSerializer,
+    ModeratorTestDetailSerializer,
+    ModeratorQuestionDetailSerializer,
+    ModeratorAnswerDetailSerializer,
 )
-from apps.shared.permissions.admin import IsAdmin
 from apps.shared.pagination.custom import CustomPagination
+from apps.shared.permissions.admin import IsAdmin
 
 
 class ModeratorTestView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorTestSerializer
 
     def get_queryset(self):
         return Test.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ModeratorTestSerializer
+        return ModeratorTestDetailSerializer
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -45,13 +52,13 @@ class ModeratorTestView(APIView):
             queryset = queryset.filter(query)
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(
+        serializer = self.get_serializer_class()(
             paginated_queryset, many=True, context={"rq": request}
         )
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -68,7 +75,7 @@ class ModeratorTestView(APIView):
 
 class ModeratorTestDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorTestSerializer
+    serializer_class = ModeratorTestDetailSerializer
 
     def get(self, request, pk):
         test = get_object_or_404(Test, pk)
@@ -109,10 +116,14 @@ class ModeratorTestDetailView(APIView):
 
 class ModeratorTestQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorQuestionSerializer
 
     def get_queryset(self):
         return TestQuestion.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ModeratorQuestionSerializer
+        return ModeratorQuestionDetailSerializer
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -135,13 +146,13 @@ class ModeratorTestQuestionView(APIView):
             queryset = queryset.filter(query)
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(
+        serializer = self.get_serializer_class()(
             paginated_queryset, many=True, context={"rq": request}
         )
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -162,7 +173,7 @@ class ModeratorTestQuestionView(APIView):
 
 class ModeratorTestQuestionDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorQuestionSerializer
+    serializer_class = ModeratorQuestionDetailSerializer
 
     def get(self, request, pk):
         testquestion = get_object_or_404(TestQuestion, pk)
@@ -203,10 +214,14 @@ class ModeratorTestQuestionDetailView(APIView):
 
 class ModeratorAnswerView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorAnswerSerializer
 
     def get_queryset(self):
         return Answer.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ModeratorAnswerSerializer
+        return ModeratorAnswerDetailSerializer
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -230,13 +245,13 @@ class ModeratorAnswerView(APIView):
             queryset = queryset.filter(query)
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(
+        serializer = self.get_serializer_class()(
             paginated_queryset, many=True, context={"rq": request}
         )
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -257,7 +272,7 @@ class ModeratorAnswerView(APIView):
 
 class ModeratorAnswerDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorAnswerSerializer
+    serializer_class = ModeratorAnswerDetailSerializer
 
     def get(self, request, pk):
         answer = get_object_or_404(Answer, pk)
