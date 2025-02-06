@@ -1,7 +1,5 @@
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
-
-from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,16 +8,17 @@ from apps.moderator.serializers.notification import (
     ModeratorNotificationSerializer,
     ModeratorNotificationDetailSerializer,
 )
+from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
-from apps.users.models.notification import Notification
+from apps.users.models.notification import Notification, NotificationType
 
 
 class ModeratorNotificationView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def get_queryset(self):
-        return Notification.objects.all()
+        return Notification.objects.filter(type=NotificationType.ALL)
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -42,10 +41,10 @@ class ModeratorNotificationView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(user__phone__icontains=search_term)
-                    | Q(user__username__icontains=search_term)
-                    | Q(title__icontains=search_term)
-                    | Q(message__icontains=search_term)
+                        Q(user__phone__icontains=search_term)
+                        | Q(user__username__icontains=search_term)
+                        | Q(title__icontains=search_term)
+                        | Q(message__icontains=search_term)
                 )
             queryset = queryset.filter(query)
 
