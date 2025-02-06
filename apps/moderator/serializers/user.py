@@ -20,3 +20,6 @@ class ModeratorUserSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+        extra_kwargs = {
+            "username": {"required": False},
+        }

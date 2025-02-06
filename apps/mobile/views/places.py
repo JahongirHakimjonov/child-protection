@@ -2,6 +2,7 @@ from django.db.models import F
 from django.db.models.functions import Sqrt, Power, Sin, Cos, Radians
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.mobile.models.places import Place
@@ -43,11 +44,15 @@ class PlacesView(APIView):
                     * Cos(Radians(F("latitude")))
                     * Power(Sin(Radians(F("longitude") - longitude) / 2), 2)
                 )
-                * 2
-                * 6371
+                         * 2
+                         * 6371
             ).order_by("distance")
 
-        paginator = self.pagination_class()
-        result_page = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(result_page, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(
+            {
+                "success": True,
+                "message": "Place data fetched",
+                "data": serializer.data
+            }
+        )

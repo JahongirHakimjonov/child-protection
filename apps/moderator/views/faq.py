@@ -1,3 +1,4 @@
+from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -25,7 +26,23 @@ class ModeratorFAQView(APIView):
         return ModeratorFAQDetailSerializer
 
     def get(self, request):
+        search = request.query_params.get("search")
         queryset = self.get_queryset()
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                        Q(question__icontains=search_term)
+                        | Q(question_uz__icontains=search_term)
+                        | Q(question_ru__icontains=search_term)
+                        | Q(question_en__icontains=search_term)
+                        | Q(answer__icontains=search_term)
+                        | Q(answer_uz__icontains=search_term)
+                        | Q(answer_ru__icontains=search_term)
+                        | Q(answer_en__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
         serializer = self.get_serializer_class()(
