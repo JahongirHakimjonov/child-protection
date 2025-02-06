@@ -60,7 +60,7 @@ def send_notification_to_all_task(notification_id):
                 banner=notification.banner,
                 title=notification.title,
                 message=notification.message,
-                type=NotificationType.NONE,
+                type=NotificationType.SINGLE,
                 is_send=True,
             )
         #     fcm_tokens = ActiveSessions.objects.filter(
