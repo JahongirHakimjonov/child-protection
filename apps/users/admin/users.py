@@ -31,6 +31,7 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
                     "last_name",
                     "avatar",
                     "register_type",
+                    "sos_count",
                 )
             },
         ),

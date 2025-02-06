@@ -17,6 +17,7 @@ class ModeratorUserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "is_active",
+            "sos_count",
             "created_at",
             "updated_at",
         )
