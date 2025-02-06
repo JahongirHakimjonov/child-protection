@@ -92,7 +92,7 @@ class ModeratorPlaceDetail(APIView):
     @extend_schema(
         operation_id="moderator_place_detail_patch",
     )
-    def put(self, request, pk):
+    def patch(self, request, pk):
         place = get_object_or_404(Place, pk=pk)
         serializer = self.serializer_class(place, data=request.data)
         if serializer.is_valid():
