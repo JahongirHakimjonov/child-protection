@@ -11,9 +11,12 @@ class HelpView(APIView):
     serializer_class = HelpSerializer
 
     def post(self, request):
+        user = request.user
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save(user=user)
+            user.sos_count += 1
+            user.save()
             return Response(
                 {
                     "status": "success",

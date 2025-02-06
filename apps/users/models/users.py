@@ -50,6 +50,9 @@ class User(AbstractUser, AbstractBaseModel):
         db_index=True,
         default=RegisterTypeChoices.PHONE,
     )
+    sos_count = models.PositiveBigIntegerField(
+        default=0, verbose_name=_("SOS count"), db_index=True, null=True, blank=True
+    )
 
     USERNAME_FIELD = "phone"
     REQUIRED_FIELDS = ["username"]
