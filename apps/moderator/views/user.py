@@ -8,7 +8,7 @@ from apps.moderator.serializers.user import ModeratorUserSerializer
 from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
-from apps.users.models.users import User, RoleChoices
+from apps.users.models.users import User
 
 
 class ModeratorUserView(APIView):
@@ -16,16 +16,20 @@ class ModeratorUserView(APIView):
     serializer_class = ModeratorUserSerializer
 
     def get_queryset(self):
-        return User.objects.filter(role=RoleChoices.USER)
+        return User.objects.all()
 
     def get(self, request):
         search = request.query_params.get("search")
         is_active = request.query_params.get("is_active")
+        role = request.query_params.get("role")
         queryset = self.get_queryset()
 
         tf = {"true": True, "false": False}
         if is_active is not None:
             queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
+
+        if role:
+            queryset = queryset.filter(role=role)
 
         if search:
             search_terms = search[:100].split()
