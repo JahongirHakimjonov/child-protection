@@ -37,7 +37,10 @@ class ModeratorUserView(APIView):
             for search_term in search_terms:
                 query &= (
                         Q(phone__icontains=search_term)
-                        | Q(username__icontains=search_term)
+                        | Q(email__icontains=search_term)
+                        | Q(first_name__icontains=search_term)
+                        | Q(last_name__icontains=search_term)
+                        | Q(email__icontains=search_term)
                         | Q(role__icontains=search_term)
                 )
             queryset = queryset.filter(query)
