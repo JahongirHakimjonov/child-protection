@@ -1,3 +1,4 @@
+from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -27,7 +28,19 @@ class VictimTypeList(APIView):
         return ModeratorVictimTypeDetailSerializer
 
     def get(self, request):
+        search = request.query_params.get("search")
         queryset = self.get_queryset()
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                        Q(name__icontains=search_term)
+                        | Q(name_uz__icontains=search_term)
+                        | Q(name_ru__icontains=search_term)
+                        | Q(name_en__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
         paginator = self.pagination_class()
         result_page = paginator.paginate_queryset(queryset, request)
         serializer = self.get_serializer_class()(result_page, many=True)
@@ -79,7 +92,16 @@ class VictimList(APIView):
         return ModeratorVictimSerializer
 
     def get(self, request):
+        search = request.query_params.get("search")
         queryset = self.get_queryset()
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for search_term in search_terms:
+                query &= (
+                        Q(message__icontains=search_term)
+                )
+            queryset = queryset.filter(query)
         paginator = self.pagination_class()
         result_page = paginator.paginate_queryset(queryset, request)
         serializer = self.get_serializer_class()(result_page, many=True)

@@ -1,15 +1,14 @@
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
-
-from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.moderator.serializers.user import ModeratorUserSerializer
+from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
-from apps.users.models.users import User
+from apps.users.models.users import User, RoleChoices
 
 
 class ModeratorUserView(APIView):
@@ -17,7 +16,7 @@ class ModeratorUserView(APIView):
     serializer_class = ModeratorUserSerializer
 
     def get_queryset(self):
-        return User.objects.all()
+        return User.objects.filter(role=RoleChoices.USER)
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -33,9 +32,9 @@ class ModeratorUserView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(phone__icontains=search_term)
-                    | Q(username__icontains=search_term)
-                    | Q(role__icontains=search_term)
+                        Q(phone__icontains=search_term)
+                        | Q(username__icontains=search_term)
+                        | Q(role__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -94,7 +93,13 @@ class ModeratorUserDetailView(APIView):
                     "data": serializer.data,
                 }
             )
-        return Response({"success": False, "message": "User does not exist"})
+        return Response(
+            {
+                "success": False,
+                "message": "Some error",
+                "data": serializer.errors
+            }
+        )
 
     @extend_schema(
         operation_id="moderator_user_detail_delete",
