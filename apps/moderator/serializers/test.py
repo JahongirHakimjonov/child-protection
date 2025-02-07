@@ -52,13 +52,6 @@ class ModeratorTestQuestionSerializer(serializers.ModelSerializer):
             "is_active",
         )
 
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response["answers"] = ModeratorTestAnswerSerializer(
-            instance.answers.all(), many=True
-        ).data
-        return response
-
 
 class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
     test = ModeratorTestSerializer()
@@ -73,13 +66,6 @@ class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
             "question_en",
             "is_active",
         )
-
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response["answers"] = ModeratorTestAnswerSerializer(
-            instance.answers.all(), many=True
-        ).data
-        return response
 
 
 class ModeratorTestAnswerSerializer(serializers.ModelSerializer):

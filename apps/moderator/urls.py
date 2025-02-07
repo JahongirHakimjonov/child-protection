@@ -2,8 +2,7 @@ from django.urls import path
 
 from apps.moderator.views.banner import ModeratorBannerView, ModeratorBannerDetailView
 from apps.moderator.views.chat import (
-    ModeratorMessageView,
-    ModeratorMessageDetailView,
+    ModeratorChatRoomList, ModeratorMessageList, ModeratorChatResourceView,
 )
 from apps.moderator.views.course import (
     ModeratorCourseCategoryView,
@@ -15,6 +14,7 @@ from apps.moderator.views.course import (
 )
 from apps.moderator.views.faq import ModeratorFAQView, ModeratorFAQDetailView
 from apps.moderator.views.help import ModeratorHelpView, ModeratorHelpDetailView
+from apps.moderator.views.news import ModeratorNewsList, ModeratorNewsDetail
 from apps.moderator.views.notification import (
     ModeratorNotificationView,
     ModeratorNotificationDetailView,
@@ -120,12 +120,12 @@ urlpatterns = [
         name="moderator_test_question_detail",
     ),
     path(
-        "answer/",
+        "test/answer/",
         ModeratorAnswerView.as_view(),
         name="moderator_answer",
     ),
     path(
-        "answer/<int:pk>/",
+        "test/answer/<int:pk>/",
         ModeratorAnswerDetailView.as_view(),
         name="moderator_answer_detail",
     ),
@@ -159,16 +159,9 @@ urlpatterns = [
         ModeratorUserDetailView.as_view(),
         name="moderator_user_detail",
     ),
-    path(
-        "message/",
-        ModeratorMessageView.as_view(),
-        name="moderator_message",
-    ),
-    path(
-        "message/<int:pk>/",
-        ModeratorMessageDetailView.as_view(),
-        name="moderator_message_detail",
-    ),
+    path("chat/", ModeratorChatRoomList.as_view(), name="chat"),
+    path("chat/resource/", ModeratorChatResourceView.as_view(), name="chat-resource"),
+    path("message/<int:chat_id>/", ModeratorMessageList.as_view(), name="message"),
     path(
         "faq/",
         ModeratorFAQView.as_view(),
@@ -209,4 +202,14 @@ urlpatterns = [
         VictimTypeDetail.as_view(),
         name="moderator_victim_type_detail",
     ),
+    path(
+        "news/",
+        ModeratorNewsList.as_view(),
+        name="moderator_news",
+    ),
+    path(
+        "news/<int:pk>/",
+        ModeratorNewsDetail.as_view(),
+        name="moderator_news_detail",
+    )
 ]

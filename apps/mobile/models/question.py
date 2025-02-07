@@ -27,7 +27,7 @@ class Question(AbstractBaseModel):
         db_index=True,
     )
     sort_number = models.PositiveIntegerField(
-        db_index=True, verbose_name=_("Sort number")
+        db_index=True, verbose_name=_("Sort number"), null=True, blank=True
     )
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField(db_index=True)
