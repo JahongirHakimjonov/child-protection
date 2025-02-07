@@ -8,7 +8,6 @@ from rest_framework.views import APIView
 
 from apps.mobile.models.help import Help
 from apps.moderator.serializers.help import ModeratorHelpSerializer
-from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
 
@@ -82,28 +81,3 @@ class ModeratorHelpDetailView(APIView):
                 "data": serializer.data,
             }
         )
-
-    @extend_schema(
-        operation_id="moderator_help_detail_patch",
-    )
-    def patch(self, request, pk):
-        help_object = get_object_or_404(Help, pk)
-        serializer = self.serializer_class(help_object, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    "success": True,
-                    "message": "Help updated",
-                    "data": serializer.data,
-                }
-            )
-        return Response({"success": False, "message": "Help does not exist"})
-
-    @extend_schema(
-        operation_id="moderator_help_detail_delete",
-    )
-    def delete(self, request, pk):
-        help_object = get_object_or_404(Help, pk)
-        help_object.delete()
-        return Response({"success": True, "message": "Help deleted"})
