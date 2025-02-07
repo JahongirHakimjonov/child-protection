@@ -11,7 +11,7 @@ from apps.mobile.views.course import (
 )
 from apps.mobile.views.faq import FAQList
 from apps.mobile.views.help import HelpView
-from apps.mobile.views.news import NewsView
+from apps.mobile.views.news import NewsView, NewsDetailView
 from apps.mobile.views.places import PlacesView
 from apps.mobile.views.question import (
     QuestionDetailAPIView,
@@ -67,5 +67,6 @@ urlpatterns = [
     path("victim/", VictimList.as_view(), name="victim"),
     path("victim/statistics/", VictimStat.as_view(), name="victim"),
     path("news/", NewsView.as_view(), name="news"),
+    path("news/<int:pk>/", NewsDetailView.as_view(), name="news_detail"),
     path("place/", PlacesView.as_view(), name="place"),
 ]

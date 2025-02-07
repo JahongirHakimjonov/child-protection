@@ -1,13 +1,14 @@
+from django.db.models import F, Window
 from django.db.models import Q
+from django.db.models.functions import RowNumber
 from drf_spectacular.utils import extend_schema
-
-from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.mobile.models.help import Help
 from apps.moderator.serializers.help import ModeratorHelpSerializer
+from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
 
@@ -17,7 +18,16 @@ class ModeratorHelpView(APIView):
     serializer_class = ModeratorHelpSerializer
 
     def get_queryset(self):
-        return Help.objects.all()
+        return (
+            Help.objects.annotate(
+                row_number=Window(
+                    expression=RowNumber(),
+                    partition_by=[F('user'), F('status')],
+                    order_by=F('created_at').desc()
+                )
+            )
+            .filter(row_number=1)
+        )
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -27,9 +37,9 @@ class ModeratorHelpView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(user__username__icontains=search_term)
-                    | Q(user__phone__icontains=search_term)
-                    | Q(status__icontains=search_term)
+                        Q(user__username__icontains=search_term)
+                        | Q(user__phone__icontains=search_term)
+                        | Q(status__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
