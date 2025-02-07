@@ -2,18 +2,20 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.chat.models.chat import ChatRoom, ChatResource
+from apps.chat.models.chat import ChatRoom, ChatResource, Message
 from apps.moderator.serializers.chat import (
     ModeratorChatRoomSerializer,
     ModeratorMessageSerializer,
     ModeratorChatResourceSerializer,
 )
+from apps.shared.exceptions.http404 import get_object_or_404
+from apps.shared.permissions.admin import IsAdmin
 from apps.users.models.users import RoleChoices, User
 
 
 class ModeratorChatRoomList(APIView):
     serializer_class = ModeratorChatRoomSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin]
 
     def get(self, request, format=None):
         user = request.user
@@ -41,21 +43,17 @@ class ModeratorChatRoomList(APIView):
 
 class ModeratorMessageList(APIView):
     serializer_class = ModeratorMessageSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin]
 
-    def get(self, request, chat_id, format=None):
+    def get(self, request, format=None):
         user = request.user
-        try:
-            chat_room = ChatRoom.objects.get(id=chat_id)
-        except ChatRoom.DoesNotExist:
-            return Response({"success": False, "message": "Chat not found"})
+        chat_id = request.query_params.get("chat_id")
 
         if (
-            user.role == RoleChoices.ADMIN
-            or chat_room.participants.filter(id=user.id).exists()
-            or user.role == RoleChoices.SUPER_ADMIN
+                user.role == RoleChoices.ADMIN
+                or user.role == RoleChoices.SUPER_ADMIN
         ):
-            messages = chat_room.messages.all()
+            messages = Message.objects.filter(chat_id=chat_id)
             serializer = self.serializer_class(
                 messages, many=True, context={"rq": request}
             )
@@ -77,9 +75,53 @@ class ModeratorMessageList(APIView):
             )
 
 
+class ModeratorMessageUpdate(APIView):
+    serializer_class = ModeratorMessageSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def patch(self, request, pk, format=None):
+        user = request.user
+        message = get_object_or_404(Message, pk=pk)
+
+        if (
+                user.role == RoleChoices.ADMIN
+                or user.role == RoleChoices.SUPER_ADMIN
+        ):
+            serializer = self.serializer_class(
+                message, data=request.data, partial=True, context={"rq": request}
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {
+                        "success": True,
+                        "message": "Message updated successfully.",
+                        "data": serializer.data,
+                    }
+                )
+            else:
+                return Response(
+                    {
+                        "success": False,
+                        "message": "Message could not be updated.",
+                        "data": serializer.errors,
+                    },
+                    status=400,
+                )
+        else:
+            return Response(
+                {
+                    "success": False,
+                    "message": "You do not have permission to update this message.",
+                    "data": [],
+                },
+                status=403,
+            )
+
+
 class ModeratorChatResourceView(APIView):
     serializer_class = ModeratorChatResourceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin]
 
     def post(self, request, format=None):
         user = request.user
