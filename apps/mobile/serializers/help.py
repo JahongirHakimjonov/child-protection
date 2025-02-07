@@ -8,7 +8,7 @@ class HelpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Help
-        fields = ("id", "user", "longitude", "latitude", "status")
+        fields = ("id", "user", "longitude", "latitude", "status", "created_at", "updated_at")
         extra_kwargs = {
             "id": {"read_only": True},
             "user": {"required": False},
