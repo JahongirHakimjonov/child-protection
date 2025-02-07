@@ -92,6 +92,9 @@ class ModeratorMessageUpdate(APIView):
             )
             if serializer.is_valid():
                 serializer.save()
+                message.chat.message_count = 0
+                Message.objects.filter(chat=message.chat).update(is_read=True)
+                message.chat.save()
                 return Response(
                     {
                         "success": True,
