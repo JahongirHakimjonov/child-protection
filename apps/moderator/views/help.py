@@ -73,11 +73,7 @@ class ModeratorHelpDetailView(APIView):
     )
     def get(self, request, pk):
         help_object = Help.objects.filter(user_id=pk).order_by("-created_at")
-        serializer = self.serializer_class(help_object, many=True)
-        return Response(
-            {
-                "success": True,
-                "message": "Help detail",
-                "data": serializer.data,
-            }
-        )
+        paginator = CustomPagination()
+        paginated_queryset = paginator.paginate_queryset(help_object, request)
+        serializer = self.serializer_class(paginated_queryset, many=True)
+        return paginator.get_paginated_response(serializer.data)
