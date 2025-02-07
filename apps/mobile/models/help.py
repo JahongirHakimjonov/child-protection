@@ -21,3 +21,4 @@ class Help(AbstractBaseModel):
     status = models.CharField(
         _("status"), max_length=6, choices=HelpStatus, default=HelpStatus.SAFE
     )
+    is_send = models.BooleanField(_("is send"), default=False)

@@ -48,7 +48,7 @@ class ModeratorQuestionCategoryView(APIView):
             {
                 "success": True,
                 "message": "QuestionCategory list",
-                "data": serializer.data
+                "data": serializer.data,
             }
         )
 
@@ -148,10 +148,10 @@ class ModeratorQuestionView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(category__name__icontains=search_term)
-                        | Q(sort_number__icontains=search_term)
-                        | Q(title__icontains=search_term)
-                        | Q(description__icontains=search_term)
+                    Q(category__name__icontains=search_term)
+                    | Q(sort_number__icontains=search_term)
+                    | Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()

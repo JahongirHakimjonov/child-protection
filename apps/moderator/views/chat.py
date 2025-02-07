@@ -51,8 +51,9 @@ class ModeratorMessageList(APIView):
             return Response({"success": False, "message": "Chat not found"})
 
         if (
-                user.role == RoleChoices.ADMIN
-                or chat_room.participants.filter(id=user.id).exists() or user.role == RoleChoices.SUPER_ADMIN
+            user.role == RoleChoices.ADMIN
+            or chat_room.participants.filter(id=user.id).exists()
+            or user.role == RoleChoices.SUPER_ADMIN
         ):
             messages = chat_room.messages.all()
             serializer = self.serializer_class(

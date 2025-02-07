@@ -2,8 +2,11 @@ from django.urls import path
 
 from apps.moderator.views.banner import ModeratorBannerView, ModeratorBannerDetailView
 from apps.moderator.views.chat import (
-    ModeratorChatRoomList, ModeratorMessageList, ModeratorChatResourceView,
+    ModeratorChatRoomList,
+    ModeratorMessageList,
+    ModeratorChatResourceView,
 )
+from apps.moderator.views.count import ModeratorCount
 from apps.moderator.views.course import (
     ModeratorCourseCategoryView,
     ModeratorCourseCategoryDetailView,
@@ -211,5 +214,10 @@ urlpatterns = [
         "news/<int:pk>/",
         ModeratorNewsDetail.as_view(),
         name="moderator_news_detail",
-    )
+    ),
+    path(
+        "count/",
+        ModeratorCount.as_view(),
+        name="moderator_count",
+    ),
 ]

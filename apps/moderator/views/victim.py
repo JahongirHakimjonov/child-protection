@@ -35,10 +35,10 @@ class VictimTypeList(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(name__icontains=search_term)
-                        | Q(name_uz__icontains=search_term)
-                        | Q(name_ru__icontains=search_term)
-                        | Q(name_en__icontains=search_term)
+                    Q(name__icontains=search_term)
+                    | Q(name_uz__icontains=search_term)
+                    | Q(name_ru__icontains=search_term)
+                    | Q(name_en__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = self.pagination_class()
@@ -98,9 +98,7 @@ class VictimList(APIView):
             search_terms = search[:100].split()
             query = Q()
             for search_term in search_terms:
-                query &= (
-                        Q(message__icontains=search_term)
-                )
+                query &= Q(message__icontains=search_term)
             queryset = queryset.filter(query)
         paginator = self.pagination_class()
         result_page = paginator.paginate_queryset(queryset, request)
