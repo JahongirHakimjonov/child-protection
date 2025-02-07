@@ -16,9 +16,28 @@ class ChatResourceSerializer(serializers.ModelSerializer):
             "created_at",
         )
 
+class MessageLastSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
+    file = ChatResourceSerializer(read_only=True)
+
+    class Meta:
+        model = Message
+        fields = (
+            "id",
+            "chat",
+            "sender",
+            "message",
+            "file",
+            "is_admin",
+            "is_sent",
+            "created_at",
+            "updated_at",
+        )
+
 
 class ChatRoomSerializer(serializers.ModelSerializer):
     participants = UserSerializer(many=True, read_only=True)
+    last_message = MessageLastSerializer(read_only=True)
 
     class Meta:
         model = ChatRoom
