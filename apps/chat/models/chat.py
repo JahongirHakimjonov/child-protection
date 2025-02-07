@@ -47,6 +47,17 @@ class ChatRoom(AbstractBaseModel):
         max_length=255, blank=True, null=True, help_text="Chat nomi."
     )
     participants = models.ManyToManyField("users.User", related_name="chats")
+    message_count = models.PositiveBigIntegerField(
+        default=0, help_text="O'qilmagan xabarlar soni."
+    )
+    last_message = models.ForeignKey(
+        "Message",
+        on_delete=models.SET_NULL,
+        related_name="last_message",
+        null=True,
+        blank=True,
+        help_text="Chatdagi oxirgi xabar.",
+    )
 
     def __str__(self):
         return f"Chat {self.id} - {', '.join([user.username for user in self.participants.all()])}"
@@ -84,6 +95,9 @@ class Message(AbstractBaseModel):
     )
     is_sent = models.BooleanField(
         default=False, help_text="Xabar yuborilganligini bildiradi."
+    )
+    is_read = models.BooleanField(
+        default=False, help_text="Xabar o'qilganligini bildiradi."
     )
 
     def __str__(self):

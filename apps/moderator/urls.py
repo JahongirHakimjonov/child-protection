@@ -4,7 +4,7 @@ from apps.moderator.views.banner import ModeratorBannerView, ModeratorBannerDeta
 from apps.moderator.views.chat import (
     ModeratorChatRoomList,
     ModeratorMessageList,
-    ModeratorChatResourceView,
+    ModeratorChatResourceView, ModeratorMessageUpdate,
 )
 from apps.moderator.views.count import ModeratorCount
 from apps.moderator.views.course import (
@@ -164,7 +164,8 @@ urlpatterns = [
     ),
     path("chat/", ModeratorChatRoomList.as_view(), name="chat"),
     path("chat/resource/", ModeratorChatResourceView.as_view(), name="chat-resource"),
-    path("message/<int:chat_id>/", ModeratorMessageList.as_view(), name="message"),
+    path("message/", ModeratorMessageList.as_view(), name="message"),
+    path("message/<int:pk>/", ModeratorMessageUpdate.as_view(), name="message"),
     path(
         "faq/",
         ModeratorFAQView.as_view(),
