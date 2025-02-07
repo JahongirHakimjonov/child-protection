@@ -1,7 +1,5 @@
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
-
-from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,6 +11,7 @@ from apps.moderator.serializers.question import (
     ModeratorQuestionCategoryDetailSerializer,
     ModeratorQuestionDetailSerializer,
 )
+from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
 
@@ -42,12 +41,16 @@ class ModeratorQuestionCategoryView(APIView):
             for search_term in search_terms:
                 query &= Q(name__icontains=search_term)
             queryset = queryset.filter(query)
-        paginator = CustomPagination()
-        paginated_queryset = paginator.paginate_queryset(queryset, request)
         serializer = self.get_serializer_class()(
-            paginated_queryset, many=True, context={"rq": request}
+            queryset, many=True, context={"rq": request}
         )
-        return paginator.get_paginated_response(serializer.data)
+        return Response(
+            {
+                "success": True,
+                "message": "QuestionCategory list",
+                "data": serializer.data
+            }
+        )
 
     def post(self, request):
         serializer = self.get_serializer_class()(data=request.data)
@@ -145,10 +148,10 @@ class ModeratorQuestionView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(category__name__icontains=search_term)
-                    | Q(sort_number__icontains=search_term)
-                    | Q(title__icontains=search_term)
-                    | Q(description__icontains=search_term)
+                        Q(category__name__icontains=search_term)
+                        | Q(sort_number__icontains=search_term)
+                        | Q(title__icontains=search_term)
+                        | Q(description__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()

@@ -1,104 +1,103 @@
-from django.db.models import Q
-from drf_spectacular.utils import extend_schema
-
-from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.chat.models.chat import Message
+from apps.chat.models.chat import ChatRoom, ChatResource
 from apps.moderator.serializers.chat import (
+    ModeratorChatRoomSerializer,
     ModeratorMessageSerializer,
+    ModeratorChatResourceSerializer,
 )
-from apps.shared.pagination.custom import CustomPagination
-from apps.shared.permissions.admin import IsAdmin
+from apps.users.models.users import RoleChoices, User
 
 
-class ModeratorMessageView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorMessageSerializer
+class ModeratorChatRoomList(APIView):
+    serializer_class = ModeratorChatRoomSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return Message.objects.all()
+    def get(self, request, format=None):
+        user = request.user
+        if user.role == RoleChoices.ADMIN or user.role == RoleChoices.SUPER_ADMIN:
+            chat_rooms = ChatRoom.objects.all()
+        else:
+            chat_rooms = ChatRoom.objects.filter(participants=user)
+            admins = User.objects.filter(role=RoleChoices.ADMIN)
+            if not chat_rooms.exists():
+                chat_room = ChatRoom.objects.create(name=f"Chat for {user.id}")
+                chat_room.participants.add(user)
+                chat_rooms = [chat_room]
+                for admin in admins:
+                    chat_room.participants.add(admin)
 
-    def get(self, request):
-        search = request.query_params.get("search")
-        is_admin = request.query_params.get("is_admin")
-        is_sent = request.query_params.get("is_sent")
-        queryset = self.get_queryset()
-
-        tf = {"true": True, "false": False}
-        if is_admin is not None:
-            queryset = queryset.filter(is_admin=tf.get(is_admin.lower(), None))
-        if is_sent is not None:
-            queryset = queryset.filter(is_sent=tf.get(is_sent.lower(), None))
-        if search:
-            search_terms = search[:100].split()
-            query = Q()
-            for search_term in search_terms:
-                query &= (
-                    Q(chat__name__icontains=search_term)
-                    | Q(sender__name__icontains=search_term)
-                    | Q(sender__phone__icontains=search_term)
-                    | Q(message__icontains=search_term)
-                )
-            queryset = queryset.filter(query)
-        paginator = CustomPagination()
-        paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = self.serializer_class(
-            paginated_queryset, many=True, context={"rq": request}
-        )
-        return paginator.get_paginated_response(serializer.data)
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    "success": True,
-                    "message": "Message created",
-                    "data": serializer.data,
-                }
-            )
-        return Response({"success": False, "message": serializer.errors})
-
-
-class ModeratorMessageDetailView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = ModeratorMessageSerializer
-
-    @extend_schema(
-        operation_id="moderator_message_detail_get",
-    )
-    def get(self, request, pk):
-        message = get_object_or_404(Message, pk)
-        serializer = self.serializer_class(message)
+        serializer = self.serializer_class(chat_rooms, many=True)
         return Response(
-            {"success": True, "message": "Message detail", "data": serializer.data}
+            {
+                "success": True,
+                "message": "Chat rooms fetched successfully.",
+                "data": serializer.data,
+            }
         )
 
-    @extend_schema(
-        operation_id="moderator_message_detail_patch",
-    )
-    def patch(self, request, pk):
-        message = get_object_or_404(Message, pk)
-        serializer = self.serializer_class(message, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
+
+class ModeratorMessageList(APIView):
+    serializer_class = ModeratorMessageSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, chat_id, format=None):
+        user = request.user
+        try:
+            chat_room = ChatRoom.objects.get(id=chat_id)
+        except ChatRoom.DoesNotExist:
+            return Response({"success": False, "message": "Chat not found"})
+
+        if (
+                user.role == RoleChoices.ADMIN
+                or chat_room.participants.filter(id=user.id).exists() or user.role == RoleChoices.SUPER_ADMIN
+        ):
+            messages = chat_room.messages.all()
+            serializer = self.serializer_class(
+                messages, many=True, context={"rq": request}
+            )
             return Response(
                 {
                     "success": True,
-                    "message": "Message updated",
+                    "message": "Messages fetched successfully.",
                     "data": serializer.data,
                 }
             )
-        return Response({"success": False, "message": serializer.errors})
+        else:
+            return Response(
+                {
+                    "success": False,
+                    "message": "You do not have permission to view these messages.",
+                    "data": [],
+                },
+                status=403,
+            )
 
-    @extend_schema(
-        operation_id="moderator_message_detail_delete",
-    )
-    def delete(self, request, pk):
-        message = get_object_or_404(Message, pk)
-        message.delete()
-        return Response({"success": True, "message": "Message deleted"})
+
+class ModeratorChatResourceView(APIView):
+    serializer_class = ModeratorChatResourceSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        user = request.user
+        file = request.data.get("file")
+        if not file:
+            return Response(
+                {"success": False, "message": "File is required."},
+                status=400,
+            )
+
+        chat_resource = ChatResource.objects.create(
+            user=user,
+            file=file,
+        )
+        serializer = self.serializer_class(chat_resource)
+        return Response(
+            {
+                "success": True,
+                "message": "File uploaded successfully.",
+                "data": serializer.data,
+            }
+        )

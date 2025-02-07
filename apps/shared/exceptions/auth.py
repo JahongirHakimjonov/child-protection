@@ -29,14 +29,4 @@ def custom_exception_handler(exc, context):
                 "success": False,
                 "message": messages.get(type(exc)),
             }
-        else:
-            response.data = {
-                "success": False,
-                "message": "Internal server error.",
-                "data": {
-                    "error": str(exc),
-                    "context": str(context),
-                    "response": str(response),
-                },
-            }
     return response
