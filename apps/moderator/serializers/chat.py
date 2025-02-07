@@ -36,12 +36,11 @@ class ModeratorMessageLastSerializer(serializers.ModelSerializer):
         )
 
 class ModeratorChatRoomSerializer(serializers.ModelSerializer):
-    participants = UserSerializer(many=True, read_only=True)
     last_message = ModeratorMessageLastSerializer(read_only=True)
 
     class Meta:
         model = ChatRoom
-        fields = ("id", "name", "participants", "message_count", "last_message", "created_at", "updated_at")
+        fields = ("id", "name", "message_count", "last_message", "created_at", "updated_at")
 
 
 class ModeratorMessageSerializer(serializers.ModelSerializer):
