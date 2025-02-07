@@ -11,5 +11,6 @@ class NewsSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "banner",
+            "view_count",
             "created_at",
         )

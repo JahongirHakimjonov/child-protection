@@ -11,6 +11,7 @@ class ModeratorNewsSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "banner",
+            "view_count",
             "created_at",
         )
 
@@ -27,5 +28,6 @@ class ModeratorNewsDetailSerializer(serializers.ModelSerializer):
             "description_ru",
             "description_en",
             "banner",
+            "view_count",
             "created_at",
         )

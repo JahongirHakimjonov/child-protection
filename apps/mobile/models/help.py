@@ -22,3 +22,8 @@ class Help(AbstractBaseModel):
         _("status"), max_length=6, choices=HelpStatus, default=HelpStatus.SAFE
     )
     is_send = models.BooleanField(_("is send"), default=False)
+
+    class Meta:
+        verbose_name = _("help")
+        verbose_name_plural = _("helps")
+        db_table = "helps"

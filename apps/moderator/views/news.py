@@ -10,11 +10,13 @@ from apps.moderator.serializers.news import (
     ModeratorNewsDetailSerializer,
 )
 from apps.shared.exceptions.http404 import get_object_or_404
+from apps.shared.pagination import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
 
 
 class ModeratorNewsList(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return News.objects.all()
@@ -26,14 +28,10 @@ class ModeratorNewsList(APIView):
 
     def get(self, request):
         queryset = self.get_queryset()
-        serializer = self.get_serializer_class()(queryset, many=True)
-        return Response(
-            {
-                "success": True,
-                "message": "News list",
-                "data": serializer.data,
-            }
-        )
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(queryset, request)
+        serializer = self.get_serializer_class()(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = self.get_serializer_class()(data=request.data)
