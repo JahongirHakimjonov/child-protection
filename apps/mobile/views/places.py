@@ -44,15 +44,11 @@ class PlacesView(APIView):
                     * Cos(Radians(F("latitude")))
                     * Power(Sin(Radians(F("longitude") - longitude) / 2), 2)
                 )
-                         * 2
-                         * 6371
+                * 2
+                * 6371
             ).order_by("distance")
 
         serializer = self.serializer_class(queryset, many=True)
         return Response(
-            {
-                "success": True,
-                "message": "Place data fetched",
-                "data": serializer.data
-            }
+            {"success": True, "message": "Place data fetched", "data": serializer.data}
         )
