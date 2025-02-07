@@ -45,7 +45,7 @@ class HelpConsumer(AsyncWebsocketConsumer):
         try:
             while True:
                 await self.check_and_send_help()
-                await asyncio.sleep(60)
+                await asyncio.sleep(5)
         except asyncio.CancelledError:
             pass
 
