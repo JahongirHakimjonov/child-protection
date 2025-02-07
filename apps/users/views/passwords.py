@@ -29,9 +29,15 @@ class ChangePasswordView(GenericAPIView):
         )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response({"success": True, "message": "Password changed successfully."})
+            return Response(
+                {"success": True, "message": "Password changed successfully."}
+            )
         return Response(
-            {"success": False, "message": "Password change failed.", "data": serializer.errors},
+            {
+                "success": False,
+                "message": "Password change failed.",
+                "data": serializer.errors,
+            },
             status=status.HTTP_400_BAD_REQUEST,
         )
 

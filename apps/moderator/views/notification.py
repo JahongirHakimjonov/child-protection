@@ -41,10 +41,10 @@ class ModeratorNotificationView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(user__phone__icontains=search_term)
-                        | Q(user__username__icontains=search_term)
-                        | Q(title__icontains=search_term)
-                        | Q(message__icontains=search_term)
+                    Q(user__phone__icontains=search_term)
+                    | Q(user__username__icontains=search_term)
+                    | Q(title__icontains=search_term)
+                    | Q(message__icontains=search_term)
                 )
             queryset = queryset.filter(query)
 

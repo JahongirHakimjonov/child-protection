@@ -5,7 +5,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.mobile.models.news import News
-from apps.moderator.serializers.news import ModeratorNewsSerializer, ModeratorNewsDetailSerializer
+from apps.moderator.serializers.news import (
+    ModeratorNewsSerializer,
+    ModeratorNewsDetailSerializer,
+)
 from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.permissions.admin import IsAdmin
 
@@ -42,7 +45,7 @@ class ModeratorNewsList(APIView):
                     "message": "News created",
                     "data": serializer.data,
                 },
-                status=status.HTTP_201_CREATED
+                status=status.HTTP_201_CREATED,
             )
         return Response(
             {
@@ -50,7 +53,7 @@ class ModeratorNewsList(APIView):
                 "message": "News not created",
                 "data": serializer.errors,
             },
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 
@@ -61,7 +64,7 @@ class ModeratorNewsDetail(APIView):
         return ModeratorNewsDetailSerializer
 
     @extend_schema(
-        operation_id='news_detail_get',
+        operation_id="news_detail_get",
     )
     def get(self, request, pk):
         news = get_object_or_404(News, pk=pk)
@@ -75,7 +78,7 @@ class ModeratorNewsDetail(APIView):
         )
 
     @extend_schema(
-        operation_id='news_detail_patch',
+        operation_id="news_detail_patch",
     )
     def patch(self, request, pk):
         news = get_object_or_404(News, pk=pk)
@@ -95,11 +98,11 @@ class ModeratorNewsDetail(APIView):
                 "message": "News not updated",
                 "data": serializer.errors,
             },
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     @extend_schema(
-        operation_id='news_detail_delete',
+        operation_id="news_detail_delete",
     )
     def delete(self, request, pk):
         news = get_object_or_404(News, pk=pk)

@@ -20,6 +20,7 @@ class ModeratorUserView(APIView):
 
     def get(self, request):
         search = request.query_params.get("search")
+        top = request.query_params.get("top")
         is_active = request.query_params.get("is_active")
         role = request.query_params.get("role")
         queryset = self.get_queryset()
@@ -27,6 +28,9 @@ class ModeratorUserView(APIView):
         tf = {"true": True, "false": False}
         if is_active is not None:
             queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
+
+        if top and top.lower() == "true":
+            queryset = queryset.order_by("-sos_count")
 
         if role:
             queryset = queryset.filter(role=role)
@@ -36,12 +40,12 @@ class ModeratorUserView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(phone__icontains=search_term)
-                        | Q(email__icontains=search_term)
-                        | Q(first_name__icontains=search_term)
-                        | Q(last_name__icontains=search_term)
-                        | Q(email__icontains=search_term)
-                        | Q(role__icontains=search_term)
+                    Q(phone__icontains=search_term)
+                    | Q(email__icontains=search_term)
+                    | Q(first_name__icontains=search_term)
+                    | Q(last_name__icontains=search_term)
+                    | Q(email__icontains=search_term)
+                    | Q(role__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -101,11 +105,7 @@ class ModeratorUserDetailView(APIView):
                 }
             )
         return Response(
-            {
-                "success": False,
-                "message": "Some error",
-                "data": serializer.errors
-            }
+            {"success": False, "message": "Some error", "data": serializer.errors}
         )
 
     @extend_schema(

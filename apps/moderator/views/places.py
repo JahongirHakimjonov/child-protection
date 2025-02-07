@@ -33,20 +33,16 @@ class ModeratorPlaceList(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(name__icontains=search_term)
-                        | Q(name_uz__icontains=search_term)
-                        | Q(name_ru__icontains=search_term)
-                        | Q(name_en__icontains=search_term)
+                    Q(name__icontains=search_term)
+                    | Q(name_uz__icontains=search_term)
+                    | Q(name_ru__icontains=search_term)
+                    | Q(name_en__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         serializer = self.get_serializer_class()(queryset, many=True)
         return Response(
-            {
-                "success": True,
-                "message": "Place data fetched",
-                "data": serializer.data
-            },
-            status=status.HTTP_200_OK
+            {"success": True, "message": "Place data fetched", "data": serializer.data},
+            status=status.HTTP_200_OK,
         )
 
     def post(self, request):
