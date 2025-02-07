@@ -47,14 +47,14 @@ class HelpConsumer(AsyncWebsocketConsumer):
         Send new help to the client if `is_send=False` and update `is_send` to `True` after sending.
         """
         helps = await sync_to_async(list)(
-            Help.objects.filter(user=self.user, is_send=False)
+            Help.objects.filter(user=self.user_id)
         )
 
         for help in helps:
             help_data = {
                 "type": "send_help",
                 "id": help.id,
-                "user": self.user_id,
+                "user": help.user.id,
                 "longitude": help.longitude,
                 "latitude": help.latitude,
                 "status": help.status,

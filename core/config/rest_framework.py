@@ -7,16 +7,16 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
-    "DEFAULT_THROTTLE_CLASSES": (
-        "rest_framework.throttling.ScopedRateThrottle",
-        "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.UserRateThrottle",
-    ),
-    "DEFAULT_THROTTLE_RATES": {
-        # "anon": "60/min",
-        "user": "1000/day",
-        "story": "1000/day",
-    },
+    # "DEFAULT_THROTTLE_CLASSES": (
+    #     "rest_framework.throttling.ScopedRateThrottle",
+    #     "rest_framework.throttling.AnonRateThrottle",
+    #     "rest_framework.throttling.UserRateThrottle",
+    # ),
+    # "DEFAULT_THROTTLE_RATES": {
+    #     # "anon": "60/min",
+    #     "user": "1000/day",
+    #     "story": "1000/day",
+    # },
     "EXCEPTION_HANDLER": "apps.shared.exceptions.auth.custom_exception_handler",
 }
 
