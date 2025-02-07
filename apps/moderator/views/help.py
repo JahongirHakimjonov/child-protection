@@ -73,8 +73,8 @@ class ModeratorHelpDetailView(APIView):
         operation_id="moderator_help_detail_get",
     )
     def get(self, request, pk):
-        help_object = get_object_or_404(Help, pk)
-        serializer = self.serializer_class(help_object)
+        help_object = Help.objects.filter(user_id=pk).order_by("-created_at")
+        serializer = self.serializer_class(help_object, many=True)
         return Response(
             {
                 "success": True,
