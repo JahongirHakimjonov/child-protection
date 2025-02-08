@@ -14,7 +14,13 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
     change_password_form = AdminPasswordChangeForm
     add_form = UserCreationForm
     form = UserChangeForm
-    list_display = ("avatars", "username", "show_role_customized_color", "is_active")
+    list_display = (
+        "avatars",
+        "username",
+        "show_role_customized_color",
+        "is_active",
+        "created_at",
+    )
     search_fields = ("email", "username")
     list_filter = ("role", "is_active")
     list_editable = ("is_active",)
