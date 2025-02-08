@@ -84,7 +84,9 @@ class VictimStat(APIView):
                 .annotate(count=Count("id"))
                 .order_by("period")
             )
-            data_dict = {data["period"].strftime("%H:00"): data["count"] for data in stats}
+            data_dict = {
+                data["period"].strftime("%H:00"): data["count"] for data in stats
+            }
 
         # Weekly statistics: past 7 days grouped by day name
         elif distance == "weekly":

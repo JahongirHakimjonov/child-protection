@@ -49,10 +49,7 @@ class ModeratorMessageList(APIView):
         user = request.user
         chat_id = request.query_params.get("chat_id")
 
-        if (
-                user.role == RoleChoices.ADMIN
-                or user.role == RoleChoices.SUPER_ADMIN
-        ):
+        if user.role == RoleChoices.ADMIN or user.role == RoleChoices.SUPER_ADMIN:
             messages = Message.objects.filter(chat_id=chat_id)
             serializer = self.serializer_class(
                 messages, many=True, context={"rq": request}
@@ -83,10 +80,7 @@ class ModeratorMessageUpdate(APIView):
         user = request.user
         message = get_object_or_404(Message, pk=pk)
 
-        if (
-                user.role == RoleChoices.ADMIN
-                or user.role == RoleChoices.SUPER_ADMIN
-        ):
+        if user.role == RoleChoices.ADMIN or user.role == RoleChoices.SUPER_ADMIN:
             serializer = self.serializer_class(
                 message, data=request.data, partial=True, context={"rq": request}
             )
