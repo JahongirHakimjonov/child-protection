@@ -2,7 +2,6 @@ import json
 import os
 
 import aioredis
-from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
@@ -165,6 +164,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Send a message to the room group.
         """
         chat_room_id = await database_sync_to_async(lambda: message.chat.id)()
+        channel_layer = get_channel_layer()
+        await channel_layer.group_send(
+            "global_chat",
+            {
+                "type": "send_message",
+                "message_id": message.id,
+            },
+        )
         file = await database_sync_to_async(
             lambda: (
                 {
@@ -180,23 +187,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
         )()
         chat_room = await database_sync_to_async(lambda: message.chat)()
-        participants = await database_sync_to_async(
-            lambda: list(chat_room.participants.all())
-        )()
-        participants_data = [
-            {
-                "id": participant.id,
-                "phone": participant.phone,
-                "email": participant.email,
-                "first_name": participant.first_name,
-                "last_name": participant.last_name,
-                "avatar": participant.avatar.url if participant.avatar else None,
-                "role": participant.role,
-                "created_at": participant.created_at.isoformat(),
-                "updated_at": participant.updated_at.isoformat(),
-            }
-            for participant in participants
-        ]
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -206,7 +196,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "chat": {
                         "id": chat_room.id,
                         "name": chat_room.name,
-                        "participants": participants_data,
                         "created_at": chat_room.created_at.isoformat(),
                         "updated_at": chat_room.updated_at.isoformat(),
                     },
@@ -242,14 +231,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if len(connected_users) == len(participants):
             message.is_sent = True
             await database_sync_to_async(message.save)()
-            channel_layer = get_channel_layer()
-            await channel_layer.group_send(
-                "global_chat",
-                {
-                    "type": "send_message",
-                    "message_id": message.id,
-                },
-            )
 
     async def is_user_connected(self, user_id):
         """
