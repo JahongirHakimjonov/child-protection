@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,7 +22,9 @@ class ChatRoomList(APIView):
             chat_rooms = ChatRoom.objects.all()
         else:
             chat_rooms = ChatRoom.objects.filter(participants=user)
-            admins = User.objects.filter(role=RoleChoices.ADMIN)
+            admins = User.objects.filter(
+                Q(role=RoleChoices.ADMIN) | Q(role=RoleChoices.SUPER_ADMIN)
+            )
             if not chat_rooms.exists():
                 first_name = user.first_name if user.first_name else "Ism"
                 last_name = user.last_name if user.last_name else "Familiya"
