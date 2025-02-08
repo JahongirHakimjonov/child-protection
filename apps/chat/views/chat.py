@@ -26,7 +26,9 @@ class ChatRoomList(APIView):
                 first_name = user.first_name if user.first_name else "Ism"
                 last_name = user.last_name if user.last_name else "Familiya"
                 phone = user.phone if user.phone else user.email
-                chat_room = ChatRoom.objects.create(name=f"{first_name} {last_name} - {phone}")
+                chat_room = ChatRoom.objects.create(
+                    name=f"{first_name} {last_name} - {phone}"
+                )
                 chat_room.participants.add(user)
                 chat_rooms = [chat_room]
                 for admin in admins:
@@ -54,8 +56,8 @@ class MessageList(APIView):
             return Response({"success": False, "message": "Chat not found"})
 
         if (
-                user.role == RoleChoices.ADMIN
-                or chat_room.participants.filter(id=user.id).exists()
+            user.role == RoleChoices.ADMIN
+            or chat_room.participants.filter(id=user.id).exists()
         ):
             messages = chat_room.messages.all()
             serializer = self.serializer_class(

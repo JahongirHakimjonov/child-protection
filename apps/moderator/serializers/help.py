@@ -9,4 +9,12 @@ class ModeratorHelpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Help
-        fields = ("id", "user", "longitude", "latitude", "status", "created_at", "updated_at")
+        fields = (
+            "id",
+            "user",
+            "longitude",
+            "latitude",
+            "status",
+            "created_at",
+            "updated_at",
+        )
