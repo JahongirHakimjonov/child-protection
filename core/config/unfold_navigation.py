@@ -273,6 +273,7 @@ TABS = [
         "models": [
             "mobile.victim",
             "mobile.victimtype",
+            "mobile.victimstatus",
         ],
         "items": [
             {
@@ -282,6 +283,10 @@ TABS = [
             {
                 "title": _("Victim turlari"),
                 "link": reverse_lazy("admin:mobile_victimtype_changelist"),
+            },
+            {
+                "title": _("Victim statuslari"),
+                "link": reverse_lazy("admin:mobile_victimstatus_changelist"),
             },
         ],
     },

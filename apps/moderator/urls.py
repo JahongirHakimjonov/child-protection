@@ -44,7 +44,10 @@ from apps.moderator.views.victim import (
     VictimDetail,
     VictimTypeList,
     VictimTypeDetail,
+    VictimStatusList,
+    VictimStatusDetail,
 )
+from apps.moderator.views.victim_count import VictimCount
 
 urlpatterns = [
     path("banner/", ModeratorBannerView.as_view(), name="moderator_banner"),
@@ -206,6 +209,21 @@ urlpatterns = [
         "victim/type/<int:pk>/",
         VictimTypeDetail.as_view(),
         name="moderator_victim_type_detail",
+    ),
+    path(
+        "victim/status/",
+        VictimStatusList.as_view(),
+        name="moderator_victim_status",
+    ),
+    path(
+        "victim/status/<int:pk>/",
+        VictimStatusDetail.as_view(),
+        name="moderator_victim_status_detail",
+    ),
+    path(
+        "victim/count/",
+        VictimCount.as_view(),
+        name="moderator_victim_count",
     ),
     path(
         "news/",

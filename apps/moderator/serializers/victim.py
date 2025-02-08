@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.mobile.models.victim import Victim, VictimType
+from apps.mobile.models.victim import Victim, VictimType, VictimStatus
 
 
 class ModeratorVictimTypeSerializer(serializers.ModelSerializer):
@@ -21,6 +21,30 @@ class ModeratorVictimTypeDetailSerializer(serializers.ModelSerializer):
             "name_uz",
             "name_ru",
             "name_en",
+            "is_pending",
+            "created_at",
+        )
+
+
+class ModeratorVictimStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VictimStatus
+        fields = (
+            "id",
+            "name",
+            "is_pending",
+            "created_at",
+        )
+
+
+class ModeratorVictimStatusDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VictimStatus
+        fields = (
+            "id",
+            "name_uz",
+            "name_ru",
+            "name_en",
             "created_at",
         )
 
@@ -33,5 +57,7 @@ class ModeratorVictimSerializer(serializers.ModelSerializer):
             "user",
             "type",
             "message",
+            "answer",
+            "status",
             "created_at",
         )
