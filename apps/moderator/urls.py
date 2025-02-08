@@ -4,7 +4,8 @@ from apps.moderator.views.banner import ModeratorBannerView, ModeratorBannerDeta
 from apps.moderator.views.chat import (
     ModeratorChatRoomList,
     ModeratorMessageList,
-    ModeratorChatResourceView, ModeratorMessageUpdate,
+    ModeratorChatResourceView,
+    ModeratorMessageUpdate,
 )
 from apps.moderator.views.count import ModeratorCount
 from apps.moderator.views.course import (

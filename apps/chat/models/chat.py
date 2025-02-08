@@ -99,6 +99,9 @@ class Message(AbstractBaseModel):
     is_read = models.BooleanField(
         default=False, help_text="Xabar o'qilganligini bildiradi."
     )
+    is_received = models.BooleanField(
+        default=False, help_text="Xabar qabul qilinayotganligini bildiradi."
+    )
 
     def __str__(self):
         sender_type = "Admin" if self.is_admin else "User"

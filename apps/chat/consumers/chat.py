@@ -2,8 +2,10 @@ import json
 import os
 
 import aioredis
+from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import AnonymousUser
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import UntypedToken
@@ -240,6 +242,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if len(connected_users) == len(participants):
             message.is_sent = True
             await database_sync_to_async(message.save)()
+            channel_layer = get_channel_layer()
+            await channel_layer.group_send(
+                "global_chat",
+                {
+                    "type": "send_message",
+                    "message_id": message.id,
+                },
+            )
 
     async def is_user_connected(self, user_id):
         """

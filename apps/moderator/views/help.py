@@ -17,16 +17,13 @@ class ModeratorHelpView(APIView):
     serializer_class = ModeratorHelpSerializer
 
     def get_queryset(self):
-        return (
-            Help.objects.annotate(
-                row_number=Window(
-                    expression=RowNumber(),
-                    partition_by=[F('user'), F('status')],
-                    order_by=F('created_at').desc()
-                )
+        return Help.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[F("user"), F("status")],
+                order_by=F("created_at").desc(),
             )
-            .filter(row_number=1)
-        )
+        ).filter(row_number=1)
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -36,9 +33,9 @@ class ModeratorHelpView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(user__username__icontains=search_term)
-                        | Q(user__phone__icontains=search_term)
-                        | Q(status__icontains=search_term)
+                    Q(user__username__icontains=search_term)
+                    | Q(user__phone__icontains=search_term)
+                    | Q(status__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
