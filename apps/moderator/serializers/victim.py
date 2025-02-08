@@ -21,7 +21,6 @@ class ModeratorVictimTypeDetailSerializer(serializers.ModelSerializer):
             "name_uz",
             "name_ru",
             "name_en",
-            "is_pending",
             "created_at",
         )
 
@@ -45,6 +44,7 @@ class ModeratorVictimStatusDetailSerializer(serializers.ModelSerializer):
             "name_uz",
             "name_ru",
             "name_en",
+            "is_pending",
             "created_at",
         )
 
