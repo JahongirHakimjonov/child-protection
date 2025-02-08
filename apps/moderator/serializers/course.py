@@ -14,7 +14,6 @@ class ModeratorCourseCategorySerializer(serializers.ModelSerializer):
             "id",
             "title",
             "sub_title",
-            "description",
             "image",
             "lesson_count",
             "first_color",
