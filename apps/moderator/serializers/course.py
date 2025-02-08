@@ -18,6 +18,7 @@ class ModeratorCourseCategorySerializer(serializers.ModelSerializer):
             "lesson_count",
             "first_color",
             "second_color",
+            "created_at",
         ]
 
 
@@ -39,6 +40,7 @@ class ModeratorCourseCategoryDetailSerializer(serializers.ModelSerializer):
             "lesson_count",
             "first_color",
             "second_color",
+            "created_at",
         ]
 
 
