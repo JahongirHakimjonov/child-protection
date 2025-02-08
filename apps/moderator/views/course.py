@@ -1,7 +1,5 @@
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
-
-from apps.shared.exceptions.http404 import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,6 +13,7 @@ from apps.moderator.serializers.course import (
     ModeratorLessonResourceDetailSerializer,
     ModeratorCourseLessonDetailSerializer,
 )
+from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
 
@@ -43,9 +42,9 @@ class ModeratorCourseCategoryView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(title__icontains=search_term)
-                    | Q(sub_title__icontains=search_term)
-                    | Q(description__icontains=search_term)
+                        Q(title__icontains=search_term)
+                        | Q(sub_title__icontains=search_term)
+                        | Q(description__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -137,9 +136,12 @@ class ModeratorCourseLessonResourceView(APIView):
     def get(self, request):
         search = request.query_params.get("search")
         is_active = request.query_params.get("is_active")
+        lesson = request.query_params.get("lesson")
         queryset = self.get_queryset()
 
         tf = {"true": True, "false": False}
+        if lesson:
+            queryset = queryset.filter(lesson_id=lesson)
         if is_active is not None:
             queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
         if search:
@@ -147,10 +149,10 @@ class ModeratorCourseLessonResourceView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(title__icontains=search_term)
-                    | Q(description__icontains=search_term)
-                    | Q(name__icontains=search_term)
-                    | Q(lesson__title__icontains=search_term)
+                        Q(title__icontains=search_term)
+                        | Q(description__icontains=search_term)
+                        | Q(name__icontains=search_term)
+                        | Q(lesson__title__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -246,9 +248,12 @@ class ModeratorCourseLessonView(APIView):
     def get(self, request):
         search = request.query_params.get("search")
         is_active = request.query_params.get("is_active")
+        category = request.query_params.get("category")
         queryset = self.get_queryset()
 
         tf = {"true": True, "false": False}
+        if category:
+            queryset = queryset.filter(category_id=category)
         if is_active is not None:
             queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
         if search:
@@ -256,10 +261,10 @@ class ModeratorCourseLessonView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(title__icontains=search_term)
-                    | Q(description__icontains=search_term)
-                    | Q(text__icontains=search_term)
-                    | Q(category__title__icontains=search_term)
+                        Q(title__icontains=search_term)
+                        | Q(description__icontains=search_term)
+                        | Q(text__icontains=search_term)
+                        | Q(category__title__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
