@@ -13,7 +13,7 @@ class ChatRoomAdmin(ModelAdmin):
 
 @admin.register(Message)
 class MessageAdmin(ModelAdmin):
-    list_display = ("id", "chat", "sender", "created_at", "updated_at")
+    list_display = ("id", "chat", "sender", "message", "created_at")
     search_fields = ("chat__participants__username", "sender__username")
     autocomplete_fields = ("chat", "sender", "file")
 

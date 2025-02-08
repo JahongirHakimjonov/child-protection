@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.mobile.models.victim import Victim, VictimType
+from apps.mobile.models.victim import Victim, VictimType, VictimStatus
 from apps.mobile.serializers.victim import VictimSerializer, VictimTypeSerializer
 
 
@@ -47,8 +47,9 @@ class VictimList(APIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
+        victim_status = VictimStatus.objects.filter(is_pending=True).first()
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save(user=request.user, status=victim_status)
             return Response(
                 {
                     "success": True,
