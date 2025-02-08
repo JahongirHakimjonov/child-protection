@@ -115,27 +115,32 @@ class ChatsConsumer(AsyncWebsocketConsumer):
         """
         Send a new message in real-time when it's created.
         """
-        message_id = event["message_id"]
-        message = await self.get_message_by_id(message_id)
+        await self.send_all_messages()
 
-        if message:
-            message_data = await self.serialize_message(message)
-            await self.send(text_data=json.dumps(message_data))
-            await self.make_message_is_recieved(message_id)
+        # message_id = event["message_id"]
+        # message = await self.get_message_by_id(message_id)
+        #
+        # if message:
+        #     message_data = await self.serialize_message(message)
+        #     await self.send(text_data=json.dumps(message_data))
+        #     await self.make_message_is_recieved(message_id)
+        #     print(f"Message sent {message_id}")
 
     @database_sync_to_async
     def get_message_by_id(self, message_id):
         """
         Fetch a single message by ID.
         """
-        return Message.objects.filter(id=message_id).first()
+        return Message.objects.filter(id=message_id, is_admin=False).first()
 
     @database_sync_to_async
     def make_message_is_recieved(self, message_id):
         """
         Mark the message as received.
         """
-        message = Message.objects.filter(id=message_id).first()
-        message.is_received = True
-        message.save()
+        print(f"Marking message as received {message_id}")
+        message = Message.objects.filter(id=message_id).update(is_received=True)
+        # message.is_received = True
+        # message.save()
+        print(f"Message marked as received {message}")
         return message
