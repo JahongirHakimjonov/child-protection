@@ -34,23 +34,27 @@ class ModeratorTestView(APIView):
     def get(self, request):
         search = request.query_params.get("search")
         is_active = request.query_params.get("is_active")
+        lesson = request.query_params.get("lesson")
         queryset = self.get_queryset()
 
         tf = {"true": True, "false": False}
         if is_active is not None:
             queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
 
+        if lesson:
+            queryset = queryset.filter(lesson=lesson)
+
         if search:
             search_terms = search[:100].split()
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(title__icontains=search_term)
-                    | Q(description__icontains=search_term)
-                    | Q(question_count__icontains=search_term)
-                    | Q(course__title__icontains=search_term)
-                    | Q(course__description__icontains=search_term)
-                    | Q(course__text__icontains=search_term)
+                        Q(title__icontains=search_term)
+                        | Q(description__icontains=search_term)
+                        | Q(question_count__icontains=search_term)
+                        | Q(course__title__icontains=search_term)
+                        | Q(course__description__icontains=search_term)
+                        | Q(course__text__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -149,9 +153,9 @@ class ModeratorTestQuestionView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(question__icontains=search_term)
-                    | Q(test__title__icontains=search_term)
-                    | Q(test__description__icontains=search_term)
+                        Q(question__icontains=search_term)
+                        | Q(test__title__icontains=search_term)
+                        | Q(test__description__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -257,10 +261,10 @@ class ModeratorAnswerView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(question__question__icontains=search_term)
-                    | Q(answer__icontains=search_term)
-                    | Q(type__icontains=search_term)
-                    | Q(ball__icontains=search_term)
+                        Q(question__question__icontains=search_term)
+                        | Q(answer__icontains=search_term)
+                        | Q(type__icontains=search_term)
+                        | Q(ball__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
