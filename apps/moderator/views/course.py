@@ -42,9 +42,9 @@ class ModeratorCourseCategoryView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(title__icontains=search_term)
-                        | Q(sub_title__icontains=search_term)
-                        | Q(description__icontains=search_term)
+                    Q(title__icontains=search_term)
+                    | Q(sub_title__icontains=search_term)
+                    | Q(description__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -149,10 +149,10 @@ class ModeratorCourseLessonResourceView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(title__icontains=search_term)
-                        | Q(description__icontains=search_term)
-                        | Q(name__icontains=search_term)
-                        | Q(lesson__title__icontains=search_term)
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(name__icontains=search_term)
+                    | Q(lesson__title__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -205,7 +205,9 @@ class ModeratorCourseLessonResourceDetailView(APIView):
     )
     def patch(self, request, pk):
         course_lesson_resource = get_object_or_404(CourseLessonResource, pk)
-        serializer = self.serializer_class(course_lesson_resource, data=request.data)
+        serializer = self.serializer_class(
+            course_lesson_resource, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -216,15 +218,15 @@ class ModeratorCourseLessonResourceDetailView(APIView):
                 }
             )
         return Response(
-            {"success": False, "message": "CourseLessonResource does not exist"}
+            {"success": False, "message": "Error", "data": serializer.errors}
         )
 
     @extend_schema(
         operation_id="moderator_category_lesson_resource_detail_delete",
     )
     def delete(self, request, pk):
-        courselessonresource = get_object_or_404(CourseLessonResource, pk)
-        courselessonresource.delete()
+        course_lesson_resource = get_object_or_404(CourseLessonResource, pk=pk)
+        course_lesson_resource.delete()
         return Response({"success": True, "message": "CourseLessonResource deleted"})
 
 
@@ -232,8 +234,6 @@ class ModeratorCourseLessonResourceDetailView(APIView):
 #######################################################################################################################
 #######################################################################################################################
 #######################################################################################################################
-
-
 class ModeratorCourseLessonView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
@@ -261,10 +261,10 @@ class ModeratorCourseLessonView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(title__icontains=search_term)
-                        | Q(description__icontains=search_term)
-                        | Q(text__icontains=search_term)
-                        | Q(category__title__icontains=search_term)
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(text__icontains=search_term)
+                    | Q(category__title__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -302,8 +302,8 @@ class ModeratorCourseLessonDetailView(APIView):
         operation_id="moderator_category_lesson_detail_get",
     )
     def get(self, request, pk):
-        courselesson = get_object_or_404(CourseLesson, pk)
-        serializer = self.serializer_class(courselesson)
+        course_lesson = get_object_or_404(CourseLesson, pk)
+        serializer = self.serializer_class(course_lesson)
         return Response(
             {
                 "success": True,
@@ -317,7 +317,9 @@ class ModeratorCourseLessonDetailView(APIView):
     )
     def patch(self, request, pk):
         course_lesson = get_object_or_404(CourseLesson, pk)
-        serializer = self.serializer_class(course_lesson, data=request.data)
+        serializer = self.serializer_class(
+            course_lesson, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -327,7 +329,9 @@ class ModeratorCourseLessonDetailView(APIView):
                     "data": serializer.data,
                 }
             )
-        return Response({"success": False, "message": "CourseLesson does not exist"})
+        return Response(
+            {"success": False, "message": "Error", "data": serializer.errors}
+        )
 
     @extend_schema(
         operation_id="moderator_category_lesson_detail_delete",
