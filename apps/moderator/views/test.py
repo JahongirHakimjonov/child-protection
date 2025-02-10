@@ -142,11 +142,15 @@ class ModeratorTestQuestionView(APIView):
     def get(self, request):
         search = request.query_params.get("search")
         is_active = request.query_params.get("is_active")
+        test = request.query_params.get("test")
         queryset = self.get_queryset()
 
         tf = {"true": True, "false": False}
         if is_active is not None:
             queryset = queryset.filter(is_active=tf.get(is_active.lower(), None))
+
+        if test:
+            queryset = queryset.filter(test=test)
 
         if search:
             search_terms = search[:100].split()

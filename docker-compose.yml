@@ -109,22 +109,48 @@ services:
     networks:
       - app_network
 
-#  celery_beat:
-#    build:
-#      context: .
-#      dockerfile: ./deployments/compose/django/Dockerfile
-#    command: /start-celerybeat
-#    restart: always
+  #  celery_beat:
+  #    build:
+  #      context: .
+  #      dockerfile: ./deployments/compose/django/Dockerfile
+  #    command: /start-celerybeat
+  #    restart: always
+  #    volumes:
+  #      - .:/app
+  #    env_file:
+  #      - .env
+  #    depends_on:
+  #      - redis
+  #      - rabbitmq
+  #      - pgbouncer
+  #    networks:
+  #      - app_network
+
+#  loki:
+#    image: grafana/loki:latest
+#    ports:
+#      - "3100:3100"
 #    volumes:
-#      - .:/app
-#    env_file:
-#      - .env
+#      - ./config/loki-config.yml:/etc/loki/local-config.yaml
+#    command: -config.file=/etc/loki/local-config.yaml
+#
+#  promtail:
+#    image: grafana/promtail:latest
+#    volumes:
+#      - /var/log:/var/log
+#      - ./config/promtail-config.yml:/etc/promtail/promtail-config.yml
+#    command: -config.file=/etc/promtail/promtail-config.yml
 #    depends_on:
-#      - redis
-#      - rabbitmq
-#      - pgbouncer
-#    networks:
-#      - app_network
+#      - loki
+#
+#  grafana:
+#    image: grafana/grafana:latest
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - grafana-data:/var/lib/grafana
+#    depends_on:
+#      - loki
 
 volumes:
   pg_data:
@@ -133,3 +159,5 @@ volumes:
     driver: local
   rabbitmq:
     driver: local
+#  grafana-data:
+#    driver: local
