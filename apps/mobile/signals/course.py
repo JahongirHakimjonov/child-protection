@@ -25,17 +25,26 @@ def update_course_resource_count(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=CourseLessonResource)
 def update_course_resource_count_on_delete(sender, instance, **kwargs):
     if instance.type == ResourceTypes.VIDEO:
-        instance.lesson.video_count = instance.objects.filter(
-            lesson=instance.lesson, type=ResourceTypes.VIDEO
-        ).count()
+        instance.lesson.video_count = (
+            CourseLessonResource.objects.filter(
+                lesson=instance.lesson, type=ResourceTypes.VIDEO
+            ).count()
+            or 0
+        )
     elif instance.type == ResourceTypes.AUDIO:
-        instance.lesson.audio_count = instance.objects.filter(
-            lesson=instance.lesson, type=ResourceTypes.AUDIO
-        ).count()
+        instance.lesson.audio_count = (
+            CourseLessonResource.objects.filter(
+                lesson=instance.lesson, type=ResourceTypes.AUDIO
+            ).count()
+            or 0
+        )
     else:
-        instance.lesson.document_count = instance.objects.filter(
-            lesson=instance.lesson, type=ResourceTypes.DOCUMENT
-        ).count()
+        instance.lesson.document_count = (
+            CourseLessonResource.objects.filter(
+                lesson=instance.lesson, type=ResourceTypes.DOCUMENT
+            ).count()
+            or 0
+        )
     instance.lesson.save()
 
 
@@ -50,7 +59,7 @@ def update_course_lesson_count(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=CourseLesson)
 def update_course_lesson_count_on_delete(sender, instance, **kwargs):
-    instance.category.lesson_count = CourseLesson.objects.filter(
-        category=instance.category
-    ).count()
+    instance.category.lesson_count = (
+        CourseLesson.objects.filter(category=instance.category).count() or 0
+    )
     instance.category.save()
