@@ -119,7 +119,11 @@ class ModeratorMessageUpdate(APIView):
         user = request.user
         message = get_object_or_404(Message, pk=pk)
 
-        if user.role == RoleChoices.ADMIN or user.role == RoleChoices.SUPER_ADMIN and message.user == user:
+        if (
+            user.role == RoleChoices.ADMIN
+            or user.role == RoleChoices.SUPER_ADMIN
+            and message.user == user
+        ):
             message.delete()
             return Response(
                 {

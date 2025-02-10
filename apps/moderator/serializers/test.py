@@ -21,8 +21,6 @@ class ModeratorTestSerializer(serializers.ModelSerializer):
 
 
 class ModeratorTestDetailSerializer(serializers.ModelSerializer):
-    lesson = ModeratorCourseLessonSerializer()
-
     class Meta:
         model = Test
         fields = (
@@ -38,6 +36,11 @@ class ModeratorTestDetailSerializer(serializers.ModelSerializer):
             "question_count",
             "is_active",
         )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["lesson"] = ModeratorCourseLessonSerializer(instance.lesson).data
+        return data
 
 
 class ModeratorTestQuestionSerializer(serializers.ModelSerializer):
