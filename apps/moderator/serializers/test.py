@@ -72,6 +72,7 @@ class ModeratorAnswerCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
         fields = (
+            "id",
             "question",
             "answer_uz",
             "answer_ru",
@@ -81,6 +82,7 @@ class ModeratorAnswerCreateSerializer(serializers.ModelSerializer):
             "is_correct",
         )
         extra_kwargs = {
+            "id": {"read_only": True},
             "question": {"required": False},
         }
 
