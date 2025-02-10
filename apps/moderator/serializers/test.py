@@ -68,6 +68,50 @@ class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
         )
 
 
+class ModeratorAnswerCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = (
+            "question",
+            "answer_uz",
+            "answer_ru",
+            "answer_en",
+            "type",
+            "ball",
+            "is_correct",
+        )
+        extra_kwargs = {
+            "question": {"required": False},
+        }
+
+
+class ModeratorTestQuestionCreateSerializer(serializers.ModelSerializer):
+    answers = ModeratorAnswerCreateSerializer(many=True)
+    test = serializers.PrimaryKeyRelatedField(queryset=Test.objects.all())
+
+    class Meta:
+        model = TestQuestion
+        fields = (
+            "id",
+            "test",
+            "question_uz",
+            "question_ru",
+            "question_en",
+            "is_active",
+            "answers",
+        )
+        extra_kwargs = {
+            "id": {"read_only": True},
+        }
+
+    def create(self, validated_data):
+        answers_data = validated_data.pop("answers")
+        test_question = TestQuestion.objects.create(**validated_data)
+        for answer_data in answers_data:
+            Answer.objects.create(question=test_question, **answer_data)
+        return test_question
+
+
 class ModeratorTestAnswerSerializer(serializers.ModelSerializer):
     question = ModeratorTestQuestionSerializer()
 

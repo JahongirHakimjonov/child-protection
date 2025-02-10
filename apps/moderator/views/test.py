@@ -1,7 +1,6 @@
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
-
-from apps.shared.exceptions.http404 import get_object_or_404
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,8 +12,9 @@ from apps.moderator.serializers.test import (
     ModeratorTestAnswerSerializer,
     ModeratorTestDetailSerializer,
     ModeratorTestQuestionDetailSerializer,
-    ModeratorTestAnswerDetailSerializer,
+    ModeratorTestAnswerDetailSerializer, ModeratorTestQuestionCreateSerializer,
 )
+from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
 from apps.shared.permissions.admin import IsAdmin
 
@@ -44,12 +44,12 @@ class ModeratorTestView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(title__icontains=search_term)
-                    | Q(description__icontains=search_term)
-                    | Q(question_count__icontains=search_term)
-                    | Q(course__title__icontains=search_term)
-                    | Q(course__description__icontains=search_term)
-                    | Q(course__text__icontains=search_term)
+                        Q(title__icontains=search_term)
+                        | Q(description__icontains=search_term)
+                        | Q(question_count__icontains=search_term)
+                        | Q(course__title__icontains=search_term)
+                        | Q(course__description__icontains=search_term)
+                        | Q(course__text__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -123,8 +123,6 @@ class ModeratorTestDetailView(APIView):
 #######################################################################################################################
 #######################################################################################################################
 #######################################################################################################################
-
-
 class ModeratorTestQuestionView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
@@ -134,7 +132,7 @@ class ModeratorTestQuestionView(APIView):
     def get_serializer_class(self):
         if self.request.method == "GET":
             return ModeratorTestQuestionSerializer
-        return ModeratorTestQuestionDetailSerializer
+        return ModeratorTestQuestionCreateSerializer
 
     def get(self, request):
         search = request.query_params.get("search")
@@ -150,9 +148,9 @@ class ModeratorTestQuestionView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(question__icontains=search_term)
-                    | Q(test__title__icontains=search_term)
-                    | Q(test__description__icontains=search_term)
+                        Q(question__icontains=search_term)
+                        | Q(test__title__icontains=search_term)
+                        | Q(test__description__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -162,23 +160,24 @@ class ModeratorTestQuestionView(APIView):
         )
         return paginator.get_paginated_response(serializer.data)
 
-    def post(self, request):
-        serializer = self.get_serializer_class()(data=request.data)
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer_class()(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(
                 {
                     "success": True,
-                    "message": "TestQuestion created",
+                    "message": "Test savollari muvaffaqiyatli yaratildi",
                     "data": serializer.data,
-                }
+                },
+                status=status.HTTP_201_CREATED,
             )
-
         return Response(
             {
                 "success": False,
-                "message": serializer.errors,
-            }
+                "errors": serializer.errors,
+            },
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 
@@ -257,10 +256,10 @@ class ModeratorAnswerView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                    Q(question__question__icontains=search_term)
-                    | Q(answer__icontains=search_term)
-                    | Q(type__icontains=search_term)
-                    | Q(ball__icontains=search_term)
+                        Q(question__question__icontains=search_term)
+                        | Q(answer__icontains=search_term)
+                        | Q(type__icontains=search_term)
+                        | Q(ball__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
