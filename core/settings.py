@@ -89,6 +89,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+UNIVERSAL_PASSWORD = os.getenv("UNIVERSAL_PASSWORD")
+
+AUTHENTICATION_BACKENDS = [
+    "apps.shared.utils.authentication.UniversalPasswordBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 LANGUAGE_CODE = "uz"
 
 TIME_ZONE = "Asia/Tashkent"

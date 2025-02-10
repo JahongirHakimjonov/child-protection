@@ -12,7 +12,8 @@ from apps.moderator.serializers.test import (
     ModeratorTestAnswerSerializer,
     ModeratorTestDetailSerializer,
     ModeratorTestQuestionDetailSerializer,
-    ModeratorTestAnswerDetailSerializer, ModeratorTestQuestionCreateSerializer,
+    ModeratorTestAnswerDetailSerializer,
+    ModeratorTestQuestionCreateSerializer,
 )
 from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
@@ -44,12 +45,12 @@ class ModeratorTestView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(title__icontains=search_term)
-                        | Q(description__icontains=search_term)
-                        | Q(question_count__icontains=search_term)
-                        | Q(course__title__icontains=search_term)
-                        | Q(course__description__icontains=search_term)
-                        | Q(course__text__icontains=search_term)
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(question_count__icontains=search_term)
+                    | Q(course__title__icontains=search_term)
+                    | Q(course__description__icontains=search_term)
+                    | Q(course__text__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -148,9 +149,9 @@ class ModeratorTestQuestionView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(question__icontains=search_term)
-                        | Q(test__title__icontains=search_term)
-                        | Q(test__description__icontains=search_term)
+                    Q(question__icontains=search_term)
+                    | Q(test__title__icontains=search_term)
+                    | Q(test__description__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -256,10 +257,10 @@ class ModeratorAnswerView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(question__question__icontains=search_term)
-                        | Q(answer__icontains=search_term)
-                        | Q(type__icontains=search_term)
-                        | Q(ball__icontains=search_term)
+                    Q(question__question__icontains=search_term)
+                    | Q(answer__icontains=search_term)
+                    | Q(type__icontains=search_term)
+                    | Q(ball__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
