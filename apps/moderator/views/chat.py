@@ -115,6 +115,29 @@ class ModeratorMessageUpdate(APIView):
                 status=403,
             )
 
+    def delete(self, request, pk, format=None):
+        user = request.user
+        message = get_object_or_404(Message, pk=pk)
+
+        if user.role == RoleChoices.ADMIN or user.role == RoleChoices.SUPER_ADMIN and message.user == user:
+            message.delete()
+            return Response(
+                {
+                    "success": True,
+                    "message": "Message deleted successfully.",
+                    "data": [],
+                }
+            )
+        else:
+            return Response(
+                {
+                    "success": False,
+                    "message": "You do not have permission to delete this message.",
+                    "data": [],
+                },
+                status=403,
+            )
+
 
 class ModeratorChatResourceView(APIView):
     serializer_class = ModeratorChatResourceSerializer
