@@ -55,7 +55,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message_content = text_data_json.get("message")
         file = text_data_json.get("file")
 
-        if self.user.role == RoleChoices.ADMIN:
+        if (
+            self.user.role == RoleChoices.ADMIN
+            or self.user.role == RoleChoices.SUPER_ADMIN
+        ):
             is_admin = True
         else:
             is_admin = False

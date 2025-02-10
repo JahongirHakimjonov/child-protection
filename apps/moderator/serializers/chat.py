@@ -67,6 +67,7 @@ class ModeratorMessageSerializer(serializers.ModelSerializer):
             "file",
             "is_admin",
             "is_sent",
+            "is_read",
             "created_at",
             "updated_at",
         )
