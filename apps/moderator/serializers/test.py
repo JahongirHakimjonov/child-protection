@@ -44,8 +44,6 @@ class ModeratorTestDetailSerializer(serializers.ModelSerializer):
 
 
 class ModeratorTestQuestionSerializer(serializers.ModelSerializer):
-    test = ModeratorTestSerializer()
-
     class Meta:
         model = TestQuestion
         fields = (
@@ -57,8 +55,6 @@ class ModeratorTestQuestionSerializer(serializers.ModelSerializer):
 
 
 class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
-    test = ModeratorTestSerializer()
-
     class Meta:
         model = TestQuestion
         fields = (
@@ -69,6 +65,13 @@ class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
             "question_en",
             "is_active",
         )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["answers"] = ModeratorTestAnswerSerializer(
+            instance.answers.all(), many=True
+        ).data
+        return data
 
 
 class ModeratorAnswerCreateSerializer(serializers.ModelSerializer):
@@ -118,11 +121,9 @@ class ModeratorTestQuestionCreateSerializer(serializers.ModelSerializer):
 
 
 class ModeratorTestAnswerSerializer(serializers.ModelSerializer):
-    question = ModeratorTestQuestionSerializer()
-
     class Meta:
         model = Answer
-        fields = ("id", "question", "answer", "type", "ball", "is_correct")
+        fields = ("id", "answer", "type", "ball", "is_correct")
 
 
 class ModeratorTestAnswerDetailSerializer(serializers.ModelSerializer):

@@ -109,22 +109,22 @@ services:
     networks:
       - app_network
 
-  #  celery_beat:
-  #    build:
-  #      context: .
-  #      dockerfile: ./deployments/compose/django/Dockerfile
-  #    command: /start-celerybeat
-  #    restart: always
-  #    volumes:
-  #      - .:/app
-  #    env_file:
-  #      - .env
-  #    depends_on:
-  #      - redis
-  #      - rabbitmq
-  #      - pgbouncer
-  #    networks:
-  #      - app_network
+#    celery_beat:
+#      build:
+#        context: .
+#        dockerfile: ./deployments/compose/django/Dockerfile
+#      command: /start-celerybeat
+#      restart: always
+#      volumes:
+#        - .:/app
+#      env_file:
+#        - .env
+#      depends_on:
+#        - redis
+#        - rabbitmq
+#        - pgbouncer
+#      networks:
+#        - app_network
 
 #  loki:
 #    image: grafana/loki:latest
