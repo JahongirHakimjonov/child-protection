@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.mobile.models.victim import Victim, VictimType, VictimStatus
+from apps.moderator.serializers.user import ModeratorUserSerializer
 
 
 class ModeratorVictimTypeSerializer(serializers.ModelSerializer):
@@ -50,6 +51,10 @@ class ModeratorVictimStatusDetailSerializer(serializers.ModelSerializer):
 
 
 class ModeratorVictimSerializer(serializers.ModelSerializer):
+    user = ModeratorUserSerializer()
+    type = ModeratorVictimTypeSerializer()
+    status = ModeratorVictimStatusSerializer()
+
     class Meta:
         model = Victim
         fields = (
