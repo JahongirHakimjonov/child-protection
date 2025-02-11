@@ -61,7 +61,27 @@ class ModeratorTestQuestionSerializer(serializers.ModelSerializer):
         return data
 
 
+class ModeratorTestAnswerDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = (
+            "id",
+            "question",
+            "answer_uz",
+            "answer_ru",
+            "answer_en",
+            "type",
+            "ball",
+            "is_correct",
+        )
+        extra_kwargs = {
+            "id": {"read_only": False},
+        }
+
+
 class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
+    answers = ModeratorTestAnswerDetailSerializer(many=True)
+
     class Meta:
         model = TestQuestion
         fields = (
@@ -71,14 +91,42 @@ class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
             "question_ru",
             "question_en",
             "is_active",
+            "answers",
         )
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["answers"] = ModeratorTestAnswerDetailSerializer(
-            instance.answers.all(), many=True
+            list(instance.answers.all()), many=True
         ).data
         return data
+
+    def update(self, instance, validated_data):
+        print(validated_data)
+        answers_data = validated_data.pop("answers", None)
+        instance = super().update(instance, validated_data)
+
+        if answers_data is not None:
+            for answer_data in answers_data:
+                answer_data.pop("question", None)
+                answer_id = answer_data.get("id", None)
+                if answer_id:
+                    try:
+                        answer_instance = Answer.objects.get(
+                            id=answer_id, question=instance
+                        )
+                        print("===================================================")
+                        print(answer_instance)
+                        print("===================================================")
+                    except Answer.DoesNotExist:
+                        continue
+                    for attr, value in answer_data.items():
+                        setattr(answer_instance, attr, value)
+                    answer_instance.save()
+                else:
+                    Answer.objects.create(question=instance, **answer_data)
+
+        return instance
 
 
 class ModeratorAnswerCreateSerializer(serializers.ModelSerializer):
@@ -131,18 +179,3 @@ class ModeratorTestAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
         fields = ("id", "answer", "type", "ball", "is_correct")
-
-
-class ModeratorTestAnswerDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Answer
-        fields = (
-            "id",
-            "question",
-            "answer_uz",
-            "answer_ru",
-            "answer_en",
-            "type",
-            "ball",
-            "is_correct",
-        )
