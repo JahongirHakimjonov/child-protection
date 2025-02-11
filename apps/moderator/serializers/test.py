@@ -134,8 +134,6 @@ class ModeratorTestAnswerSerializer(serializers.ModelSerializer):
 
 
 class ModeratorTestAnswerDetailSerializer(serializers.ModelSerializer):
-    question = ModeratorTestQuestionSerializer()
-
     class Meta:
         model = Answer
         fields = (
