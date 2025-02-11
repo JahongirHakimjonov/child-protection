@@ -75,7 +75,7 @@ class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data["answers"] = ModeratorTestAnswerSerializer(
+        data["answers"] = ModeratorTestAnswerDetailSerializer(
             instance.answers.all(), many=True
         ).data
         return data
