@@ -53,6 +53,13 @@ class ModeratorTestQuestionSerializer(serializers.ModelSerializer):
             "is_active",
         )
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["answers"] = ModeratorTestAnswerSerializer(
+            instance.answers.all(), many=True
+        ).data
+        return data
+
 
 class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
     class Meta:
