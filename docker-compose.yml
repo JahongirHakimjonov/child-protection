@@ -126,31 +126,10 @@ services:
 #      networks:
 #        - app_network
 
-#  loki:
-#    image: grafana/loki:latest
-#    ports:
-#      - "3100:3100"
-#    volumes:
-#      - ./config/loki-config.yml:/etc/loki/local-config.yaml
-#    command: -config.file=/etc/loki/local-config.yaml
-#
-#  promtail:
-#    image: grafana/promtail:latest
-#    volumes:
-#      - /var/log:/var/log
-#      - ./config/promtail-config.yml:/etc/promtail/promtail-config.yml
-#    command: -config.file=/etc/promtail/promtail-config.yml
-#    depends_on:
-#      - loki
-#
-#  grafana:
-#    image: grafana/grafana:latest
-#    ports:
-#      - "3000:3000"
-#    volumes:
-#      - grafana-data:/var/lib/grafana
-#    depends_on:
-#      - loki
+
+#include:
+#  - path: monitoring/docker-compose.yml
+
 
 volumes:
   pg_data:
@@ -159,5 +138,3 @@ volumes:
     driver: local
   rabbitmq:
     driver: local
-#  grafana-data:
-#    driver: local
