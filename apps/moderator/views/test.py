@@ -49,12 +49,12 @@ class ModeratorTestView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(title__icontains=search_term)
-                        | Q(description__icontains=search_term)
-                        | Q(question_count__icontains=search_term)
-                        | Q(course__title__icontains=search_term)
-                        | Q(course__description__icontains=search_term)
-                        | Q(course__text__icontains=search_term)
+                    Q(title__icontains=search_term)
+                    | Q(description__icontains=search_term)
+                    | Q(question_count__icontains=search_term)
+                    | Q(course__title__icontains=search_term)
+                    | Q(course__description__icontains=search_term)
+                    | Q(course__text__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -157,9 +157,9 @@ class ModeratorTestQuestionView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(question__icontains=search_term)
-                        | Q(test__title__icontains=search_term)
-                        | Q(test__description__icontains=search_term)
+                    Q(question__icontains=search_term)
+                    | Q(test__title__icontains=search_term)
+                    | Q(test__description__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -198,8 +198,8 @@ class ModeratorTestQuestionDetailView(APIView):
         operation_id="moderator_test_question_detail_get",
     )
     def get(self, request, pk):
-        testquestion = get_object_or_404(TestQuestion, pk)
-        serializer = self.serializer_class(testquestion)
+        test_question = get_object_or_404(TestQuestion, pk)
+        serializer = self.serializer_class(test_question)
         return Response(
             {
                 "success": True,
@@ -212,8 +212,10 @@ class ModeratorTestQuestionDetailView(APIView):
         operation_id="moderator_test_question_detail_patch",
     )
     def patch(self, request, pk):
-        testquestion = get_object_or_404(TestQuestion, pk)
-        serializer = self.serializer_class(testquestion, data=request.data)
+        test_question = get_object_or_404(TestQuestion, pk)
+        serializer = self.serializer_class(
+            test_question, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -223,14 +225,16 @@ class ModeratorTestQuestionDetailView(APIView):
                     "data": serializer.data,
                 }
             )
-        return Response({"success": False, "message": "TestQuestion does not exist"})
+        return Response(
+            {"success": False, "message": "Error", "data": serializer.errors}
+        )
 
     @extend_schema(
         operation_id="moderator_test_question_detail_delete",
     )
     def delete(self, request, pk):
-        testquestion = get_object_or_404(TestQuestion, pk)
-        testquestion.delete()
+        test_question = get_object_or_404(TestQuestion, pk)
+        test_question.delete()
         return Response({"success": True, "message": "TestQuestion deleted"})
 
 
@@ -265,10 +269,10 @@ class ModeratorAnswerView(APIView):
             query = Q()
             for search_term in search_terms:
                 query &= (
-                        Q(question__question__icontains=search_term)
-                        | Q(answer__icontains=search_term)
-                        | Q(type__icontains=search_term)
-                        | Q(ball__icontains=search_term)
+                    Q(question__question__icontains=search_term)
+                    | Q(answer__icontains=search_term)
+                    | Q(type__icontains=search_term)
+                    | Q(ball__icontains=search_term)
                 )
             queryset = queryset.filter(query)
         paginator = CustomPagination()
@@ -321,7 +325,7 @@ class ModeratorAnswerDetailView(APIView):
     )
     def patch(self, request, pk):
         answer = get_object_or_404(Answer, pk)
-        serializer = self.serializer_class(answer, data=request.data)
+        serializer = self.serializer_class(answer, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -331,7 +335,9 @@ class ModeratorAnswerDetailView(APIView):
                     "data": serializer.data,
                 }
             )
-        return Response({"success": False, "message": "Answer does not exist"})
+        return Response(
+            {"success": False, "message": "Error", "data": serializer.errors}
+        )
 
     @extend_schema(
         operation_id="moderator_answer_detail_delete",

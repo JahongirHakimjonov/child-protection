@@ -4,6 +4,12 @@ server:
   http_listen_port: 3100
   grpc_listen_port: 9095
 
+common:
+  path_prefix: /loki
+  storage:
+    filesystem:
+      directory: /loki/chunks
+
 ingester:
   lifecycler:
     address: 127.0.0.1
@@ -17,16 +23,16 @@ ingester:
 
 schema_config:
   configs:
-    - from: 2022-01-01
-      store: boltdb-shipper
+    - from: 2024-02-10
+      store: tsdb
       object_store: filesystem
-      schema: v12
+      schema: v13
       index:
         prefix: index_
         period: 24h
 
 storage_config:
-  boltdb_shipper:
+  tsdb_shipper:
     active_index_directory: /loki/index
     cache_location: /loki/cache
 
@@ -36,7 +42,7 @@ storage_config:
 limits_config:
   reject_old_samples: true
   reject_old_samples_max_age: 168h
+  allow_structured_metadata: false
 
-table_manager:
-  retention_deletes_enabled: false
-  retention_period: 0s
+compactor:
+  working_directory: /loki/compactor

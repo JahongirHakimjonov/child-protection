@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,9 +18,25 @@ class NewsView(APIView):
         return News.objects.filter(is_active=True)
 
     def get(self, request):
-        news = self.get_queryset()
+        search = request.query_params.get("search")
+        queryset = self.get_queryset()
+        if search:
+            search_terms = search[:100].split()
+            query = Q()
+            for term in search_terms:
+                query &= (
+                    Q(title__icontains=term)
+                    | Q(title_uz__icontains=term)
+                    | Q(title_ru__icontains=term)
+                    | Q(title_en__icontains=term)
+                    | Q(description__icontains=term)
+                    | Q(description_uz__icontains=term)
+                    | Q(description_ru__icontains=term)
+                    | Q(description_en__icontains=term)
+                )
+            queryset = queryset.filter(query)
         paginator = self.pagination_class()
-        result_page = paginator.paginate_queryset(news, request)
+        result_page = paginator.paginate_queryset(queryset, request)
         serializer = self.serializer_class(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
