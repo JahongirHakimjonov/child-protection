@@ -1,5 +1,4 @@
 from calendar import month_name, day_name, monthrange
-from collections import defaultdict
 from datetime import timedelta
 
 from django.db.models import Count
@@ -11,6 +10,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.mobile.models.help import Help, HelpStatus
 from apps.mobile.models.victim import Victim
 from apps.users.models.users import User
 
@@ -21,12 +21,23 @@ class VictimStat(APIView):
     @staticmethod
     def get_model(type_):
         """Choose between User or Victim model."""
-        return {"user": User, "victim": Victim}.get(type_)
+        user_queryset = User.objects.all()
+        victim_queryset = Victim.objects.all()
+        just_user_queryset = user_queryset.exclude(
+            id__in=victim_queryset.values("user_id")
+        )
+        help_queryset = Help.objects.filter(status=HelpStatus.SAFE)
+        return {
+            "help": help_queryset,
+            "just_user": just_user_queryset,
+            "user": user_queryset,
+            "victim": victim_queryset,
+        }.get(type_)
 
     @extend_schema(
         summary="Get victim statistics",
         description=(
-            "Retrieve daily, weekly, monthly, or yearly statistics for users or victims. "
+            "Retrieve daily, weekly, monthly, or yearly statistics for users or victims."
             " - **daily**: statistics for the current day grouped by hour\n"
             " - **weekly**: statistics for the past 7 days grouped by day name\n"
             " - **monthly**: statistics for the current month grouped by day\n"
@@ -47,7 +58,7 @@ class VictimStat(APIView):
                 name="type",
                 type=str,
                 required=True,
-                enum=["user", "victim"],
+                enum=["user", "victim", "help", "just_user"],
                 description="Specify whether to retrieve statistics for users or victims.",
             ),
         ],
@@ -78,7 +89,7 @@ class VictimStat(APIView):
             today = now().date()
             labels = [f"{hour:02d}:00" for hour in range(24)]
             stats = (
-                model.objects.filter(created_at__date=today)
+                model.filter(created_at__date=today)
                 .annotate(period=TruncHour("created_at"))
                 .values("period")
                 .annotate(count=Count("id"))
@@ -93,7 +104,7 @@ class VictimStat(APIView):
             start_date = now() - timedelta(days=7)
             labels = list(day_name)  # ["Monday", "Tuesday", ... "Sunday"]
             stats = (
-                model.objects.filter(created_at__gte=start_date)
+                model.filter(created_at__gte=start_date)
                 .annotate(period=TruncDay("created_at"))
                 .values("period")
                 .annotate(count=Count("id"))
@@ -109,7 +120,7 @@ class VictimStat(APIView):
             num_days = monthrange(year, month)[1]
             labels = [str(day) for day in range(1, num_days + 1)]
             stats = (
-                model.objects.filter(created_at__year=year, created_at__month=month)
+                model.filter(created_at__year=year, created_at__month=month)
                 .annotate(period=TruncDay("created_at"))
                 .values("period")
                 .annotate(count=Count("id"))
@@ -122,7 +133,7 @@ class VictimStat(APIView):
         elif distance == "yearly":
             labels = [month_name[i] for i in range(1, 13)]
             stats = (
-                model.objects.filter(created_at__year=now().year)
+                model.filter(created_at__year=now().year)
                 .annotate(period=TruncMonth("created_at"))
                 .values("period")
                 .annotate(count=Count("id"))
@@ -144,7 +155,7 @@ class VictimStat(APIView):
         return Response(
             {
                 "success": True,
-                "message": f"{distance.capitalize()} stats",
+                "message": f"{distance.capitalize()} stats by {type_}",
                 "data": response_data,
             },
             status=status.HTTP_200_OK,

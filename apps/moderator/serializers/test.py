@@ -102,7 +102,6 @@ class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        print(validated_data)
         answers_data = validated_data.pop("answers", None)
         instance = super().update(instance, validated_data)
 
@@ -115,9 +114,6 @@ class ModeratorTestQuestionDetailSerializer(serializers.ModelSerializer):
                         answer_instance = Answer.objects.get(
                             id=answer_id, question=instance
                         )
-                        print("===================================================")
-                        print(answer_instance)
-                        print("===================================================")
                     except Answer.DoesNotExist:
                         continue
                     for attr, value in answer_data.items():
