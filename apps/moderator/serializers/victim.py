@@ -53,7 +53,6 @@ class ModeratorVictimStatusDetailSerializer(serializers.ModelSerializer):
 class ModeratorVictimSerializer(serializers.ModelSerializer):
     user = ModeratorUserSerializer()
     type = ModeratorVictimTypeSerializer()
-    status = ModeratorVictimStatusSerializer()
 
     class Meta:
         model = Victim
@@ -66,3 +65,8 @@ class ModeratorVictimSerializer(serializers.ModelSerializer):
             "status",
             "created_at",
         )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["status"] = ModeratorVictimStatusSerializer(instance.status).data
+        return data
