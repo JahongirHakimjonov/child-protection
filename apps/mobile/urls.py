@@ -1,5 +1,6 @@
 from django.urls import path
 
+from apps.mobile.views.about import AboutView, AboutDetailView, AboutProjectView, AboutProjectDetailView
 from apps.mobile.views.banner import BannerListAPIView
 from apps.mobile.views.count import CountApiView
 from apps.mobile.views.course import (
@@ -71,4 +72,8 @@ urlpatterns = [
     path("news/<int:pk>/", NewsDetailView.as_view(), name="news_detail"),
     path("place/", PlacesView.as_view(), name="place"),
     path("count/", CountApiView.as_view(), name="count"),
+    path("about/", AboutView.as_view(), name="about"),
+    path("about/<int:pk>/", AboutDetailView.as_view(), name="about-detail"),
+    path("about/project/", AboutProjectView.as_view(), name="about-project"),
+    path("about/project/<int:pk>/", AboutProjectDetailView.as_view(), name="about-project-detail"),
 ]

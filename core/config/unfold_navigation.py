@@ -184,6 +184,28 @@ PAGES = [
     },
     {
         "seperator": True,
+        "title": _("Loyiha haqida"),
+        "items": [
+            {
+                "title": _("Loyiha haqida"),
+                "icon": "settings_accessibility",
+                "link": reverse_lazy("admin:mobile_aboutproject_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_aboutproject"
+                ),
+            },
+            {
+                "title": _("Loyiha a'zolari"),
+                "icon": "diversity_3",
+                "link": reverse_lazy("admin:mobile_about_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_about"
+                ),
+            },
+        ],
+    },
+    {
+        "seperator": True,
         "title": _("Chat"),
         "items": [
             {
