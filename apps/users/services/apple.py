@@ -2,11 +2,9 @@ import json
 import os
 import time
 import urllib.parse
-from io import BytesIO
 
 import jwt
 import requests
-from PIL import Image
 from django.core.files.base import ContentFile
 
 from apps.users.models.users import RegisterTypeChoices, UserData, User
@@ -104,16 +102,14 @@ class Apple:
         try:
             response = requests.get(picture_url)
             response.raise_for_status()
-            image = Image.open(BytesIO(response.content))
-            webp_image_io = BytesIO()
-            image.save(webp_image_io, format="WEBP")
-            webp_image_io.seek(0)
 
-            sanitized_filename = f"{user.username}_avatar.webp"
+            parsed_url = urllib.parse.urlparse(picture_url)
+            filename = os.path.basename(parsed_url.path)
+            sanitized_filename = f"{user.username}_avatar_{filename}"
 
             user.avatar.save(
                 sanitized_filename,
-                ContentFile(webp_image_io.read()),
+                ContentFile(response.content),
                 save=False,
             )
             user.save()

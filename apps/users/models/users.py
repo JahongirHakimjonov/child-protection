@@ -60,15 +60,11 @@ class User(AbstractUser, AbstractBaseModel):
 
     def __str__(self):
         user_data = self.phone if self.phone else self.email
-        return (
-            f"{self.first_name} {self.last_name} - {user_data}"
-            if self.phone
-            else str(_("Foydalanuvchi"))
-        )
+        return f"{self.first_name} {self.last_name} - {user_data}"
 
     def save(self, *args, **kwargs):
         if not self.username:
-            self.username = self.phone
+            self.username = self.phone if self.phone else self.email
         super(User, self).save(*args, **kwargs)
 
     class Meta:
