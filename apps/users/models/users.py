@@ -141,7 +141,7 @@ class UserData(AbstractBaseModel):
     )
     uid = models.CharField(max_length=100, verbose_name=_("Provider ID"), db_index=True)
     extra_data = models.JSONField(
-        verbose_name=_("Extra data"), null=True, blank=True, db_index=True
+        verbose_name=_("Extra data"), null=True, blank=True, db_index=True, encoder=PrettyJSONEncoder
     )
 
     class Meta:
