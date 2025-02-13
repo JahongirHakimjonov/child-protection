@@ -22,7 +22,7 @@ class AboutView(APIView):
             {
                 "success": True,
                 "message": "About data retrieved successfully",
-                "data": serializer.data
+                "data": serializer.data,
             }
         )
 
@@ -39,7 +39,7 @@ class AboutDetailView(APIView):
             {
                 "success": True,
                 "message": "About data retrieved successfully",
-                "data": serializer.data
+                "data": serializer.data,
             }
         )
 
@@ -58,7 +58,7 @@ class AboutProjectView(APIView):
             {
                 "success": True,
                 "message": "About project data retrieved successfully",
-                "data": serializer.data
+                "data": serializer.data,
             }
         )
 
@@ -75,6 +75,6 @@ class AboutProjectDetailView(APIView):
             {
                 "success": True,
                 "message": "About project data retrieved successfully",
-                "data": serializer.data
+                "data": serializer.data,
             }
         )

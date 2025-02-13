@@ -1,5 +1,11 @@
 from django.urls import path
 
+from apps.moderator.views.about import (
+    ModeratorAboutProjectDetailView,
+    ModeratorAboutProjectView,
+    ModeratorAboutDetailView,
+    ModeratorAboutView,
+)
 from apps.moderator.views.banner import ModeratorBannerView, ModeratorBannerDetailView
 from apps.moderator.views.chat import (
     ModeratorChatRoomList,
@@ -239,5 +245,13 @@ urlpatterns = [
         "count/",
         ModeratorCount.as_view(),
         name="moderator_count",
+    ),
+    path("about/", ModeratorAboutView.as_view(), name="about"),
+    path("about/<int:pk>/", ModeratorAboutDetailView.as_view(), name="about-detail"),
+    path("about/project/", ModeratorAboutProjectView.as_view(), name="about-project"),
+    path(
+        "about/project/<int:pk>/",
+        ModeratorAboutProjectDetailView.as_view(),
+        name="about-project-detail",
     ),
 ]
