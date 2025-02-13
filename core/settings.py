@@ -96,6 +96,8 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
+SITE_ID = 1
+
 LANGUAGE_CODE = "uz"
 
 TIME_ZONE = "Asia/Tashkent"

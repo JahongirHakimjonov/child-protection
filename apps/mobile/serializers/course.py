@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
@@ -74,6 +75,8 @@ class CourseLessonSerializer(serializers.ModelSerializer):
 
 
 class LessonResourceSerializer(serializers.ModelSerializer):
+    file = serializers.SerializerMethodField()
+
     class Meta:
         model = CourseLessonResource
         fields = [
@@ -88,6 +91,16 @@ class LessonResourceSerializer(serializers.ModelSerializer):
             "type",
             "created_at",
         ]
+
+    @extend_schema_field(serializers.FileField)
+    def get_file(self, instance):
+        request = self.context.get("rq")
+        if request:
+            current_site = Site.objects.get_current()
+            base_url = f"https://{current_site.domain}"
+            if hasattr(instance, "file") and instance.file:
+                return f"{base_url}{instance.file.url}"
+        return None
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
