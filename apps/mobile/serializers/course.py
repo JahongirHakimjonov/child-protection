@@ -1,4 +1,3 @@
-from django.contrib.sites.models import Site
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
