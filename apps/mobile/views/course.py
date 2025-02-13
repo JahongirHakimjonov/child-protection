@@ -215,7 +215,7 @@ class LessonResourceListAPIView(APIView):
         queryset = self.get_queryset().filter(lesson_id=lesson_id)
         if type:
             queryset = queryset.filter(type=type)
-        serializer = self.serializer_class(queryset, many=True)
+        serializer = self.serializer_class(queryset, many=True, context={"rq": request})
         return Response(
             {
                 "success": True,

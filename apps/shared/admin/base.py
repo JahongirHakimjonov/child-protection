@@ -4,11 +4,19 @@ from functools import lru_cache
 from django.contrib import admin
 from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.models import Group
+from django.contrib.sites.models import Site
 from django.utils.timezone import now, timedelta
 from unfold.admin import ModelAdmin
 from unfold.components import BaseComponent, register_component
 
 admin.site.unregister(Group)
+admin.site.unregister(Site)
+
+
+@admin.register(Site)
+class SiteAdmin(ModelAdmin):
+    list_display = ("id", "domain", "name")
+    search_fields = ("domain", "name")
 
 
 @admin.register(Group)

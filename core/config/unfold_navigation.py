@@ -52,6 +52,14 @@ PAGES = [
                     request.user, "view_smsconfirm"
                 ),
             },
+            {
+                "title": _("Site"),
+                "icon": "captive_portal",
+                "link": reverse_lazy("admin:sites_site_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_smsconfirm"
+                ),
+            },
         ],
     },
     {
