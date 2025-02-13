@@ -12,7 +12,7 @@ class MeView(GenericAPIView):
 
     def get(self, request):
         user = User.objects.get(pk=request.user.pk)
-        serializer = self.get_serializer(user)
+        serializer = self.serializer_class(user)
         return Response(
             {"success": True, "message": "User data", "data": serializer.data}
         )
