@@ -1,9 +1,7 @@
 import os
 import urllib.parse
-from io import BytesIO
 
 import requests
-from PIL import Image
 from django.core.files.base import ContentFile
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
@@ -68,18 +66,14 @@ class Google:
         try:
             response = requests.get(picture_url)
             response.raise_for_status()
-            image = Image.open(BytesIO(response.content))
-            webp_image_io = BytesIO()
-            image.save(webp_image_io, format="WEBP")
-            webp_image_io.seek(0)
 
             parsed_url = urllib.parse.urlparse(picture_url)
             filename = os.path.basename(parsed_url.path)
-            sanitized_filename = f"{user.username}_avatar_{filename.split('.')[0]}.webp"
+            sanitized_filename = f"{user.username}_avatar_{filename}"
 
             user.avatar.save(
                 sanitized_filename,
-                ContentFile(webp_image_io.read()),
+                ContentFile(response.content),
                 save=False,
             )
             user.save()

@@ -96,8 +96,7 @@ class LessonResourceSerializer(serializers.ModelSerializer):
     def get_file(self, instance):
         request = self.context.get("rq")
         if request:
-            current_site = Site.objects.get_current()
-            base_url = f"https://{current_site.domain}"
+            base_url = f"https://child-protection.felixits.uz"
             if hasattr(instance, "file") and instance.file:
                 return f"{base_url}{instance.file.url}"
         return None
