@@ -1,5 +1,3 @@
-import mimetypes
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -103,16 +101,41 @@ class CourseLessonResource(AbstractBaseModel):
 
     def get_file_type(self, file=None):
         if file:
-            mime_type = mimetypes.guess_type(file)[0]
-            if mime_type:
-                if mime_type.startswith("video"):
-                    return ResourceTypes.VIDEO
-                elif mime_type.startswith("audio"):
-                    return ResourceTypes.AUDIO
-                elif mime_type.startswith("application") or mime_type.startswith(
-                    "text"
-                ):
-                    return ResourceTypes.DOCUMENT
+            file_lower = file.lower()
+
+            video_extensions = (
+                ".mp4",
+                ".avi",
+                ".mov",
+                ".wmv",
+                ".flv",
+                ".mkv",
+                ".webm",
+                ".mpeg",
+                ".mpg",
+                ".3gp",
+            )
+            audio_extensions = (".mp3", ".wav", ".ogg", ".aac", ".flac", ".m4a", ".wma")
+            document_extensions = (
+                ".pdf",
+                ".doc",
+                ".docx",
+                ".txt",
+                ".rtf",
+                ".xls",
+                ".xlsx",
+                ".ppt",
+                ".pptx",
+                ".odt",
+            )
+
+            if file_lower.endswith(video_extensions):
+                return ResourceTypes.VIDEO
+            elif file_lower.endswith(audio_extensions):
+                return ResourceTypes.AUDIO
+            elif file_lower.endswith(document_extensions):
+                return ResourceTypes.DOCUMENT
+
         return ResourceTypes.DOCUMENT
 
     get_file_type.short_description = _("File Type")
