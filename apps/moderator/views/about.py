@@ -122,6 +122,25 @@ class ModeratorAboutProjectView(APIView):
             }
         )
 
+    def post(self, request):
+        serializer = self.get_serializer_class()(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "success": True,
+                    "message": "About project data created successfully",
+                    "data": serializer.data,
+                }
+            )
+        return Response(
+            {
+                "success": False,
+                "message": "About project data not created",
+                "data": serializer.errors,
+            }
+        )
+
 
 class ModeratorAboutProjectDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
