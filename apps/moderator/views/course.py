@@ -82,8 +82,8 @@ class ModeratorCourseCategoryDetailView(APIView):
         operation_id="moderator_course_detail_get",
     )
     def get(self, request, pk):
-        coursecategory = get_object_or_404(CourseCategory, pk)
-        serializer = self.serializer_class(coursecategory)
+        course_category = get_object_or_404(CourseCategory, pk)
+        serializer = self.serializer_class(course_category)
         return Response(
             {
                 "success": True,
@@ -96,8 +96,8 @@ class ModeratorCourseCategoryDetailView(APIView):
         operation_id="moderator_course_detail_patch",
     )
     def patch(self, request, pk):
-        coursecategory = get_object_or_404(CourseCategory, pk)
-        serializer = self.serializer_class(coursecategory, data=request.data)
+        course_category = get_object_or_404(CourseCategory, pk)
+        serializer = self.serializer_class(course_category, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -107,14 +107,14 @@ class ModeratorCourseCategoryDetailView(APIView):
                     "data": serializer.data,
                 }
             )
-        return Response({"success": False, "message": "CourseCategory does not exist"})
+        return Response({"success": False, "message": "Error", "data": serializer.errors})
 
     @extend_schema(
         operation_id="moderator_course_detail_delete",
     )
     def delete(self, request, pk):
-        coursecategory = get_object_or_404(CourseCategory, pk)
-        coursecategory.delete()
+        course_category = get_object_or_404(CourseCategory, pk)
+        course_category.delete()
         return Response({"success": True, "message": "CourseCategory deleted"})
 
 
