@@ -11,8 +11,8 @@ class ResourceTypes(models.TextChoices):
 
 
 class CourseCategory(AbstractBaseModel):
-    title = models.CharField(max_length=255, unique=True, db_index=True)
-    sub_title = models.CharField(max_length=255, db_index=True, null=True, blank=True)
+    title = models.TextField(db_index=True)
+    sub_title = models.TextField(db_index=True, null=True, blank=True)
     description = models.TextField(db_index=True, null=True, blank=True)
     image = models.ImageField(upload_to="course_categories/", null=True, blank=True)
     lesson_count = models.PositiveIntegerField(db_index=True, default=0)
