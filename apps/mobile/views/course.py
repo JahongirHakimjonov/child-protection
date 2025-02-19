@@ -1,7 +1,8 @@
-from django.db.models import Q
+from django.db.models import Count, Q
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -27,35 +28,29 @@ class CourseCategoryListAPIView(APIView):
     def get_queryset(self):
         return CourseCategory.objects.filter(is_active=True)
 
-    def get_progress_percent(self, category, user):
-        viewed = category.courses.filter(viewed__user=user).count()
-        total = category.courses.count()
-        if total:
-            return round(viewed / total * 100, 2)
-        return 0
-
     def get(self, request):
         search = request.query_params.get("search")
         progress = request.query_params.get("progress")
         queryset = self.get_queryset()
+
         if search:
             search_terms = search[:100].split()
             query = Q()
             for term in search_terms:
                 query &= (
-                    Q(title__icontains=term)
-                    | Q(sub_title__icontains=term)
-                    | Q(description__icontains=term)
+                        Q(title__icontains=term)
+                        | Q(sub_title__icontains=term)
+                        | Q(description__icontains=term)
                 )
             queryset = queryset.filter(query)
-        if progress and progress.lower() == "true":
-            user = request.user
-            if user.is_authenticated:
-                queryset = [
-                    category
-                    for category in queryset
-                    if self.get_progress_percent(category, user) > 0
-                ]
+
+        user = request.user
+        if progress and progress.lower() == "true" and user.is_authenticated:
+            queryset = queryset.annotate(
+                total_courses=Count("courses", distinct=True),
+                viewed_courses=Count("courses", filter=Q(courses__viewed__user=user), distinct=True)
+            ).filter(viewed_courses__gt=0)
+
         paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(queryset, request)
         serializer = self.serializer_class(
@@ -99,7 +94,7 @@ class LessonListAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return CourseLesson.objects.filter(is_active=True)
+        return CourseLesson.objects.filter(is_active=True).select_related("category")
 
     @extend_schema(
         parameters=[
