@@ -107,7 +107,9 @@ class ModeratorCourseCategoryDetailView(APIView):
                     "data": serializer.data,
                 }
             )
-        return Response({"success": False, "message": "Error", "data": serializer.errors})
+        return Response(
+            {"success": False, "message": "Error", "data": serializer.errors}
+        )
 
     @extend_schema(
         operation_id="moderator_course_detail_delete",

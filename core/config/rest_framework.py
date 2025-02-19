@@ -26,4 +26,5 @@ SPECTACULAR_SETTINGS = {
     "REDOC_DIST": "SIDECAR",
     "TITLE": "Child-Protection Django Rest API",
     "DESCRIPTION": "Child-Protection Django Rest API",
+    "SCHEMA_PATH_PREFIX": "/api/v1",
 }
