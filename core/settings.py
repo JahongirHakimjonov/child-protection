@@ -33,6 +33,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.shared.middlewares.silk.CustomSilkyMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -137,3 +138,5 @@ MIDDLEWARE.insert(
     MIDDLEWARE.index("django.middleware.locale.LocaleMiddleware") + 1,
     "apps.shared.middlewares.ignore_locale.IgnoreStaticLocaleMiddleware",
 )
+
+SILKY_PYTHON_PROFILER = True
