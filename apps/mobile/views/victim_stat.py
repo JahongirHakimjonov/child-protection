@@ -26,7 +26,7 @@ class VictimStat(APIView):
         just_user_queryset = user_queryset.exclude(
             id__in=victim_queryset.values("user_id")
         )
-        help_queryset = Help.objects.filter(status=HelpStatus.SAFE)
+        help_queryset = Help.objects.filter(status=HelpStatus.DANGER)
         return {
             "help": help_queryset,
             "just_user": just_user_queryset,
@@ -37,11 +37,11 @@ class VictimStat(APIView):
     @extend_schema(
         summary="Get victim statistics",
         description=(
-            "Retrieve daily, weekly, monthly, or yearly statistics for users or victims."
-            " - **daily**: statistics for the current day grouped by hour\n"
-            " - **weekly**: statistics for the past 7 days grouped by day name\n"
-            " - **monthly**: statistics for the current month grouped by day\n"
-            " - **yearly**: statistics for the current year grouped by month"
+                "Retrieve daily, weekly, monthly, or yearly statistics for users or victims."
+                " - **daily**: statistics for the current day grouped by hour\n"
+                " - **weekly**: statistics for the past 7 days grouped by day name\n"
+                " - **monthly**: statistics for the current month grouped by day\n"
+                " - **yearly**: statistics for the current year grouped by month"
         ),
         parameters=[
             OpenApiParameter(
@@ -50,8 +50,8 @@ class VictimStat(APIView):
                 required=True,
                 enum=["daily", "weekly", "monthly", "yearly"],
                 description=(
-                    "Specify the time period for statistics: "
-                    "daily, weekly, monthly, or yearly."
+                        "Specify the time period for statistics: "
+                        "daily, weekly, monthly, or yearly."
                 ),
             ),
             OpenApiParameter(

@@ -139,4 +139,4 @@ MIDDLEWARE.insert(
     "apps.shared.middlewares.ignore_locale.IgnoreStaticLocaleMiddleware",
 )
 
-SILKY_PYTHON_PROFILER = True
+# SILKY_PYTHON_PROFILER = True
