@@ -38,9 +38,9 @@ class CourseCategoryListAPIView(APIView):
             query = Q()
             for term in search_terms:
                 query &= (
-                        Q(title__icontains=term)
-                        | Q(sub_title__icontains=term)
-                        | Q(description__icontains=term)
+                    Q(title__icontains=term)
+                    | Q(sub_title__icontains=term)
+                    | Q(description__icontains=term)
                 )
             queryset = queryset.filter(query)
 
@@ -48,7 +48,9 @@ class CourseCategoryListAPIView(APIView):
         if progress and progress.lower() == "true" and user.is_authenticated:
             queryset = queryset.annotate(
                 total_courses=Count("courses", distinct=True),
-                viewed_courses=Count("courses", filter=Q(courses__viewed__user=user), distinct=True)
+                viewed_courses=Count(
+                    "courses", filter=Q(courses__viewed__user=user), distinct=True
+                ),
             ).filter(viewed_courses__gt=0)
 
         paginator = CustomPagination()
