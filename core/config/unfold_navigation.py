@@ -288,6 +288,36 @@ PAGES = [
             },
         ],
     },
+    {
+        "seperator": True,
+        "title": _("So'rovnoma"),
+        "items": [
+            {
+                "title": _("So'rovnoma turlari"),
+                "icon": "quiz",
+                "link": reverse_lazy("admin:mobile_questionnairecategory_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_questionnairecategory"
+                ),
+            },
+            {
+                "title": _("So'rovnoma"),
+                "icon": "quiz",
+                "link": reverse_lazy("admin:mobile_questionnaire_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_questionnaire"
+                ),
+            },
+            {
+                "title": _("So'rovnoma foydalanuvchi javoblari"),
+                "icon": "quiz",
+                "link": reverse_lazy("admin:mobile_questionnaireuseranswer_changelist"),
+                "permissions": lambda request: user_has_group_or_permission(
+                    request.user, "view_questionnaireuseranswer"
+                ),
+            },
+        ],
+    },
 ]
 
 TABS = [
@@ -309,6 +339,22 @@ TABS = [
             {
                 "title": _("Victim statuslari"),
                 "link": reverse_lazy("admin:mobile_victimstatus_changelist"),
+            },
+        ],
+    },
+    {
+        "models": [
+            "mobile.questionnaire",
+            "mobile.questionnaireanswer",
+        ],
+        "items": [
+            {
+                "title": _("So'rovnoma"),
+                "link": reverse_lazy("admin:mobile_questionnaire_changelist"),
+            },
+            {
+                "title": _("So'rovnoma javoblari"),
+                "link": reverse_lazy("admin:mobile_questionnaireanswer_changelist"),
             },
         ],
     },

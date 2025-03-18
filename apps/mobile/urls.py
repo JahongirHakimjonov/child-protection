@@ -25,11 +25,12 @@ from apps.mobile.views.question import (
     QuestionListAPIView,
     QuestionCategoryListAPIView,
 )
+from apps.mobile.views.questionnaire import QuestionnaireUserAnswerView, QuestionnaireDetailView, \
+    QuestionnaireCategoryView, QuestionnaireView
 from apps.mobile.views.saved import SavedApiView
 from apps.mobile.views.test import TestResult, TestList, TestQuestionList
 from apps.mobile.views.victim import VictimTypeList, VictimList
 from apps.mobile.views.victim_stat import VictimStat
-
 
 urlpatterns = [
     path(
@@ -85,4 +86,8 @@ urlpatterns = [
         AboutProjectDetailView.as_view(),
         name="about-project-detail",
     ),
+    path("questionnaire/category/", QuestionnaireCategoryView.as_view(), name="questionnaire-category"),
+    path("questionnaire/", QuestionnaireView.as_view(), name="questionnaire"),
+    path("questionnaire/<int:pk>/", QuestionnaireDetailView.as_view(), name="questionnaire-detail"),
+    path("questionnaire/answer/", QuestionnaireUserAnswerView.as_view(), name="questionnaire-"),
 ]
