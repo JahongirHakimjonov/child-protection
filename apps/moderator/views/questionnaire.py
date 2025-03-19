@@ -14,6 +14,7 @@ from apps.moderator.serializers.questionnaire import (
     ModeratorQuestionareCreateSerializer,
     ModeratorQuestionnaireDetailSerializer,
     ModeratorQuestionareUserAnswerSerializer,
+    ModeratorQuestionareUserAnswerAdminDetailSerializer,
 )
 from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination.custom import CustomPagination
@@ -206,7 +207,7 @@ class ModeratorQuestionareUserAnswerView(APIView):
 
 class ModeratorQuestionareUserDetailAnswerView(APIView):
     permission_classes = (IsAuthenticated, IsAdmin)
-    serializer_class = ModeratorQuestionareUserAnswerSerializer
+    serializer_class = ModeratorQuestionareUserAnswerAdminDetailSerializer
 
     def get(self, request, pk):
         user_answer = get_object_or_404(QuestionnaireUserAnswer, pk=pk)
