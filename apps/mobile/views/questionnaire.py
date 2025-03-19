@@ -1,3 +1,4 @@
+from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -5,8 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.mobile.models.questionnaire import (
-    Questionnaire, QuestionnaireCategory
-
+    Questionnaire,
+    QuestionnaireCategory,
+    QuestionnaireUserAnswer,
 )
 from apps.mobile.serializers.questionnaire import (
     QuestionnaireCategorySerializer,
@@ -31,8 +33,10 @@ class QuestionnaireCategoryView(APIView):
             {
                 "success": True,
                 "message": "Questionnaire categories fetched successfully",
-                "data": serializer.data
-            }, status=status.HTTP_200_OK)
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class QuestionnaireView(APIView):
@@ -73,7 +77,9 @@ class QuestionnaireDetailView(APIView):
                 "success": True,
                 "message": "Questionnaire fetched successfully",
                 "data": serializer.data,
-            }, status=status.HTTP_200_OK)
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class QuestionnaireUserAnswerView(APIView):
@@ -81,18 +87,29 @@ class QuestionnaireUserAnswerView(APIView):
     serializer_class = QuestionnaireUserAnswerSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={"rq": request})
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            questionnaire = serializer.validated_data["questionnaire"]
+            category = questionnaire.category
+            user_answer, created = QuestionnaireUserAnswer.objects.get_or_create(
+                user=request.user,
+                created_at__date=timezone.now().date(),
+                category=category,
+            )
+            serializer.save(user_answer=user_answer)
             return Response(
                 {
                     "success": True,
                     "message": "Questionnaire answer submitted successfully",
                     "data": serializer.data,
-                }, status=status.HTTP_201_CREATED)
+                },
+                status=status.HTTP_201_CREATED,
+            )
         return Response(
             {
                 "success": False,
                 "message": "Questionnaire answer submission failed",
                 "data": serializer.errors,
-            }, status=status.HTTP_400_BAD_REQUEST)
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )

@@ -1,18 +1,26 @@
 from django.contrib import admin
 from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
-from unfold.admin import ModelAdmin, TabularInline
+from unfold.admin import ModelAdmin, TabularInline, StackedInline
 
 from apps.mobile.models.questionnaire import (
     Questionnaire,
     QuestionnaireAnswer,
     QuestionnaireCategory,
     QuestionnaireUserAnswer,
+    QuestionnaireUserAnswerDetail,
 )
 
 
 class QuestionnaireAnswerInline(TabularInline, TranslationTabularInline):
     model = QuestionnaireAnswer
     extra = 0
+
+
+class QuestionnaireUserAnswerDetailInline(StackedInline):
+    model = QuestionnaireUserAnswerDetail
+    extra = 0
+    tab = True
+    autocomplete_fields = ["questionnaire", "answer"]
 
 
 @admin.register(QuestionnaireCategory)
@@ -44,8 +52,9 @@ class QuestionnaireAnswerAdmin(TabbedTranslationAdmin, ModelAdmin):
 
 @admin.register(QuestionnaireUserAnswer)
 class QuestionnaireUserAnswerAdmin(ModelAdmin):
-    list_display = ["id", "user", "questionnaire", "created_at"]
-    search_fields = ["user__phone", "questionnaire__question"]
-    list_filter = ["questionnaire", "created_at"]
+    list_display = ["id", "user", "created_at"]
+    search_fields = ["user__phone"]
+    list_filter = ["created_at"]
     date_hierarchy = "created_at"
-    autocomplete_fields = ["questionnaire", "user", "answer"]
+    autocomplete_fields = ["user"]
+    inlines = [QuestionnaireUserAnswerDetailInline]
