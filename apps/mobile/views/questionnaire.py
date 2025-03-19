@@ -14,6 +14,7 @@ from apps.mobile.serializers.questionnaire import (
     QuestionnaireUserAnswerSerializer,
 )
 from apps.shared.exceptions.http404 import get_object_or_404
+from apps.shared.pagination import CustomPagination
 
 
 class QuestionnaireCategoryView(APIView):
@@ -37,6 +38,7 @@ class QuestionnaireCategoryView(APIView):
 class QuestionnaireView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = QuestionnaireSerializer
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         return Questionnaire.objects.filter(is_active=True)
@@ -53,13 +55,10 @@ class QuestionnaireView(APIView):
         category = request.query_params.get("category")
         if category:
             queryset = queryset.filter(category=category)
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(
-            {
-                "success": True,
-                "message": "Questionnaires fetched successfully",
-                "data": serializer.data,
-            }, status=status.HTTP_200_OK)
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class QuestionnaireDetailView(APIView):

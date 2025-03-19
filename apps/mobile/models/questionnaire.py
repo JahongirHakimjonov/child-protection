@@ -82,6 +82,8 @@ class QuestionnaireUserAnswer(AbstractBaseModel):
         on_delete=models.CASCADE,
         related_name="user_answers",
         db_index=True,
+        null=True,
+        blank=True,
     )
     answer_text = models.TextField(
         verbose_name=_("Answer text"), db_index=True, null=True, blank=True
