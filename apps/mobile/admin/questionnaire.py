@@ -56,5 +56,5 @@ class QuestionnaireUserAnswerAdmin(ModelAdmin):
     search_fields = ["user__phone"]
     list_filter = ["created_at"]
     date_hierarchy = "created_at"
-    autocomplete_fields = ["user"]
+    autocomplete_fields = ["user", "category"]
     inlines = [QuestionnaireUserAnswerDetailInline]
