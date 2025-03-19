@@ -71,6 +71,30 @@ class QuestionnaireUserAnswer(AbstractBaseModel):
         related_name="questionnaire_answers",
         db_index=True,
     )
+    category = models.ForeignKey(
+        "QuestionnaireCategory",
+        on_delete=models.CASCADE,
+        related_name="user_answers",
+        db_index=True,
+    )
+
+    class Meta:
+        verbose_name = _("Questionnaire User Answer")
+        verbose_name_plural = _("Questionnaire User Answers")
+        ordering = ("-updated_at",)
+        db_table = "questionnaire_user_answer"
+
+    def __str__(self):
+        return str(self.user.id)
+
+
+class QuestionnaireUserAnswerDetail(AbstractBaseModel):
+    user_answer = models.ForeignKey(
+        "QuestionnaireUserAnswer",
+        on_delete=models.CASCADE,
+        related_name="user_answer_details",
+        db_index=True,
+    )
     questionnaire = models.ForeignKey(
         "Questionnaire",
         on_delete=models.CASCADE,
@@ -90,10 +114,10 @@ class QuestionnaireUserAnswer(AbstractBaseModel):
     )
 
     class Meta:
-        verbose_name = _("Questionnaire User Answer")
-        verbose_name_plural = _("Questionnaire User Answers")
-        ordering = ("-created_at",)
-        db_table = "questionnaire_user_answer"
+        verbose_name = _("Questionnaire User Answer Detail")
+        verbose_name_plural = _("Questionnaire User Answer Details")
+        ordering = ("-updated_at",)
+        db_table = "questionnaire_user_answer_detail"
 
     def __str__(self):
-        return self.answer.answer
+        return str(self.user_answer.id)

@@ -1,10 +1,11 @@
+from django.utils import timezone
 from rest_framework import serializers
 
 from apps.mobile.models.questionnaire import (
     Questionnaire,
     QuestionnaireAnswer,
     QuestionnaireCategory,
-    QuestionnaireUserAnswer,
+    QuestionnaireUserAnswerDetail,
 )
 
 
@@ -50,7 +51,7 @@ class QuestionnaireSerializer(serializers.ModelSerializer):
 
 class QuestionnaireUserAnswerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = QuestionnaireUserAnswer
+        model = QuestionnaireUserAnswerDetail
         fields = (
             "id",
             "questionnaire",
@@ -58,3 +59,15 @@ class QuestionnaireUserAnswerSerializer(serializers.ModelSerializer):
             "answer_text",
             "created_at",
         )
+
+    def create(self, validated_data):
+        user = self.context["rq"].user
+        instance, created = QuestionnaireUserAnswerDetail.objects.update_or_create(
+            user_answer__user=user,
+            user_answer=validated_data["user_answer"],
+            questionnaire=validated_data["questionnaire"],
+            answer=validated_data["answer"],
+            created_at__date=timezone.now().date(),
+            defaults=validated_data,
+        )
+        return instance

@@ -176,17 +176,25 @@ class ModeratorQuestionareUserAnswerSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "user",
-            "questionnaire",
-            "answer",
-            "answer_text",
             "created_at",
         )
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["user"] = UserSerializer(instance.user).data
-        data["answer"] = ModeratorQuestionareAnswerSerializer(instance.answer).data
-        data["questionnaire"] = ModeratorQuestionareSerializer(
-            instance.questionnaire
-        ).data
+        return data
+
+
+class ModeratorQuestionareUserAnswerDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionnaireUserAnswer
+        fields = (
+            "id",
+            "user",
+            "created_at",
+        )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["user"] = UserSerializer(instance.user).data
         return data

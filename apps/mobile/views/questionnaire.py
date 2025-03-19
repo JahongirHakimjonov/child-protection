@@ -1,10 +1,15 @@
+from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.mobile.models.questionnaire import Questionnaire, QuestionnaireCategory
+from apps.mobile.models.questionnaire import (
+    Questionnaire,
+    QuestionnaireCategory,
+    QuestionnaireUserAnswer,
+)
 from apps.mobile.serializers.questionnaire import (
     QuestionnaireCategorySerializer,
     QuestionnaireSerializer,
@@ -82,9 +87,16 @@ class QuestionnaireUserAnswerView(APIView):
     serializer_class = QuestionnaireUserAnswerSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={"rq": request})
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            questionnaire = serializer.validated_data["questionnaire"]
+            category = questionnaire.category
+            user_answer, created = QuestionnaireUserAnswer.objects.get_or_create(
+                user=request.user,
+                created_at__date=timezone.now().date(),
+                category=category,
+            )
+            serializer.save(user_answer=user_answer)
             return Response(
                 {
                     "success": True,
