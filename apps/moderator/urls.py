@@ -36,6 +36,14 @@ from apps.moderator.views.question import (
     ModeratorQuestionView,
     ModeratorQuestionDetailView,
 )
+from apps.moderator.views.questionnaire import (
+    ModeratorQuestionareCategoryView,
+    ModeratorQuestionareCategoryDetailView,
+    ModeratorQuestionareView,
+    ModeratorQuestionareDetailView,
+    ModeratorQuestionareUserAnswerView,
+    ModeratorQuestionareUserDetailAnswerView,
+)
 from apps.moderator.views.test import (
     ModeratorTestView,
     ModeratorTestDetailView,
@@ -253,5 +261,29 @@ urlpatterns = [
         "about/project/<int:pk>/",
         ModeratorAboutProjectDetailView.as_view(),
         name="about-project-detail",
+    ),
+    path("questionare/", ModeratorQuestionareView.as_view(), name="about"),
+    path(
+        "questionare/<int:pk>/", ModeratorQuestionareDetailView.as_view(), name="about"
+    ),
+    path(
+        "questionare/category/",
+        ModeratorQuestionareCategoryView.as_view(),
+        name="about",
+    ),
+    path(
+        "questionare/category/<int:pk>/",
+        ModeratorQuestionareCategoryDetailView.as_view(),
+        name="about",
+    ),
+    path(
+        "questionare/answer/",
+        ModeratorQuestionareUserAnswerView.as_view(),
+        name="about",
+    ),
+    path(
+        "questionare/answer/<int:pk>/",
+        ModeratorQuestionareUserDetailAnswerView.as_view(),
+        name="about",
     ),
 ]

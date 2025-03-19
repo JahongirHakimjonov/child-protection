@@ -4,10 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.mobile.models.questionnaire import (
-    Questionnaire, QuestionnaireCategory
-
-)
+from apps.mobile.models.questionnaire import Questionnaire, QuestionnaireCategory
 from apps.mobile.serializers.questionnaire import (
     QuestionnaireCategorySerializer,
     QuestionnaireSerializer,
@@ -31,8 +28,10 @@ class QuestionnaireCategoryView(APIView):
             {
                 "success": True,
                 "message": "Questionnaire categories fetched successfully",
-                "data": serializer.data
-            }, status=status.HTTP_200_OK)
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class QuestionnaireView(APIView):
@@ -73,7 +72,9 @@ class QuestionnaireDetailView(APIView):
                 "success": True,
                 "message": "Questionnaire fetched successfully",
                 "data": serializer.data,
-            }, status=status.HTTP_200_OK)
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class QuestionnaireUserAnswerView(APIView):
@@ -89,10 +90,14 @@ class QuestionnaireUserAnswerView(APIView):
                     "success": True,
                     "message": "Questionnaire answer submitted successfully",
                     "data": serializer.data,
-                }, status=status.HTTP_201_CREATED)
+                },
+                status=status.HTTP_201_CREATED,
+            )
         return Response(
             {
                 "success": False,
                 "message": "Questionnaire answer submission failed",
                 "data": serializer.errors,
-            }, status=status.HTTP_400_BAD_REQUEST)
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
