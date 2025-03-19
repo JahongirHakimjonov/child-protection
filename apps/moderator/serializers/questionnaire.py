@@ -5,6 +5,7 @@ from apps.mobile.models.questionnaire import (
     QuestionnaireCategory,
     QuestionnaireUserAnswer,
     QuestionnaireAnswer,
+    QuestionnaireUserAnswerDetail,
 )
 from apps.users.serializers.me import UserSerializer
 
@@ -49,6 +50,15 @@ class ModeratorQuestionareAnswerSerializer(serializers.ModelSerializer):
         )
 
 
+class ModeratorQuestionareAnswerAddSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionnaireAnswer
+        fields = (
+            "id",
+            "answer",
+        )
+
+
 class ModeratorQuestionareAnswerDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionnaireAnswer
@@ -85,6 +95,15 @@ class ModeratorQuestionareSerializer(serializers.ModelSerializer):
             instance.category
         ).data
         return data
+
+
+class ModeratorQuestionareAddSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Questionnaire
+        fields = (
+            "id",
+            "question",
+        )
 
 
 class ModeratorQuestionareCreateSerializer(serializers.ModelSerializer):
@@ -176,25 +195,55 @@ class ModeratorQuestionareUserAnswerSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "user",
+            "category",
             "created_at",
         )
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["user"] = UserSerializer(instance.user).data
+        data["category"] = ModeratorQuestionareCategorySerializer(
+            instance.category
+        ).data
         return data
 
 
 class ModeratorQuestionareUserAnswerDetailSerializer(serializers.ModelSerializer):
     class Meta:
+        model = QuestionnaireUserAnswerDetail
+        fields = (
+            "id",
+            "questionnaire",
+            "answer",
+            "created_at",
+        )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["questionnaire"] = ModeratorQuestionareAddSerializer(
+            instance.questionnaire
+        ).data
+        data["answer"] = ModeratorQuestionareAnswerAddSerializer(instance.answer).data
+        return data
+
+
+class ModeratorQuestionareUserAnswerAdminDetailSerializer(serializers.ModelSerializer):
+    class Meta:
         model = QuestionnaireUserAnswer
         fields = (
             "id",
             "user",
+            "category",
             "created_at",
         )
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["user"] = UserSerializer(instance.user).data
+        data["category"] = ModeratorQuestionareCategorySerializer(
+            instance.category
+        ).data
+        data["answers"] = ModeratorQuestionareUserAnswerDetailSerializer(
+            instance.user_answer_details.all(), many=True
+        ).data
         return data
