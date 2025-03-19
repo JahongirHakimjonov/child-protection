@@ -35,7 +35,7 @@ class Questionnaire(AbstractBaseModel):
     class Meta:
         verbose_name = _("Questionnaire")
         verbose_name_plural = _("Questionnaires")
-        ordering = ("-created_at",)
+        ordering = ("created_at",)
         db_table = "questionnaire"
 
     def __str__(self):
