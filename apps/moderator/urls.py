@@ -1,5 +1,6 @@
 from django.urls import path
 
+from apps.mobile.views.questionnaire import QuestionnaireUserAnswerDetailView
 from apps.moderator.views.about import (
     ModeratorAboutProjectDetailView,
     ModeratorAboutProjectView,
@@ -262,28 +263,30 @@ urlpatterns = [
         ModeratorAboutProjectDetailView.as_view(),
         name="about-project-detail",
     ),
-    path("questionare/", ModeratorQuestionareView.as_view(), name="about"),
+    path("questionare/", ModeratorQuestionareView.as_view(), name="questionare-list"),
     path(
-        "questionare/<int:pk>/", ModeratorQuestionareDetailView.as_view(), name="about"
+        "questionare/<int:pk>/",
+        ModeratorQuestionareDetailView.as_view(),
+        name="questionare-detail",
     ),
     path(
         "questionare/category/",
         ModeratorQuestionareCategoryView.as_view(),
-        name="about",
+        name="questionare-category",
     ),
     path(
         "questionare/category/<int:pk>/",
         ModeratorQuestionareCategoryDetailView.as_view(),
-        name="about",
+        name="questionare-category-detail",
     ),
     path(
         "questionare/answer/",
         ModeratorQuestionareUserAnswerView.as_view(),
-        name="about",
+        name="questionare-answer",
     ),
     path(
         "questionare/answer/<int:pk>/",
         ModeratorQuestionareUserDetailAnswerView.as_view(),
-        name="about",
+        name="questionare-answer-detail",
     ),
 ]

@@ -6,7 +6,9 @@ from apps.mobile.models.questionnaire import (
     QuestionnaireAnswer,
     QuestionnaireCategory,
     QuestionnaireUserAnswerDetail,
+    QuestionnaireUserAnswer,
 )
+from apps.users.serializers.me import UserSerializer
 
 
 class QuestionnaireCategorySerializer(serializers.ModelSerializer):
@@ -49,7 +51,7 @@ class QuestionnaireSerializer(serializers.ModelSerializer):
         return data
 
 
-class QuestionnaireUserAnswerSerializer(serializers.ModelSerializer):
+class QuestionnaireUserAnswerCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionnaireUserAnswerDetail
         fields = (
@@ -71,3 +73,41 @@ class QuestionnaireUserAnswerSerializer(serializers.ModelSerializer):
             defaults=validated_data,
         )
         return instance
+
+
+class QuestionareUserAnswerDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionnaireUserAnswerDetail
+        fields = (
+            "id",
+            "answer",
+            "questionnaire",
+            "answer_text",
+            "created_at",
+        )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["questionnaire"] = QuestionnaireSerializer(instance.questionnaire).data
+        data["answer"] = QuestionnaireAnswerSerializer(instance.answer).data
+        return data
+
+
+class QuestionareUserAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionnaireUserAnswer
+        fields = (
+            "id",
+            "user",
+            "category",
+            "created_at",
+        )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["user"] = UserSerializer(instance.user).data
+        data["category"] = QuestionnaireCategorySerializer(instance.category).data
+        data["answers"] = QuestionareUserAnswerDetailSerializer(
+            instance.user_answer_details.all(), many=True
+        ).data
+        return data

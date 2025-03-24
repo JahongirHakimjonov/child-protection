@@ -12,6 +12,8 @@ class QuestionnaireCategory(AbstractBaseModel):
     class Meta:
         verbose_name = _("Questionnaire Category")
         verbose_name_plural = _("Questionnaires Category")
+        ordering = ("created_at",)
+        db_table = "questionnaire_category"
 
     def __str__(self):
         return str(self.title)

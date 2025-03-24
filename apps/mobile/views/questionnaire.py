@@ -13,7 +13,9 @@ from apps.mobile.models.questionnaire import (
 from apps.mobile.serializers.questionnaire import (
     QuestionnaireCategorySerializer,
     QuestionnaireSerializer,
-    QuestionnaireUserAnswerSerializer,
+    QuestionnaireUserAnswerCreateSerializer,
+    QuestionareUserAnswerDetailSerializer,
+    QuestionareUserAnswerSerializer,
 )
 from apps.shared.exceptions.http404 import get_object_or_404
 from apps.shared.pagination import CustomPagination
@@ -84,7 +86,7 @@ class QuestionnaireDetailView(APIView):
 
 class QuestionnaireUserAnswerView(APIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = QuestionnaireUserAnswerSerializer
+    serializer_class = QuestionnaireUserAnswerCreateSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={"rq": request})
@@ -112,4 +114,24 @@ class QuestionnaireUserAnswerView(APIView):
                 "data": serializer.errors,
             },
             status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class QuestionnaireUserAnswerDetailView(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = QuestionareUserAnswerSerializer
+
+    def get_queryset(self):
+        return QuestionnaireUserAnswer.objects.filter(user=self.request.user).first()
+
+    def get(self, request):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset)
+        return Response(
+            {
+                "success": True,
+                "message": "Questionnaire answers fetched successfully",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
         )

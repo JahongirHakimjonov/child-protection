@@ -30,6 +30,7 @@ from apps.mobile.views.questionnaire import (
     QuestionnaireDetailView,
     QuestionnaireCategoryView,
     QuestionnaireView,
+    QuestionnaireUserAnswerDetailView,
 )
 from apps.mobile.views.saved import SavedApiView
 from apps.mobile.views.test import TestResult, TestList, TestQuestionList
@@ -104,6 +105,11 @@ urlpatterns = [
     path(
         "questionnaire/answer/",
         QuestionnaireUserAnswerView.as_view(),
-        name="questionnaire-",
+        name="questionnaire-answer",
+    ),
+    path(
+        "questionare/answer/user/",
+        QuestionnaireUserAnswerDetailView.as_view(),
+        name="questionare-user-answer",
     ),
 ]
