@@ -118,29 +118,54 @@ class ModeratorQuestionareView(APIView):
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+        category = request.query_params.get("category")
+        if category:
+            queryset = queryset.filter(category=category)
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(queryset, request)
         serializer = self.get_serializer_class()(page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
-        serializer = self.get_serializer_class()(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        if isinstance(request.data, list):
+            response_data = []
+            for item in request.data:
+                serializer = self.get_serializer_class()(data=item)
+                if serializer.is_valid():
+                    serializer.save()
+                    response_data.append(
+                        {
+                            "success": True,
+                            "message": "Question created",
+                            "data": serializer.data,
+                        }
+                    )
+                else:
+                    response_data.append(
+                        {
+                            "success": False,
+                            "message": serializer.errors,
+                        }
+                    )
+            return Response(response_data)
+        else:
+            serializer = self.get_serializer_class()(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {
+                        "success": True,
+                        "message": "Question created",
+                        "data": serializer.data,
+                    }
+                )
+
             return Response(
                 {
-                    "success": True,
-                    "message": "Question created",
-                    "data": serializer.data,
+                    "success": False,
+                    "message": serializer.errors,
                 }
             )
-
-        return Response(
-            {
-                "success": False,
-                "message": serializer.errors,
-            }
-        )
 
 
 class ModeratorQuestionareDetailView(APIView):
@@ -199,6 +224,9 @@ class ModeratorQuestionareUserAnswerView(APIView):
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+        category = request.query_params.get("category")
+        if category:
+            queryset = queryset.filter(category=category)
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(queryset, request)
         serializer = self.serializer_class(page, many=True)
