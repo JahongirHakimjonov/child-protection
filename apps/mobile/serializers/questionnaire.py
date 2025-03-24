@@ -81,12 +81,14 @@ class QuestionareUserAnswerDetailSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "answer",
+            "questionnaire",
             "answer_text",
             "created_at",
         )
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
+        data["questionnaire"] = QuestionnaireSerializer(instance.questionnaire).data
         data["answer"] = QuestionnaireAnswerSerializer(instance.answer).data
         return data
 
