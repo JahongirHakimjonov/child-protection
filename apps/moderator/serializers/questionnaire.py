@@ -94,6 +94,9 @@ class ModeratorQuestionareSerializer(serializers.ModelSerializer):
         data["category"] = ModeratorQuestionareCategorySerializer(
             instance.category
         ).data
+        data["answers"] = ModeratorQuestionareAnswerSerializer(
+            list(instance.answers.all()), many=True
+        ).data
         return data
 
 
