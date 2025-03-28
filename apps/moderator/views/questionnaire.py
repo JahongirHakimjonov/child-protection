@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -129,25 +130,27 @@ class ModeratorQuestionareView(APIView):
     def post(self, request):
         if isinstance(request.data, list):
             response_data = []
+            has_error = False
+
             for item in request.data:
                 serializer = self.get_serializer_class()(data=item)
                 if serializer.is_valid():
                     serializer.save()
-                    response_data.append(
-                        {
-                            "success": True,
-                            "message": "Question created",
-                            "data": serializer.data,
-                        }
-                    )
+                    response_data.append({
+                        "success": True,
+                        "message": "Question created",
+                        "data": serializer.data,
+                    })
                 else:
-                    response_data.append(
-                        {
-                            "success": False,
-                            "message": serializer.errors,
-                        }
-                    )
-            return Response(response_data)
+                    has_error = True
+                    response_data.append({
+                        "success": False,
+                        "message": serializer.errors,
+                    })
+
+            status_code = status.HTTP_400_BAD_REQUEST if has_error else status.HTTP_201_CREATED
+            return Response(response_data, status=status_code)
+
         else:
             serializer = self.get_serializer_class()(data=request.data)
             if serializer.is_valid():
@@ -157,14 +160,16 @@ class ModeratorQuestionareView(APIView):
                         "success": True,
                         "message": "Question created",
                         "data": serializer.data,
-                    }
+                    },
+                    status=status.HTTP_201_CREATED
                 )
 
             return Response(
                 {
                     "success": False,
                     "message": serializer.errors,
-                }
+                },
+                status=status.HTTP_400_BAD_REQUEST
             )
 
 
